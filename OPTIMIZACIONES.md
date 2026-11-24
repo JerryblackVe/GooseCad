@@ -47,3 +47,5 @@ GC-UI-07: polling fijo sustituido por evento de finalización; no añade hilos n
 GC-UI-11: un Future para edición y preparación de malla; se elimina doble dispatch/relayout, sin cambiar tolerancias ni propiedad VTK. Cancelación post-commit distingue fallo de vista de fallo de modelo; mediciones pendientes.
 
 GC-PERF-UI-01: separar medición de despacho, OCCT, preparación, copia VTK y render para decidir próximo cuello de botella medido. Comparación sync/async en mismo job; ninguna mejora declarada aún.
+
+GC-PERF-UI-02: QVTK paintEvent y render interactor se suspenden mientras worker; evita render automático de revisión anterior durante cálculo, sin ocultar ventana ni cambiar malla. Restauración y regresión de cancelación; contador render_events en benchmark, CI pendiente.

@@ -1,2 +1,2 @@
-# GC-PKG-01 / GC-PERF-UI-01 — verificar empaquetado y rendimiento
-Consultar CI de HEAD, crash matrix y catálogo. Corregir fallos concretos de PyInstaller/NSIS según logs; conservar solo evidencias textuales, sin publicar binarios hasta auditoría licencias. Revisar benchmark multibody por fases y mejorar cuello medido. Validar en Windows 10/11 con GPU física cuando exista entorno. No declarar versión estable.
+# GC-PERF-UI-02 / GC-PKG-01 — validar render suspendido y empaquetado
+Consultar CI HEAD, GC-PERF-UI-01 y Windows package ddca5c347ce082015094a8c0abf598350c873f9c. Revisar benchmark render_events y tiempos por fase; no atribuir cambio entre runners sin control. Resolver fallos concretos de PyInstaller/NSIS. Siguiente CAD: creación de nuevos documentos paramétricos de primitivas con trabajador y protección dirty. Licencia de distribución pendiente, no publicar binarios.

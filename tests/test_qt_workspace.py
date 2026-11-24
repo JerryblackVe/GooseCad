@@ -373,3 +373,61 @@ class QtWorkspaceTests(unittest.TestCase):
                 dialog.close()
                 dialog.deleteLater()
                 self.app.processEvents()
+
+    def test_worker_suspends_automatic_render_and_restores_on_cancel(self):
+        import time
+        from threading import Event
+        from PySide6.QtWidgets import QMessageBox
+        from goosecad.ui.main_window import MainWindow
+        window = MainWindow(autosave_interval=0)
+        window.show()
+        window.initialize_view()
+        self.app.processEvents()
+        entered, release = Event(), Event()
+        renders = []
+        rw = window.scene.window
+        observer = rw.AddObserver("StartEvent",lambda *args:renders.append(1))
+        edit = window.session.document.edit
+        def gated(*args,**kwargs):
+            entered.set()
+            if not release.wait(10):
+                raise RuntimeError("worker gate timeout")
+            return edit(*args,**kwargs)
+        try:
+            row = next(i for i in range(window.parameters.rowCount())
+                       if window.parameters.item(i,0).text()=="width")
+            window.parameters.item(row,1).setText("25")
+            with patch.object(window.session.document,"edit",side_effect=gated):
+                window.apply_button.click()
+                self.assertTrue(entered.wait(5))
+                iren = rw.GetInteractor()
+                self.assertFalse(iren.GetEnableRender())
+                window.viewport.update()
+                window.viewport.repaint()
+                iren.Render()
+                self.app.processEvents()
+                self.assertEqual(renders,[])
+                window.cancel_task()
+                release.set()
+                deadline=time.monotonic()+15
+                while window.tasks.busy:
+                    self.app.processEvents()
+                    if time.monotonic()>deadline:
+                        self.fail("worker timeout")
+                    time.sleep(.005)
+            self.assertTrue(rw.GetInteractor().GetEnableRender())
+            self.assertEqual(window.session.document.value("width"),20)
+            window.viewport.update()
+            self.app.processEvents()
+            self.assertTrue(window.apply_button.isEnabled())
+        finally:
+            release.set()
+            rw.RemoveObserver(observer)
+            deadline=time.monotonic()+15
+            while window.tasks.busy and time.monotonic()<deadline:
+                self.app.processEvents()
+                time.sleep(.005)
+            if not window.tasks.busy:
+                with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
+                    window.close()
+                self.app.processEvents()

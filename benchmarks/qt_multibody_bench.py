@@ -74,6 +74,8 @@ def measure_case(app, case, count, shared, repetitions):
     renderer = next((l.strip() for l in caps.splitlines()
                      if "renderer string" in l.lower()),"unknown")
     rows = []
+    render_count = [0]
+    observer = window.scene.window.AddObserver('StartEvent',lambda *args:render_count.__setitem__(0,render_count[0]+1))
     try:
         with patch.object(MeshRequest,"prepare",new=prepare):
             for mode in ("sync","async"):
@@ -83,6 +85,7 @@ def measure_case(app, case, count, shared, repetitions):
                     window.parameters.item(row,1).setText(str(radius))
                     measurements.clear()
                     errors.clear()
+                    render_count[0] = 0
                     loop = QEventLoop()
                     timeout = QTimer()
                     timeout.setSingleShot(True)
@@ -125,11 +128,13 @@ def measure_case(app, case, count, shared, repetitions):
                                      measurements["edit_ms"],measurements["mesh_ms"],
                                      measurements["publish_ms"],measurements["render_ms"],
                                      (ended-start)/1e6,changed,triangles,window.scene.cache.info().bytes,
+                                     render_count[0],
                                      platform.platform(),platform.processor() or "unknown",os.cpu_count(),
                                      qt_version,vtkVersion.GetVTKVersion(),
                                      f"{viewport.width()}x{viewport.height()}",renderer))
                     app.processEvents()
     finally:
+        window.scene.window.RemoveObserver(observer)
         if not window.tasks.busy:
             with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
                 window.close()
@@ -148,7 +153,7 @@ def main(path):
         writer=csv.writer(out)
         writer.writerow(("case","bodies","mode","sample","command_return_ms","edit_ms",
                          "mesh_ms","publish_ms","render_ms","end_to_end_ms","changed_actors",
-                         "triangles","cache_bytes","platform","cpu","logical_cpus","qt","vtk",
+                         "triangles","cache_bytes","render_events","platform","cpu","logical_cpus","qt","vtk",
                          "viewport","renderer"))
         writer.writerows(rows)
     for case in ("one_sphere","20_independent","20_shared"):

@@ -215,3 +215,6 @@ GC-DOC-06,Diálogo catálogo archivo activo confirmación recuperación,GitHub A
 GC-PERF-UI-01,Benchmark Qt multibody por fases y volumen,GitHub Actions Linux,Pendiente,benchmarks/qt_multibody_bench.py,2026-11-24
 GC-UI-11,Mutación malla combinada kernel y Qt,GitHub Actions,Aprobado,runs 45508104275 y 45508104278,2026-11-24
 GC-PKG-01,Freeze install self-test uninstall preserva usuario,GitHub Actions Windows Server 2022,Pendiente,windows-package.yml,2026-11-24
+GC-DOC-05,7 escenarios crash matrix en Linux y Windows,GitHub Actions,Aprobado,run 45508375966 jobs 138849380863 y 138849381308,2026-11-24
+GC-PERF-UI-01,Multibody y catálogo Qt Linux ambas versiones,GitHub Actions,Aprobado,jobs 138850155671 y 138850155694,2026-11-24
+GC-PERF-UI-02,Render suspendido durante worker y restauración cancel,GitHub Actions,Pendiente,tests/test_qt_workspace.py,2026-11-24

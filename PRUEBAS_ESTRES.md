@@ -25,3 +25,5 @@ GC-VIEW-01: visor experimental VTK 9.6.2, escena por NativeDocument/MeshCache, b
 GC-DOC-05: interrupción determinista de proceso independiente con os._exit antes/después de replace de primary y tras replace de previous, incluido slot autosave. Verifica revisión completa anterior/nueva, lock fail-closed, recuperación a ruta nueva y original intacto. 7 escenarios de terminación; pendientes CI. No simula pérdida de alimentación ni fallo de almacenamiento.
 
 GC-PERF-UI-01: edición selectiva y total en 20 cuerpos nativos concéntricos, comprobación actor reuse y volumen, benchmark por fases. No sustituye ensamblaje real ni RSS pico; resultados pendientes.
+
+GC-DOC-05 verificado: 7 escenarios de os._exit, Linux y Windows run 45508375966. No valida corte eléctrico. GC-PERF-UI-01 verifica 20 cuerpos compartidos y selectivos en ambos Linux; datos de latencia por fases en artefactos CI. Prueba GPU física pendiente.

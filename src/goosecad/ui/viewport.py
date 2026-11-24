@@ -17,6 +17,21 @@ class OwnedViewport(QVTKRenderWindowInteractor):
             raise AttributeError(name)
         return super().__getattr__(name)
 
+    def set_render_suspended(self, suspended):
+        """Block automatic interactor renders during exclusive CPU work.
+
+        Explicit scene publication still renders via vtkRenderWindow.Render
+        on the GUI thread. A resize may update dimensions while suspended but
+        must not trigger expensive rendering of the previous revision.
+        """
+        state = object.__getattribute__(self, "__dict__")
+        if state.get("_gc_finalized") or "_Iren" not in state:
+            return
+        suspended = bool(suspended)
+        if state.get("_gc_render_suspended", False) != suspended:
+            state["_gc_render_suspended"] = suspended
+            state["_Iren"].SetEnableRender(not suspended)
+
     def Finalize(self):
         state = object.__getattribute__(self, "__dict__")
         window = state.get("_RenderWindow")
@@ -40,7 +55,8 @@ class OwnedViewport(QVTKRenderWindowInteractor):
 
     def paintEvent(self, event):
         state = object.__getattribute__(self, "__dict__")
-        if not state.get("_gc_finalized") and "_Iren" in state:
+        if (not state.get("_gc_finalized") and "_Iren" in state
+                and not state.get("_gc_render_suspended", False)):
             super().paintEvent(event)
 
     def resizeEvent(self, event):

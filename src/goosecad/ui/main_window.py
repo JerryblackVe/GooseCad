@@ -227,6 +227,7 @@ class MainWindow(QMainWindow):
             action.setEnabled(not busy)
         self.parameters.setEnabled(not busy)
         self.bodies.setEnabled(not busy)
+        self.viewport.set_render_suspended(busy)
         self.viewport.setEnabled(not busy)
         self.cancel_action.setEnabled(self.tasks.can_cancel and not self._cancel_requested)
         if busy:
@@ -265,9 +266,11 @@ class MainWindow(QMainWindow):
     def _start_task(self, method, *args, after=None, **kwargs):
         if self.tasks.busy:
             return False
+        self.viewport.set_render_suspended(True)
         try:
             method(*args, **kwargs)
         except Exception as exc:
+            self.viewport.set_render_suspended(False)
             self._error(exc)
             return False
         self._after_task = after

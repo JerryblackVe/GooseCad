@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "8d4d317f8e1f6bf808b0fe537dde1b7d94f90495",
-  "remote_checkpoint": "8d4d317f8e1f6bf808b0fe537dde1b7d94f90495",
+  "remote_base_observed": "ddca5c347ce082015094a8c0abf598350c873f9c",
+  "remote_checkpoint": "ddca5c347ce082015094a8c0abf598350c873f9c",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,13 +15,13 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-PKG-01",
+  "next_task": "GC-PERF-UI-02",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
-  "ci_base_run": 45508104275,
+  "ci_base_run": 45508375966,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45508104278,
+  "ci_pending_run": 45508600562,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -53,6 +53,11 @@
       "sha": "bd7ebec8ab180175a46815f7a92b66bfc4617d82",
       "run": 45507912200,
       "conclusion": "success"
+    },
+    "GC-DOC-05": {
+      "sha": "b191930df9e066fbdf6b22089dcab3714e13a192",
+      "run": 45508375966,
+      "conclusion": "success"
     }
   },
   "ui_session": "GC-UI-01 CI success on Windows 2022 and Ubuntu 24.04, run 45502896110; docs checkpoint CI pending",
@@ -78,9 +83,10 @@
   "initial_display": "candidate CPU preparation implemented; CI pending",
   "autosave": "kernel and Qt CI verified 45507912287/45507912200",
   "combined_mutation_display": "kernel and 4 Qt CI jobs passed 45508104275/45508104278",
-  "crash_matrix": "process termination tests implemented; CI pending",
+  "crash_matrix": "7 scenarios passed both OS run 45508375966",
   "recovery_catalog": "explicit archive and recovery dialog implemented; CI pending",
-  "multibody_benchmark": "implemented; CI pending",
+  "multibody_benchmark": "two Linux jobs passed 138850155671/138850155694",
   "windows_packaging": "ephemeral PyInstaller+NSIS build/test pipeline; CI pending; no binary publication",
-  "distribution_license": "pending owner decision and third-party review"
+  "distribution_license": "pending owner decision and third-party review",
+  "render_suspension": "implemented; CI pending"
 }
