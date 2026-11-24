@@ -12,3 +12,5 @@ GC-OCAF-01 (S1 experimental): TDF_Data/TNaming devuelve cara correcta pero proce
 GC-DAG-PERF-01 (abierto, rendimiento): cadena con todos los nodos afectados es más lenta que full por descubrimiento de descendientes; ramas 10k ruido entre rondas. Medir bajo hardware controlado y estudiar estrategias adaptativas. GC-OCAF-01 sigue abierto.
 
 GC-DOC-REENTRY-01 (corregido): durante conversión de Mapping, código de usuario podía reentrar antes de activar guard; ahora se rechaza desde inicio de edición, con prueba de regresión. OCAF y GC-DAG-PERF-01 siguen abiertos.
+
+GC-DOC-02: detectada posible colisión con nombre de recuperación; sufijo .previous reservado y prueba de regresión aprobada. GC-OCAF-01 sigue abierto y aislado.
