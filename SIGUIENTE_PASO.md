@@ -1,2 +1,2 @@
-# GC-SKETCH-03 — Perfiles curvos exactos y agujeros (P0/P1)
-Verificar CI SKETCH-02 y DOC-03. Diseñar representación de segmentos y arcos/círculos exactos, contornos interiores, validación y construcción de caras OCCT; preservar compatibilidad v1/v2 y rechazar geometrías ambiguas. Integrar con barridos cuando las pruebas de volumen/área, validez y escalabilidad lo permitan; no migrar destructivamente. Continuar por bloques. Investigar SDK Goose/OCCT C++ cuando entorno lo permita.
+# GC-MESH-01 — Teselación B-Rep para visor (P0)
+Verificar CI SKETCH-03. Crear adaptador de teselación OCCT con copia aislada de B-Rep, precisión de malla configurable, transformación de vértices y orientación de triángulos por cara, límites de memoria y pruebas de validez. Medir latencia, calidad y escalabilidad. No sustituye B-Rep ni es un visor todavía.

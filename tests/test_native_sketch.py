@@ -90,7 +90,7 @@ class NativeSketchTests(unittest.TestCase):
             self.assertEqual(p.read_bytes(),old)
     def test_bad_checksum_and_future_version(self):
         data=model().to_bytes(); self.assertRaises(n.NativeError,n.NativeDocument.from_bytes,data.replace(b'"w0":2.0',b'"w0":5.0'))
-        p=json.loads(data)['payload']; self.assertRaises(n.UnsupportedVersion,n.NativeDocument.from_bytes,n._encode(p,3))
+        p=json.loads(data)['payload']; self.assertRaises(n.UnsupportedVersion,n.NativeDocument.from_bytes,n._encode(p,4))
     def test_schema_before_evaluation(self):
         for mutate in (lambda p:p['sketches'][0]['points'][0].update(x='e0'),
                        lambda p:p['sketches'][0]['points'].append(p['sketches'][0]['points'][0]),

@@ -22,3 +22,6 @@ GC-GEO-02 base remota 67165c5ce4c5248be3b083b976b22ee7a290bb5f; publicación API
 GC-SKETCH-02: base remota 0b801397d7e420236669811041d25c835ed7e628, árbol 5b3a8e95684d3afc79a88a4bdb04e1edb7654539 verificado. CI GEO-02 y ABI-01 aprobados. Publicación vía API sin force; SHA final externo, verificar CI nuevo.
 
 GC-SKETCH-02: remoto 0988609a650746b57adc72c18dc0dd998bdfa2d1, árbol e421bf68b3dc8d0b8fd06b1b0fecaf33227f2011, 121 archivos verificados. CI 45492754234 en ejecución. GC-DOC-03 se publica vía API sin force; verificar árbol, SHA final externo, nuevo CI pendiente.
+
+
+GC-SKETCH-03: base remota ad4aa55c11df813b14461da3f4023664e77df523, árbol fabc2acede516c0adf0fea96297b0e6f2de1ebf5, CI DOC-03 aprobado. Transferencia por API con comprobación de blobs/árbol y actualización sin force; SHA final externo.

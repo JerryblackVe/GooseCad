@@ -1,4 +1,4 @@
-"""Experimental native formats v1/v2: declarative, checksummed, bounded JSON.
+"""Experimental native formats v1/v2/v3: declarative, checksummed, bounded JSON.
 
 Cooperative writer locking per path; disk revision check is opt-in. No untrusted callbacks,
 no pickle, no arbitrary B-Rep payloads. Native evaluation is not sandboxed.
@@ -19,14 +19,16 @@ from goosecad.geometry.kernel import box, cylinder, sphere, boolean
 
 from goosecad.document.sketch_spec import SketchSpec, PointSpec, ConstraintSpec, sketch_payload, parse_sketch
 from goosecad.geometry.sweep import extrude, revolve
+from goosecad.geometry.curves import extrude_region, revolve_region
+from goosecad.document.curve_spec import RegionSpec, CurveSpec, region_payload, parse_region
 from goosecad.document.disk_lock import writer_lock, lock_path, LOCK_SUFFIX, WriterBusyError
 
 MAX_BYTES = 2 * 1024 * 1024
 MAX_NODES = 2048
 MAX_ID = 128
 FORMAT = 'GooseCAD'
-VERSION = 2
-SUPPORTED_VERSIONS = (1, 2)
+VERSION = 3
+SUPPORTED_VERSIONS = (1, 2, 3)
 MAX_SKETCH_ITEMS = 8192
 # Closed, trusted operations; type/arity checked before native evaluation.
 _REGISTRY = {
@@ -44,7 +46,11 @@ _SWEEPS = {
 }
 
 def _registry(version):
-    return _REGISTRY if version==1 else {**_REGISTRY,**_SWEEPS}
+    if version==1: return _REGISTRY
+    result={**_REGISTRY,**_SWEEPS}
+    if version==3: result.update({'extrude_curves':(('region','number'),'shape',extrude_region),
+                                  'revolve_curves':(('region','number'),'shape',revolve_region)})
+    return result
 
 class NativeError(DocumentError): pass
 class UnsupportedVersion(NativeError): pass
@@ -87,13 +93,13 @@ def _bad_constant(v): raise NativeError('Nonfinite JSON constant')
 
 def _spec(payload, version=1):
     registry=_registry(version)
-    keys={'parameters','features'} | ({'sketches'} if version==2 else set())
+    keys={'parameters','features'} | ({'sketches'} if version>=2 else set()) | ({'regions'} if version==3 else set())
     if type(payload) is not dict or set(payload) != keys:
         raise NativeError('Invalid payload')
     params, rows = payload['parameters'], payload['features']
-    sketches=payload.get('sketches',[])
-    if type(sketches) is not list: raise NativeError('Invalid sketches collection')
-    if type(params) is not dict or type(rows) is not list or len(params)+len(rows)+len(sketches)>MAX_NODES:
+    sketches=payload.get('sketches',[]); regions=payload.get('regions',[])
+    if type(sketches) is not list or type(regions) is not list: raise NativeError('Invalid sketches collection')
+    if type(params) is not dict or type(rows) is not list or len(params)+len(rows)+len(sketches)+len(regions)>MAX_NODES:
         raise NativeError('Invalid or oversized node collection')
     params = {_id(k): _number(v) for k,v in params.items()}
     types = dict.fromkeys(params,'number'); features = []; profiles=[]; total_items=0
@@ -102,6 +108,11 @@ def _spec(payload, version=1):
         total_items+=len(sketch.points)+len(sketch.constraints)
         if total_items>MAX_SKETCH_ITEMS or sketch.id in types: raise NativeError('Sketch limit or duplicate node')
         types[sketch.id]='profile'; profiles.append(sketch)
+    for row in regions:
+        region=parse_region(row,params,_id,NativeError)
+        total_items+=sum(map(len,region.loops))
+        if total_items>MAX_SKETCH_ITEMS or region.id in types: raise NativeError('Region limit or duplicate node')
+        types[region.id]='region'; profiles.append(region)
     for row in rows:
         if type(row) is not dict or set(row) != {'id','kind','dependencies'}:
             raise NativeError('Invalid feature record')
@@ -133,7 +144,8 @@ def _spec(payload, version=1):
 
 def _payload(params, features, sketches=(), version=1):
     result={'parameters':dict(params),'features':[{'id':f.id,'kind':f.kind,'dependencies':list(f.dependencies)} for f in features]}
-    if version==2: result['sketches']=[sketch_payload(s) for s in sketches]
+    if version>=2: result['sketches']=[sketch_payload(s) for s in sketches if type(s) is SketchSpec]
+    if version==3: result['regions']=[region_payload(s) for s in sketches if type(s) is RegionSpec]
     return result
 
 
@@ -165,12 +177,14 @@ def _decode(data):
 
 class NativeDocument:
     """Closed-schema document; only parameters editable. History is session-only."""
-    def __init__(self, parameters, features=(), *, sketches=(), version=None):
-        sketches=tuple(sketches)
-        if version is None: version=2 if sketches else 1
+    def __init__(self, parameters, features=(), *, sketches=(), regions=(), version=None):
+        sketches=tuple(sketches); regions=tuple(regions)
+        if any(type(s) is not SketchSpec for s in sketches) or any(type(s) is not RegionSpec for s in regions): raise NativeError("Invalid sketch or region type")
+        if version is None: version=3 if regions else 2 if sketches else 1
         if type(version) is not int or version not in SUPPORTED_VERSIONS: raise UnsupportedVersion('Unsupported native format version')
         if version==1 and sketches: raise NativeError('Sketches require format v2')
-        params, features, sketches = _spec(_payload(parameters,features,sketches,version),version)
+        if version<3 and regions: raise NativeError('Curve regions require format v3')
+        params, features, sketches = _spec(_payload(parameters,features,sketches+regions,version),version)
         self._initialize(version,params,features,sketches)
 
     def _initialize(self, version, params, features, sketches):
@@ -183,10 +197,12 @@ class NativeDocument:
 
     @property
     def format_version(self): return self._version
-    def upgraded(self):
-        """Return independent v2 snapshot; session history is not transferred."""
+    def upgraded(self, version=None):
+        """Return independent upgraded snapshot; session history is not transferred."""
+        if version is None: version=min(self._version+1,VERSION)
+        if type(version) is not int or version<self._version or version not in SUPPORTED_VERSIONS: raise UnsupportedVersion("Invalid upgrade target")
         with self._lock:
-            return NativeDocument({k:self._document.value(k) for k in self._ids},self._features,sketches=self._sketches,version=2)
+            return NativeDocument({k:self._document.value(k) for k in self._ids},self._features,sketches=tuple(s for s in self._sketches if type(s) is SketchSpec),regions=tuple(s for s in self._sketches if type(s) is RegionSpec),version=version)
     @property
     def revision(self): return self._document.revision
     def value(self,name): return self._document.value(name)
@@ -255,7 +271,7 @@ def save(document,path,*,allow_upgrade=False,expected_revision=_UNCHECKED):
     exact bytes read via load_with_revision (or returned by save). Omitting
     it preserves the old API's unconditional replacement of a valid primary.
     A directory-fsync or lock-cleanup error may follow successful replacement.
-    Migration v1 to v2 requires allow_upgrade=True; downgrade is rejected.
+    Migration to a newer supported version requires allow_upgrade=True; downgrade is rejected.
     """
     path=Path(path)
     if path.name.lower().endswith(('.previous',LOCK_SUFFIX)):
@@ -271,8 +287,8 @@ def save(document,path,*,allow_upgrade=False,expected_revision=_UNCHECKED):
             if expected_revision is not _UNCHECKED and (expected_revision is None or sha256(old).hexdigest()!=expected_revision):
                 raise DiskRevisionConflict('Primary changed since it was read')
             old_version,*_=_decode(old)
-            if old_version!=document.format_version and not (old_version==1 and document.format_version==2 and allow_upgrade is True):
-                raise NativeError('Format replacement requires explicit v1 to v2 upgrade; downgrade forbidden')
+            if old_version!=document.format_version and not (old_version<document.format_version and allow_upgrade is True):
+                raise NativeError('Format replacement requires explicit upgrade; downgrade forbidden')
             _atomic(previous,old); _sync_dir(path.parent)
         elif expected_revision is not _UNCHECKED and expected_revision is not None:
             raise DiskRevisionConflict('Primary no longer exists')

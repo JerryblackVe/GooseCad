@@ -16,7 +16,7 @@ class NativeTests(unittest.TestCase):
     def test_checksum(self):
         a=model().to_bytes().replace(b'"x":2',b'"x":9'); self.assertRaises(n.NativeError,n.NativeDocument.from_bytes,a)
     def test_version(self):
-        a=model().to_bytes().replace(b'"version":1',b'"version":3'); self.assertRaises(n.UnsupportedVersion,n.NativeDocument.from_bytes,a)
+        a=model().to_bytes().replace(b'"version":1',b'"version":4'); self.assertRaises(n.UnsupportedVersion,n.NativeDocument.from_bytes,a)
     def test_malformed(self):
         for a in (b'{',b'\xff',b'{"format":"GooseCAD","format":"GooseCAD"}',b'{"x":NaN}',b'['*2000,b' '* (n.MAX_BYTES+1)):
             with self.subTest(a=a[:20]): self.assertRaises(n.NativeError,n.NativeDocument.from_bytes,a)
@@ -69,7 +69,7 @@ class NativeTests(unittest.TestCase):
         self.assertAlmostEqual(properties(e.value('cut')).volume,properties(d.value('cut')).volume)
     def test_future_primary_preserved(self):
         with tempfile.TemporaryDirectory() as td:
-            p=Path(td)/'a'; data=model().to_bytes().replace(b'"version":1',b'"version":3'); p.write_bytes(data)
+            p=Path(td)/'a'; data=model().to_bytes().replace(b'"version":1',b'"version":4'); p.write_bytes(data)
             self.assertRaises(n.UnsupportedVersion,n.save,model(),p); self.assertEqual(p.read_bytes(),data)
     def test_post_replace_sync_failure(self):
         with tempfile.TemporaryDirectory() as td:

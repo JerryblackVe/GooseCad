@@ -4,3 +4,6 @@ No hay aplicación de escritorio. Para ingeniería: importar box, cylinder, sphe
 GC-SKETCH-02: documentos v1/v2, bocetos poligonales declarativos y barridos B-Rep; consultar docs/FORMATO_NATIVO.md. CI previo Windows/Linux aprobado; nuevo CI pendiente. No es aplicación de escritorio.
 
 GC-DOC-03: guardado con bloqueo cooperativo y token de revisión de disco; ver docs/FORMATO_NATIVO.md. Pruebas locales aprobadas; verificar CI Windows/Linux.
+
+
+GC-SKETCH-03: creación de regiones curvas por API, ver docs/FORMATO_NATIVO.md. Todavía sin interfaz.

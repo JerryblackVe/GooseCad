@@ -26,3 +26,6 @@ GC-GEO-02: perfiles XY cerrados de 3–256 puntos integrados con solver y DAG; e
 GC-SKETCH-02: primera ejecución del benchmark abortó por factor 2 incorrecto en fórmula analítica de revolución parcial; corregida a π((1+w)^2−1) para altura 4 y ángulo π/2. Ambas rondas finales validan volúmenes, bytes y nodos evaluados. OCAF S1 permanece abierto.
 
 GC-DOC-03: se endureció retirada de lock con verificación de identidad del descriptor; regresión POSIX de sidecar sustituido aprobada. Proceso muerto deja bloqueo por diseño; recuperación manual documentada. Riesgo de limpieza post-replace y escritor externo abierto; no afirmar protección universal.
+
+
+GC-SKETCH-03: tres pruebas antiguas de versión futura adaptadas de v3 a v4; regresión completa aprobada. No fallos finales. OCAF continúa aislado.

@@ -15,3 +15,6 @@ Ver ESTADO_PROYECTO.md, CONTINUIDAD.md, SIGUIENTE_PASO.md y PROMPT_MAESTRO.md. N
 GC-SKETCH-02: documentos v1/v2, bocetos poligonales declarativos y barridos B-Rep; consultar docs/FORMATO_NATIVO.md. CI previo Windows/Linux aprobado; nuevo CI pendiente. No es aplicación de escritorio.
 
 GC-DOC-03: guardado con bloqueo cooperativo y token de revisión de disco; ver docs/FORMATO_NATIVO.md. Pruebas locales aprobadas; verificar CI Windows/Linux.
+
+
+GC-SKETCH-03: formato v1/v2/v3, regiones curvas y barridos exactos. Ver docs/FORMATO_NATIVO.md y SIGUIENTE_PASO.md.
