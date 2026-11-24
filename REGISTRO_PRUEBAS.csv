@@ -28,3 +28,16 @@ GC-TOPO-02-4,missing role,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.l
 GC-TOPO-02-5,invalid records,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.log,2026-11-24
 GC-OCAF-01,OCAF lifecycle probe,Linux/OCP 7.9.3.1,Fallida,results/ocaf-probe.log exit 134,2026-11-24
 GC-CI-02,GC-TOPO-01 CI,Windows 2022 / Ubuntu 24.04,Aprobada,https://github.com/JerryblackVe/GooseCad/actions/runs/45485337287,2026-11-24
+GC-CI-03,GC-TOPO-02 CI,Windows 2022 / Ubuntu 24.04,Aprobada,https://github.com/JerryblackVe/GooseCad/actions/runs/45487040637,2026-11-24
+GC-DAG-01-01,test_atomic_failure,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-02,test_batch_and_full_equivalence,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-03,test_cancelled_before_commit,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-04,test_cycle_and_self_cycle,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-05,test_deep_chain_no_recursion,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-06,test_diamond_and_independent_branch,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-07,test_invalid_graph,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-08,test_invalid_update_and_empty,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-09,test_random_dag_against_full,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-10,test_reader_observes_complete_revision,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-11,test_real_occt_model_and_failure,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DAG-01-12,test_reentrant_update,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24

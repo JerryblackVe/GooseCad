@@ -1,0 +1,47 @@
+--- a/src/goosecad/parametric/dag.py
++++ b/src/goosecad/parametric/dag.py
+@@ -91,6 +91,7 @@
+         self._successors = tuple(tuple(self._index[c] for c in successors[n]) for n in order)
+         self._ops = {self._index[n]: (tuple(self._index[d] for d in s.dependencies), s.compute)
+                      for n, s in specs.items() if isinstance(s, Operation)}
++        self._op_order = tuple(sorted(self._ops))
+         self._inputs = frozenset(self._index[n] for n, s in specs.items() if isinstance(s, Input))
+         self._values = [None] * len(order)
+         for n, s in specs.items():
+@@ -140,24 +141,33 @@
+         changed = tuple(self._names[i] for i in sorted(staged))
+         check_cancel()
+         if full:
+-            dirty = sorted(self._ops)
++            dirty = self._op_order
+         else:
+             # Only visit descendants, not the entire graph. Iterative for deep DAGs.
+             visited = set(staged)
+             pending = list(staged)
++            dirty = []
+             while pending:
+                 i = pending.pop()
+                 for child in self._successors[i]:
+                     if child not in visited:
+                         visited.add(child)
+                         pending.append(child)
+-            dirty = sorted(visited.difference(staged))
++                        dirty.append(child)
++            if len(dirty) == len(self._op_order):
++                dirty = self._op_order
++            else:
++                dirty.sort()
+         values = self._values
+         for i in dirty:
+             check_cancel()
+             deps, compute = self._ops[i]
+             try:
+-                staged[i] = compute(*(staged.get(d, values[d]) for d in deps))
++                if len(deps) == 1:
++                    d = deps[0]
++                    staged[i] = compute(staged.get(d, values[d]))
++                else:
++                    staged[i] = compute(*(staged.get(d, values[d]) for d in deps))
+             except Exception as exc:
+                 raise EvaluationError(self._names[i]) from exc
+         check_cancel()

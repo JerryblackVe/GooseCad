@@ -1,2 +1,2 @@
-# GC-DAG-01 — Grafo incremental P0
-Implementar DAG con dependencias explícitas, detección de ciclos, caché, invalidación transitiva, evaluación por orden topológico y publicación atómica. Probar ramas independientes, cambios, fallos, ciclos y escalabilidad. No integrar OCAF hasta resolver ciclo de vida. Después GC-DOC-01 y GC-SOLVER-01.
+# GC-DOC-01 — Transacciones P0
+Construir capa propietaria de Graph, edición de parámetros por lote, undo/redo acotados, publicación atómica con revisiones, recuperación ante fallos; no persistir callbacks ni TopoDS sin esquema validado. Archivos src/goosecad/document/, tests/test_document.py, benchmarks. Probar undo/redo, fallo de evaluación, edición tras undo, límites y CAS de revisión. Luego GC-DOC-02 guardado seguro y GC-SOLVER-01.

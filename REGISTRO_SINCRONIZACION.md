@@ -6,3 +6,5 @@
 GC-BOOT: API GitHub, rama feature/000-clean-start, SHA 8225a910d044aa2b3c9bb0bf460230b9641063ff; 55/55 hashes verificados. main/develop preservadas.
 
 GC-TOPO-01: 0bb0b9b55993e4f69ee4797f7ecfac491f6e47d0; 60/60 hashes verificados, CI Windows/Linux aprobado run 45485337287. GC-TOPO-02 se publica mediante API no forzada; SHA final externo.
+
+GC-TOPO-02: d80bc6ea54b206391e6d31d6d0781152af481237, árbol 416ba1a202babf240961360b79ba0bbe135499f9, 66 archivos. CI Windows/Linux aprobado run 45487040637. GC-DAG-01 se publica mediante API sin force, SHA final externo; CI nuevo pendiente de verificación.

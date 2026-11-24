@@ -8,3 +8,5 @@ B-001 privacidad resuelto por autorización expresa. Reproducción: importación
 GC-TOPO-01: primera prueba de eliminación falló por nombres OCCT Left/Front no coincidentes con ejes; corregido mapeo, prueba de centroides añadida. 17/17 OK.
 
 GC-OCAF-01 (S1 experimental): TDF_Data/TNaming devuelve cara correcta pero proceso aborta en destrucción con Standard_NullObject, exit 134. Repro: experiments/ocaf_probe.py en proceso aislado; no ejecutarlo en CI normal. Investigar propiedad/orden de destrucción y documento TDocStd antes de integrar.
+
+GC-DAG-PERF-01 (abierto, rendimiento): cadena con todos los nodos afectados es más lenta que full por descubrimiento de descendientes; ramas 10k ruido entre rondas. Medir bajo hardware controlado y estudiar estrategias adaptativas. GC-OCAF-01 sigue abierto.
