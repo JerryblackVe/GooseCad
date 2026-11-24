@@ -171,3 +171,17 @@ MESH-REVIEW-06,original_142,Linux/OCP 7.9.3.1,Aprobada 142/142,results/mesh-revi
 MESH-REVIEW-06A,full_suite,Linux Xvfb/OCP/VTK,Aprobada 158/158,results/mesh-review-final-tests.log,2026-11-24
 MESH-02-REVIEW,test_large_face_cache_and_revision,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-review-tests.log,2026-11-24
 MESH-02-REVIEW-ALL,full_suite,Linux Xvfb/OCP/VTK,Aprobada 159/159,results/mesh-cache-review-tests.log,2026-11-24
+UI-01-01,test_save_as_and_reopen,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-02,test_save_and_revision_conflict,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-03,test_save_as_refuses_existing_file,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-04,test_undo_to_clean_and_redo,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-05,test_failed_edit_preserves_selection_and_clean_state,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-06,test_stale_selection_invalidated_after_edit,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-07,test_selection_rejects_parameter,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-08,test_reopen_requires_discard,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-09,test_recovery_is_unsaved_and_primary_preserved,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-10,test_failed_save_does_not_advance_session_token,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-11,test_wrong_scene_rejected,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-12,test_scene_refresh_and_selection_freshness,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-13,test_direct_document_change_is_not_silently_clean,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+UI-01-14,test_change_during_save_rejects_false_clean_state,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24

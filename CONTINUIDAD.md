@@ -12,3 +12,5 @@ GC-UI-01: DocumentSession y Scene.is_current_selection incorporados (pendiente C
 GC-UI-01 refuerzo: detección de mutaciones directas al documento y carreras durante save/save_as; consulta tests/test_session.py. SHA final de este checkpoint debe verificarse externamente, igual que su CI.
 
 GC-UI-02 evaluación previa: PySide6 6.11.3 como candidato Windows x64 Python 3.13, licencia LGPL/GPL/comercial; VTK QVTKRenderWindowInteractor soporta PySide6 pero existen informes de incompatibilidad con Qt 6.10+ en macOS/Linux. No instalado ni validado localmente. Ver DECISIONES_TECNICAS.md. GC-UI-01 run 45502896110 pendiente al documentar; SHA final del checkpoint consultar en GitHub.
+
+GC-UI-01 CI comprobado: run 45502896110 SUCCESS (Windows 2022 y Ubuntu 24.04); 173 test descubiertos, 4 omitidos en corrida por defecto y 5 pruebas gráficas Linux aprobadas. 14 pruebas nuevas de sesión registradas. Manifiesto actualizado al checkpoint posterior 2e270a como base; verificar SHA final del commit documental, su workflow propio y que no aparecieron commits ajenos. Siguiente GC-UI-02.

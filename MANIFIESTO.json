@@ -7,21 +7,21 @@
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
   "remote_base_observed": "e6857e19bbc89ed9b910ea3a900a950b962d9ce7",
-  "remote_checkpoint": "cdf69c0ca2a82e0908c3142da17310b6adba3afa",
+  "remote_checkpoint": "2e270a015814b19e5278ec3885f161e1f66cf9ec",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
-  "tests_passed": 159,
+  "tests_passed": 173,
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
   "next_task": "GC-UI-02",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
-  "ci_base_run": 45502047316,
+  "ci_base_run": 45502896110,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45502896110,
+  "ci_pending_run": 45503170062,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -37,8 +37,15 @@
       "sha": "b2276a072322a68a9e49ec8833b7a9dbb21b1509",
       "run": 45497549014,
       "conclusion": "success"
+    },
+    "GC-UI-01": {
+      "sha": "cdf69c0ca2a82e0908c3142da17310b6adba3afa",
+      "run": 45502896110,
+      "conclusion": "success"
     }
   },
-  "tests_added_pending_ci": 14,
-  "ui_session": "GC-UI-01 implemented; CI run 45502896110 pending"
+  "ui_session": "GC-UI-01 CI success on Windows 2022 and Ubuntu 24.04, run 45502896110; docs checkpoint CI pending",
+  "tests_discovered": 173,
+  "tests_skipped_default_ci": 4,
+  "tests_graphics_verified": 5
 }

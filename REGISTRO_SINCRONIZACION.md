@@ -42,3 +42,5 @@ GC-UI-01: commit de código y pruebas emitido desde GitHub API a partir de f8620
 GC-UI-01 revisión de seguridad sobre 03ec44e: mutaciones externas y detección de desajuste durante save, 2 pruebas. Verificar nuevo SHA remoto y CI por separado.
 
 GC-UI-02 investigación y manifiesto: basado en cdf69c0ca2a82e0908c3142da17310b6adba3afa, sin alterar código; SHA final del commit documental se verifica externamente. CI del código GC-UI-01: 45502896110 en curso al registrar.
+
+GC-UI-01: run 45502896110, SHA cdf69c0ca2a82e0908c3142da17310b6adba3afa, concluido SUCCESS Windows 2022/Ubuntu 24.04. Checkpoint documental de evaluación Qt SHA 2e270a015814b19e5278ec3885f161e1f66cf9ec, run 45503170062 en progreso al registrar; verificar por separado. La actualización actual solo consolida documentos/registros, no altera código verificado.
