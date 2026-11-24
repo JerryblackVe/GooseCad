@@ -46,3 +46,5 @@ GC-UI-02 investigación y manifiesto: basado en cdf69c0ca2a82e0908c3142da17310b6
 GC-UI-01: run 45502896110, SHA cdf69c0ca2a82e0908c3142da17310b6adba3afa, concluido SUCCESS Windows 2022/Ubuntu 24.04. Checkpoint documental de evaluación Qt SHA 2e270a015814b19e5278ec3885f161e1f66cf9ec, run 45503170062 en progreso al registrar; verificar por separado. La actualización actual solo consolida documentos/registros, no altera código verificado.
 
 2026-11-24: rama feature/000-clean-start; commits verificados por referencia y comparación: df4f07de18c3b542eafd4de680550258f8119e7e (Qt UI), e4b2bd8e8c85d69befbd4ee02876f6605f54d0bd (prompt 3.2 y CI), método API GitHub árboles/commit/ref fast-forward. Prompt remoto coincide con archivo fuente. CI nuevo pendiente al registrar; SHA de este commit externo.
+
+2026-11-24: HEAD verificados por API fast-forward 33b6a1773037162836540a4c2df4fb2c2f5137ae (Mesa CI), c37ec10acf91490b375b9d3e7000d66909d976fe (worker) y 1a28f9472e7934e4b060a6ab22c84b66e9fe7495 (Qt asíncrono). Prompt 3.2 Git blob exacto 4f51403b0ba7de175570809604c48777c1249cb3. SHA final de este checkpoint externo.

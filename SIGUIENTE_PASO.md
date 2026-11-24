@@ -1,2 +1,2 @@
-# GC-UI-04 — validar cálculo asíncrono y render Windows
-Consultar CI del HEAD, especialmente nuevos tests DocumentTasks y Qt cancel/undo/redo. Revisar Mesa 45506457843 y evidencias WGL/LLVMpipe. Medir inicio de interacción y cálculo/render por separado; mover carga/guardado/teselación costosos a estrategias seguras sin bloquear. Añadir recuperación de .previous, guardado automático y validación Windows 10/11 real. No declarar estable.
+# GC-UI-04 — cierre de verificación y siguiente P0
+Consultar CI del HEAD; comprobar pruebas asíncronas y benchmark sync/async del mismo runner. Comprobar Mesa Windows 45506457843 y posteriores; corregir fallos con logs. Próximo: carga y guardado físico asíncronos y recuperación .previous, cancelación segura, teselación fuera del hilo GUI sin VTK fuera del dueño. Validar Windows 10/11 físico e instalador. No declarar estable.

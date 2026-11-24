@@ -16,3 +16,6 @@ GC-MESH-02: caché LRU por instancia de documento, cuerpo, revisión de nodo y c
 
 
 GC-VIEW-01 (experimental): `python -m goosecad.view` abre el ejemplo de caja; `python -m goosecad.view archivo.gcad id_cuerpo [id_cuerpo2 ...]` abre un documento existente de confianza en modo solo visualización. Ratón trackball, R ajustar cámara, P seleccionar bajo cursor (ID de cara local impreso en terminal, resalta cuerpo), Q salir. VTK 9.6.2 ya incluido en requirements-core. Linux Xvfb/EGL comprobados; ventana Windows física no comprobada. Prueba gráfica Linux: `xvfb-run -a env GC_RENDER_TESTS=1 GC_INTERACT_TESTS=1 PYTHONPATH=src python -m unittest discover -s tests -p test_view.py -v`.
+
+## Ventana de documentos experimental
+Abrir un documento nativo .gcad/.goosecad o iniciar la caja de ejemplo; modificar celdas de valor y pulsar Aplicar cambios. Deshacer/Rehacer operan sobre los parámetros; no hay cambios estructurales ni historial persistido. Guardar conserva la revisión de disco; conflicto externo rechaza guardado. Guardar como solo crea archivo nuevo. Vista: trackball, ajustar vista y tecla P sobre el cuerpo para seleccionar cara local. Cancelar cálculo solicita cancelación en punto seguro; no interrumpe una llamada OCCT en curso. El cierre ocupado se rechaza. Esta edición aún no es estable y no está validada en Windows físico.

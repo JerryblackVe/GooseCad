@@ -16,3 +16,6 @@ GC-MESH-02: caché LRU por instancia de documento, cuerpo, revisión de nodo y c
 
 
 GC-VIEW-01 (experimental): `python -m goosecad.view` abre el ejemplo de caja; `python -m goosecad.view archivo.gcad id_cuerpo [id_cuerpo2 ...]` abre un documento existente de confianza en modo solo visualización. Ratón trackball, R ajustar cámara, P seleccionar bajo cursor (ID de cara local impreso en terminal, resalta cuerpo), Q salir. VTK 9.6.2 ya incluido en requirements-core. Linux Xvfb/EGL comprobados; ventana Windows física no comprobada. Prueba gráfica Linux: `xvfb-run -a env GC_RENDER_TESTS=1 GC_INTERACT_TESTS=1 PYTHONPATH=src python -m unittest discover -s tests -p test_view.py -v`.
+
+## Interfaz Qt experimental (GC-UI-03/04)
+Con Python 3.13 x64 y entorno virtual: `python -m pip install -e ".[ui]"`. Arranque: `python -m goosecad.ui [documento.gcad]`. Pruebas de núcleo: `python -m unittest discover -s tests -v`. Linux con contexto gráfico: `GOOSECAD_TEST_QT=1 python -m unittest discover -s tests -p test_qt_workspace.py -v`; en CI Xvfb se instala el runtime indicado en qt-probe.yml. Mesa es experimento CI, no instalar en el equipo del usuario ni copiar DLL al sistema. Windows GPU real e instalador pendientes.
