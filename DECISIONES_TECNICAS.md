@@ -28,3 +28,6 @@ Limitaciones: escritor cooperativo en ruta/directorio local confiable, no proteg
 
 
 GC-SKETCH-03: esquema v3 separado para curvas declarativas; sin imponer restricciones no lineales nuevas al solver. Rechazo de contornos degenerados, no conectados, que se cortan/tocan y agujeros anidados; AABB solo descarte, sin teselación ni cambio de tolerancia. Mantener región validada en caché.
+
+
+GC-MESH-01: copia profunda sin mallas de entrada, mapa de caras del snapshot, paralelismo explícito y default serial, bypass de transformación identidad. Evitar cache no acotada hasta implementar GC-MESH-02.

@@ -26,3 +26,6 @@ Limitaciones: escritor cooperativo en ruta/directorio local confiable, no proteg
 
 
 GC-SKETCH-03: restricciones curvas, ejes arbitrarios, islas y splines pendientes. Siguiente GC-MESH-01: teselación separada y no destructiva para visor.
+
+
+GC-MESH-01: límites de recursos internos, cancelación, normales, caché por revisión, selección y GPU pendientes. Siguiente GC-MESH-02: caché de teselación acotada por bytes y revisión.

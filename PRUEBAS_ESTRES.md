@@ -12,3 +12,6 @@ Limitaciones: escritor cooperativo en ruta/directorio local confiable, no proteg
 
 
 GC-SKETCH-03: región de 24 agujeros; resultados en results/curve-bench.csv. Falta estrés con contornos muy complejos y medición de memoria.
+
+
+GC-MESH-01: 20 esferas/19760 triángulos, 485280 bytes de buffers, no RSS; ampliar a documentos grandes y medir memoria pico antes de producción.

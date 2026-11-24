@@ -7,3 +7,6 @@ GC-DOC-03: guardado con bloqueo cooperativo y token de revisión de disco; ver d
 
 
 Benchmark curvas: `PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python benchmarks/curve_bench.py curves-local.csv --repetitions 30`.
+
+
+Benchmark malla: `PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python benchmarks/mesh_bench.py mesh-local.csv --repetitions 20`.

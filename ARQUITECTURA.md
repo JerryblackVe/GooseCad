@@ -30,3 +30,6 @@ Limitaciones: escritor cooperativo en ruta/directorio local confiable, no proteg
 
 
 GC-SKETCH-03: Curve/Region en geometry/curves.py; RegionSpec en document/curve_spec.py. DAG cachea Region.face de solo lectura por contrato, barridos copian entradas OCCT. v3 agrega colección regions separada de sketches v2.
+
+
+GC-MESH-01: geometry/mesh.py, DisplayMesh de solo lectura por contrato; coordenadas mundo float64 y triángulos uint32, cara local por offset; copia B-Rep aislada. Malla solo para visualización, no para geometría ni propiedades.

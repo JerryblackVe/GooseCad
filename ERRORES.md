@@ -29,3 +29,6 @@ GC-DOC-03: se endureció retirada de lock con verificación de identidad del des
 
 
 GC-SKETCH-03: tres pruebas antiguas de versión futura adaptadas de v3 a v4; regresión completa aprobada. No fallos finales. OCAF continúa aislado.
+
+
+GC-MESH-01: no fallos finales de las pruebas locales; no es certificación de toda forma B-Rep. OCAF y bloqueos de Goose/OCCT C++ pendientes.

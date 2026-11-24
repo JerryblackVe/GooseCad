@@ -143,3 +143,11 @@ SKETCH-03-16,test_rollback,Linux/OCP 7.9.3.1,Aprobada,results/curve-tests.log,20
 SKETCH-03-17,test_roundtrip_and_exact_bytes,Linux/OCP 7.9.3.1,Aprobada,results/curve-tests.log,2026-11-24
 SKETCH-03-18,test_save_recover_and_stale,Linux/OCP 7.9.3.1,Aprobada,results/curve-tests.log,2026-11-24
 SKETCH-03-19,test_wrong_profile_type,Linux/OCP 7.9.3.1,Aprobada,results/curve-tests.log,2026-11-24
+MESH-01-01,test_box_winding_and_ranges,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-02,test_empty_and_budgets,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-03,test_existing_mesh_not_replaced,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-04,test_fast_path_equivalence,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-05,test_hole,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-06,test_original_not_meshed,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-07,test_quality,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-01-08,test_transformed_shape,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24

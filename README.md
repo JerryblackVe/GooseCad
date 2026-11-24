@@ -18,3 +18,6 @@ GC-DOC-03: guardado con bloqueo cooperativo y token de revisión de disco; ver d
 
 
 GC-SKETCH-03: formato v1/v2/v3, regiones curvas y barridos exactos. Ver docs/FORMATO_NATIVO.md y SIGUIENTE_PASO.md.
+
+
+GC-MESH-01: adaptador B-Rep a buffers de visualización, no cambia geometría exacta.

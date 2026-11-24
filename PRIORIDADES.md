@@ -26,3 +26,6 @@ Limitaciones: escritor cooperativo en ruta/directorio local confiable, no proteg
 
 
 GC-MESH-01 P0: puente B-Rep a triángulos para visor, preservación de geometría, límites y rendimiento. P0 seguridad de documentos y naming siguen abiertos.
+
+
+GC-MESH-02 P0: caché de visualización con invalidación/revisión explícita y límites de bytes; luego visor interactivo y selección.

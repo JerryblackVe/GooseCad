@@ -1,2 +1,2 @@
-# GC-MESH-01 — Teselación B-Rep para visor (P0)
-Verificar CI SKETCH-03. Crear adaptador de teselación OCCT con copia aislada de B-Rep, precisión de malla configurable, transformación de vértices y orientación de triángulos por cara, límites de memoria y pruebas de validez. Medir latencia, calidad y escalabilidad. No sustituye B-Rep ni es un visor todavía.
+# GC-MESH-02 — Caché de teselación y preparación de visor (P0)
+Verificar CI SKETCH-03 y MESH-01. Implementar caché acotada por bytes/entradas, claves explícitas de revisión geométrica, deflexiones y cuerpo, invalidación al editar, undo/redo y recuperación; impedir reutilización de malla obsoleta; medir latencia y memoria con modelos repetidos. Luego evaluar visor 3D Qt/VTK o alternativa con pruebas reales y accesibilidad. Mantener malla separada del B-Rep.

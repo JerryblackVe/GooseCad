@@ -28,3 +28,6 @@ Limitaciones: escritor cooperativo en ruta/directorio local confiable, no proteg
 
 
 GC-SKETCH-03 (Linux/OCP 7.9.3.1, 30 muestras por caso, 5 calentamientos): 24 agujeros: pares exactos 17.0494 ms frente a filtro AABB 7.9885 ms; 8 agujeros 3.4871 vs 2.6042 ms; un agujero 0.5008 vs 0.5006 ms. Extrusión anillo reutilizando cara 0.4132 vs 1.0254 ms reconstruyendo; revolución 0.4563 vs 1.1041 ms. Ver resultados brutos results/curve-bench.csv; comprobaciones analíticas fuera del cronómetro. No comparar con Fusion ni generalizar a todos los perfiles.
+
+
+GC-MESH-01 (Linux, 20 muestras/caso, 3 warmup, deflexión 0.05 mm, angular 0.3 rad): caja 12 triángulos, serie identidad 1.2612 ms, siempre transformar 1.2763 ms, paralelo 1.5059 ms. Esfera 988 triángulos, 5.8247 ms vs 6.1492 ms, paralelo 5.9152 ms. 20 esferas 19760 triángulos, serie 111.4804 ms vs siempre transformar 116.7122 ms, paralelo 63.2339 ms; buffers 485280 bytes (no RSS), error relativo volumen malla 1.4758%, B-Rep exacto sin cambio. Igualdad de buffers serie baseline/optimizada; paralelo mismo conteo y volumen dentro de tolerancia. Mantener paralelo opt-in; no beneficio concluyente en caja/sola esfera. Sin medición FPS.

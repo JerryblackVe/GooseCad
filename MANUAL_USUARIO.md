@@ -7,3 +7,6 @@ GC-DOC-03: guardado con bloqueo cooperativo y token de revisión de disco; ver d
 
 
 GC-SKETCH-03: creación de regiones curvas por API, ver docs/FORMATO_NATIVO.md. Todavía sin interfaz.
+
+
+GC-MESH-01: tessellate(shape, linear=.1, angular=.5) devuelve datos de visualización. No es visor interactivo.

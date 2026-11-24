@@ -7,3 +7,6 @@ GC-DOC-03: guardado con bloqueo cooperativo y token de revisión de disco; ver d
 
 
 GC-SKETCH-03: formato v3 y regiones curvas exactas; siguiente GC-MESH-01.
+
+
+GC-MESH-01: adaptador de teselación previo al visor; siguiente GC-MESH-02.
