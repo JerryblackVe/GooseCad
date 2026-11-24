@@ -1,0 +1,52 @@
+"""Opt-in real Qt/VTK integration: run under a supported graphical session."""
+import os
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+@unittest.skipUnless(os.environ.get("GOOSECAD_TEST_QT") == "1", "requires real Qt/VTK context")
+class QtWorkspaceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from PySide6.QtWidgets import QApplication
+        cls.app = QApplication.instance() or QApplication([])
+
+    def test_edit_undo_redo_save_open_and_conflict(self):
+        from goosecad.ui.main_window import MainWindow
+        from goosecad.document.session import DocumentSession
+        from PySide6.QtWidgets import QMessageBox
+        window = MainWindow()
+        window.show()
+        window.initialize_view()
+        self.app.processEvents()
+        try:
+            self.assertTrue(window._view_ok)
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "part.gcad"
+                self.assertTrue(window.save_as_path(path))
+                row = next(i for i in range(window.parameters.rowCount())
+                           if window.parameters.item(i, 0).text() == "width")
+                window.parameters.item(row, 1).setText("25")
+                self.assertTrue(window.apply_parameters())
+                self.assertTrue(window.session.dirty)
+                self.assertEqual(window.session.document.value("width"), 25)
+                self.assertTrue(window.undo())
+                self.assertFalse(window.session.dirty)
+                self.assertTrue(window.redo())
+                self.assertTrue(window.save_document())
+                self.assertTrue(window.open_path(path))
+                self.assertEqual(window.session.document.value("width"), 25)
+                other = DocumentSession.open(path)
+                other.edit({"width": 30})
+                other.save()
+                window.session.edit({"width": 35})
+                with patch.object(window, "_error") as error:
+                    self.assertFalse(window.save_document())
+                    error.assert_called_once()
+                self.assertTrue(window.session.dirty)
+                self.assertEqual(DocumentSession.open(path).document.value("width"), 30)
+        finally:
+            with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()

@@ -70,6 +70,12 @@ class Document:
     def versioned_value(self, name: str) -> tuple[int, Any]:
         with self._lock: return self._graph.versioned_value(name)
 
+    @property
+    def history_depths(self) -> tuple[int, int]:
+        """Avoid copying the graph or geometry merely to enable UI actions."""
+        with self._lock:
+            return len(self._undo), len(self._redo)
+
     def snapshot(self) -> DocumentSnapshot:
         with self._lock:
             revision, values = self._graph.snapshot()

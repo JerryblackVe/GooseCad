@@ -29,12 +29,16 @@ def polydata(mesh):
     d=vtk.vtkPolyData();d.SetPoints(p);d.SetPolys(cells);return d
 
 class Scene:
-    def __init__(self,document,*,offscreen=False,size=(800,600),settings=MeshSettings(),max_vertices=1_000_000,max_triangles=2_000_000):
+    def __init__(self,document,*,offscreen=False,size=(800,600),settings=MeshSettings(),max_vertices=1_000_000,max_triangles=2_000_000,render_window=None):
         if type(max_vertices) is not int or type(max_triangles) is not int or min(max_vertices,max_triangles)<1:raise ViewError('Invalid scene budget')
         self._max_vertices=max_vertices;self._max_triangles=max_triangles
         self._thread=get_ident();self._closed=False;self._document=document;self.cache=MeshCache(document);self.settings=settings;self._actors={}
         self.renderer=vtk.vtkRenderer();self.renderer.SetBackground(.10,.13,.18)
-        self.window=vtk.vtkRenderWindow();self.window.SetOffScreenRendering(int(offscreen));self.window.SetSize(*size);self.window.SetMultiSamples(0);self.window.SetWindowName('GooseCAD Professional — experimental viewer');self.window.AddRenderer(self.renderer)
+        self._owns_window=render_window is None
+        self.window=vtk.vtkRenderWindow() if self._owns_window else render_window
+        if self._owns_window:
+            self.window.SetOffScreenRendering(int(offscreen));self.window.SetSize(*size);self.window.SetWindowName('GooseCAD Professional — experimental viewer')
+        self.window.SetMultiSamples(0);self.window.AddRenderer(self.renderer)
         self.picker=vtk.vtkCellPicker();self.picker.SetTolerance(.0005)
     @property
     def document(self):
@@ -101,4 +105,7 @@ class Scene:
         for body,(s,a) in self._actors.items():a.GetProperty().SetColor(*((.98,.68,.23) if hit and hit.body==body else (.44,.68,.89)))
         return hit
     def close(self):
-        self._check();self.renderer.RemoveAllViewProps();self._actors.clear();self.cache.clear();self.window.Finalize();self._closed=True
+        self._check();self.renderer.RemoveAllViewProps();self._actors.clear();self.cache.clear()
+        self.window.RemoveRenderer(self.renderer)
+        if self._owns_window:self.window.Finalize()
+        self._closed=True

@@ -205,6 +205,20 @@ class NativeDocument:
             return NativeDocument({k:self._document.value(k) for k in self._ids},self._features,sketches=tuple(s for s in self._sketches if type(s) is SketchSpec),regions=tuple(s for s in self._sketches if type(s) is RegionSpec),version=version)
     @property
     def revision(self): return self._document.revision
+    def parameter_values(self):
+        """Return a detached snapshot of editable numeric inputs only."""
+        with self._lock:
+            return {k:self._document.value(k) for k in self._ids}
+
+    @property
+    def features(self):
+        """Immutable feature definitions in native document order."""
+        return self._features
+
+    @property
+    def history_depths(self):
+        return self._document.history_depths
+
     def value(self,name): return self._document.value(name)
     def versioned_value(self,name): return self._document.versioned_value(name)
     def edit(self,changes,**kwargs):

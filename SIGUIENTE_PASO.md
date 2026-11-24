@@ -1,3 +1,2 @@
-# GC-UI-02 — Validación Qt/VTK
-GC-UI-02: run 45503983930, Ubuntu Qt 6.9.3: ImportError libEGL.so.1 ausente. Corregir dependencias X11/EGL/GL del runner antes de concluir compatibilidad. Se instala libegl1, libgl1, libgl1-mesa-dri, libxcb-cursor0, libxkbcommon-x11-0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, libxcb-render-util0, libxcb-xinerama0, xvfb y xauth. Reejecución pendiente; no hay benchmark validado.
-Consultar resultados Windows del run original y matriz corregida. Implementar ventana con DocumentSession, guardado CAS, edición, undo/redo y selección después de validar contexto gráfico. No declarar UI terminada.
+# GC-UI-03 / GC-UI-02 — verificación y corrección
+Validar tests/test_ui_contract.py y tests/test_qt_workspace.py, activar integración Qt Linux en CI y revisar resultado. En Windows investigar Mesa/software OpenGL con versiones, licencia y hash verificados; no confundir headless con ventana nativa. P0: ejecución asíncrona y cancelación segura, presupuestos de latencia, pruebas de apertura fallida y edición inválida. Actualizar prompt remoto íntegro a 3.2. Base 83e57b18ba64e65d6282a58b9ebf33580613bfa3.
