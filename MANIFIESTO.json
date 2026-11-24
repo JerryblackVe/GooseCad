@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "e4b2bd8e8c85d69befbd4ee02876f6605f54d0bd",
-  "remote_checkpoint": "e4b2bd8e8c85d69befbd4ee02876f6605f54d0bd",
+  "remote_base_observed": "33b6a1773037162836540a4c2df4fb2c2f5137ae",
+  "remote_checkpoint": "33b6a1773037162836540a4c2df4fb2c2f5137ae",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,13 +15,13 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-03",
+  "next_task": "GC-UI-04",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45506319615,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45506319546,
+  "ci_pending_run": 45506457843,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -49,5 +49,6 @@
   "tests_skipped_default_ci": 4,
   "tests_graphics_verified": 5,
   "qt_workspace": "Windows software Mesa WGL experiment; CI pending; Linux probes success",
-  "prompt_remote_revision": "3.2 verified exact text"
+  "prompt_remote_revision": "3.2 verified exact text",
+  "async_document_tasks": "implemented; tests and Qt integration pending"
 }

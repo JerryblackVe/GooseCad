@@ -43,3 +43,5 @@ GC-VIEW-01: visor experimental VTK 9.6.2, escena por NativeDocument/MeshCache, b
 Revisión GC-MESH-01: 450 muestras emparejadas de optimización y 200 de paralelo. Igualdad exacta serie de arrays con original; equivalencia paralelo de conteos/offsets/coordenadas/volumen. Resultados en BENCHMARKS.csv y docs/REVISION_MESH_01.md.
 
 Revalidación MESH-02: 240 muestras emparejadas, 20 cuerpos: selectivo 8.34009→6.73369 ms; caliente ~0.03 ms; rebuild variable y mejora <10%. Ver BENCHMARKS.csv.
+
+GC-UI-04 P0: trabajador único reutilizable, ningún VTK en worker, CAS de revisión y cancelación cooperativa entre nodos DAG. No se interrumpe una operación OCCT en curso; no se promete rollback si ya publicó. El GUI no debe consultar el documento durante el cálculo (locks), ni realizar refresh de escena hasta recoger el resultado. Medición input-to-response y cálculo/render separada pendiente; no afirmar mejora aún.
