@@ -12,9 +12,9 @@ from dataclasses import dataclass, replace
 
 from goosecad.document.session import DocumentSession
 from goosecad.parametric import Cancelled
-from goosecad.view.preparation import DisplayConfig, MeshRequest, PreparedMeshes
+from goosecad.view.preparation import DisplayConfig, MeshRequest, PreparedMeshes, terminal_bodies
 from goosecad.document.autosave import AutosaveSlot
-from goosecad.document.primitives import PrimitiveSpec
+from goosecad.document.primitives import PrimitiveSpec, BooleanSpec
 
 
 class TaskStateError(RuntimeError):
@@ -105,12 +105,17 @@ class DocumentTasks:
                 or display_request.revision != self.session.document.revision):
             raise TaskStateError("Invalid or stale display request")
 
+        previous_features = self.session.document.features
+
         def mutate_and_prepare():
             # Failure before commit is propagated normally. Display failure
             # after commit is a distinct outcome; never promise a rollback.
             report = method(*args, **kwargs)
             try:
-                plan = replace(display_request, revision=report.revision)
+                bodies = (terminal_bodies(self.session.document)
+                          if self.session.document.features is not previous_features
+                          else display_request.bodies)
+                plan = replace(display_request, revision=report.revision, bodies=bodies)
                 prepared = plan.prepare(cancelled=token.is_set)
             except Exception as exc:
                 return MutationDisplay(report, None, exc.with_traceback(None))
@@ -131,6 +136,13 @@ class DocumentTasks:
 
     def redo(self, *, display_request=None):
         self._start(self.session.document.redo, display_request=display_request)
+
+    def append_feature(self, spec, *, expected_revision=None, display_request=None):
+        self._idle()
+        if type(spec) not in (PrimitiveSpec,BooleanSpec):
+            raise TaskStateError("Invalid feature specification")
+        self._start(spec.append_to,self.session.document,
+                    expected_revision=expected_revision,display_request=display_request)
 
     def open(self, path, *, recovery=False, recovery_copy=False, display_config=None):
         """Load an independent candidate. Never replace the active session here."""

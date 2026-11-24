@@ -484,3 +484,64 @@ class QtWorkspaceTests(unittest.TestCase):
             with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
                 window.close()
             self.app.processEvents()
+
+    def test_append_primitive_boolean_and_mixed_history(self):
+        import time
+        from PySide6.QtWidgets import QMessageBox,QDialogButtonBox
+        from goosecad.ui.main_window import MainWindow
+        from goosecad.ui.boolean_dialog import BooleanDialog
+        from goosecad.document.primitives import PrimitiveSpec,BooleanSpec
+        from goosecad.document.session import DocumentSession
+        window=MainWindow(autosave_interval=0)
+        window.show()
+        window.initialize_view()
+        def finish():
+            deadline=time.monotonic()+20
+            while window.tasks.busy:
+                self.app.processEvents()
+                if time.monotonic()>deadline:
+                    self.fail("structural worker timeout")
+                time.sleep(.005)
+        try:
+            self.assertFalse(window.boolean_action.isEnabled())
+            current=window.session
+            old=window.scene._actors["box"][1]
+            self.assertTrue(window.request_append_feature(PrimitiveSpec("sphere",(4,))))
+            finish()
+            self.assertIs(window.session,current)
+            self.assertIs(window.scene._actors["box"][1],old)
+            self.assertEqual(window.session.visible_bodies,("box","sphere"))
+            self.assertTrue(window.boolean_action.isEnabled())
+            dialog=BooleanDialog(window.session.visible_bodies,window)
+            dialog.right.setCurrentIndex(0)
+            self.assertFalse(dialog.buttons.button(QDialogButtonBox.StandardButton.Ok).isEnabled())
+            dialog.right.setCurrentIndex(1)
+            spec=dialog.specification()
+            self.assertEqual(spec,BooleanSpec("union","box","sphere"))
+            dialog.deleteLater()
+            self.assertTrue(window.request_append_feature(spec))
+            finish()
+            self.assertEqual(window.session.visible_bodies,("union",))
+            self.assertFalse(window.boolean_action.isEnabled())
+            self.assertTrue(window.start_undo())
+            finish()
+            self.assertEqual(window.session.visible_bodies,("box","sphere"))
+            self.assertTrue(window.start_undo())
+            finish()
+            self.assertEqual(window.session.visible_bodies,("box",))
+            self.assertFalse(window.session.dirty)
+            self.assertTrue(window.start_redo())
+            finish()
+            self.assertTrue(window.start_redo())
+            finish()
+            self.assertEqual(window.session.visible_bodies,("union",))
+            self.assertTrue(window._view_ok)
+            with tempfile.TemporaryDirectory() as directory:
+                path=Path(directory)/"union.gcad"
+                self.assertTrue(window.save_as_path(path))
+                self.assertEqual(DocumentSession.open(path).document.features[-1].kind,"union")
+        finally:
+            finish()
+            with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()

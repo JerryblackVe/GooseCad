@@ -9,12 +9,13 @@ _DEFAULTS = {"width":20,"depth":30,"height":40,"radius":10}
 
 
 class PrimitiveDialog(QDialog):
-    def __init__(self,parent=None):
+    def __init__(self,parent=None,*,adding=False):
         super().__init__(parent)
-        self.setWindowTitle("Nuevo documento sólido")
+        self.setWindowTitle("Agregar sólido" if adding else "Nuevo documento sólido")
         self.setMinimumWidth(360)
         layout=QVBoxLayout(self)
-        description=QLabel("Cree un documento nuevo con una primitiva paramétrica.",self)
+        description=QLabel("Agregue una primitiva en el origen del documento actual." if adding
+                           else "Cree un documento nuevo con una primitiva paramétrica.",self)
         description.setWordWrap(True)
         layout.addWidget(description)
         form=QFormLayout()

@@ -390,3 +390,52 @@ class DocumentTaskTests(unittest.TestCase):
                 except Exception:
                     pass
             tasks.close()
+
+    def test_append_and_boolean_refresh_terminal_bodies_mixed_history(self):
+        from goosecad.document.primitives import PrimitiveSpec, BooleanSpec
+        from goosecad.view.preparation import terminal_bodies
+        from goosecad.view.scene import Scene
+        current=session()
+        scene=Scene(current.document,offscreen=True)
+        current.attach_scene(scene)
+        tasks=DocumentTasks(current)
+        def plan():
+            return scene.plan_refresh(terminal_bodies(current.document))
+        def publish():
+            result=collect(tasks)
+            self.assertIsNone(result.display_error)
+            return current.publish_refresh(result.prepared)
+        try:
+            current.refresh(["box"])
+            box_actor=scene._actors["box"][1]
+            tasks.append_feature(PrimitiveSpec("sphere",(1,)),display_request=plan())
+            self.assertEqual(publish(),("sphere",))
+            self.assertIs(scene._actors["box"][1],box_actor)
+            self.assertEqual(current.visible_bodies,("box","sphere"))
+            tasks.append_feature(BooleanSpec("union","box","sphere"),display_request=plan())
+            publish()
+            self.assertEqual(current.visible_bodies,("union",))
+            tasks.undo(display_request=plan())
+            publish()
+            self.assertEqual(current.visible_bodies,("box","sphere"))
+            sphere_snapshot=scene._actors["sphere"][0]
+            tasks.undo(display_request=plan())
+            publish()
+            self.assertEqual(current.visible_bodies,("box",))
+            self.assertFalse(scene.cache.is_current(sphere_snapshot))
+            tasks.redo(display_request=plan())
+            publish()
+            self.assertEqual(current.visible_bodies,("box","sphere"))
+            self.assertFalse(scene.cache.is_current(sphere_snapshot))
+            tasks.redo(display_request=plan())
+            publish()
+            self.assertEqual(current.visible_bodies,("union",))
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()
+            current.detach_scene()
+            scene.close()

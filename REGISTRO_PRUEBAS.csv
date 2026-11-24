@@ -221,3 +221,5 @@ GC-PERF-UI-02,Render suspendido durante worker y restauración cancel,GitHub Act
 GC-UI-12,Nuevo sólido paramétrico volumen y Qt dirty save,GitHub Actions,Pendiente,tests/test_primitives.py y tests/test_document_tasks.py y tests/test_qt_workspace.py,2026-11-24
 GC-STRUCT-01,Historial mixto append undo redo rollback stamps,GitHub Actions,Pendiente,tests/test_document.py,2026-11-24
 GC-STRUCT-02,Append nativo historial CAS y roundtrip,GitHub Actions,Pendiente,tests/test_primitives.py,2026-11-24
+GC-UI-12,Nuevos sólidos kernel y Qt,GitHub Actions,Aprobado,runs 45509089769 y 45509089713,2026-11-24
+GC-STRUCT-03,Append Qt y booleano historial actor reuse roundtrip,GitHub Actions,Pendiente,tests/test_document_tasks.py y tests/test_qt_workspace.py,2026-11-24

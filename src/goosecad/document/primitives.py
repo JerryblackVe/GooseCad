@@ -44,3 +44,31 @@ class PrimitiveSpec:
         names = PRIMITIVES[self.kind]
         return NativeDocument(dict(zip(names,self.dimensions)),
                               (Feature(self.kind,self.kind,names),))
+
+
+@dataclass(frozen=True, slots=True)
+class BooleanSpec:
+    kind: str
+    left: str
+    right: str
+
+    def __post_init__(self):
+        if type(self.kind) is not str or self.kind not in ("union","cut","common"):
+            raise NativeError("Unsupported Boolean operation")
+        if (type(self.left) is not str or type(self.right) is not str
+                or not self.left or not self.right or self.left == self.right):
+            raise NativeError("Select two distinct bodies")
+
+    def append_to(self, document, *, expected_revision=None, cancelled=None):
+        if not isinstance(document,NativeDocument):
+            raise NativeError("Expected native document")
+        revision = document.revision if expected_revision is None else expected_revision
+        used = set(document.node_ids)
+        suffix = 1
+        while True:
+            body = self.kind if suffix == 1 else f"{self.kind}_{suffix}"
+            if body not in used:
+                break
+            suffix += 1
+        return document.append_features({},(Feature(body,self.kind,(self.left,self.right)),),
+                                        expected_revision=revision,cancelled=cancelled)

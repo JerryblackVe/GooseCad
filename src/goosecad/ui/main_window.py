@@ -17,6 +17,7 @@ import vtk
 from .viewport import OwnedViewport
 from .recovery_dialog import RecoveryDialog
 from .primitive_dialog import PrimitiveDialog
+from .boolean_dialog import BooleanDialog
 
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
@@ -120,6 +121,8 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.autosave_settings_action)
         self.save_action = action(file_menu, "&Guardar", self.request_save, QKeySequence.StandardKey.Save)
         self.save_as_action = action(file_menu, "Guardar &como…", self.request_save_as, QKeySequence.StandardKey.SaveAs)
+        self.add_primitive_action = action(edit_menu, "Agregar sólido…", self.add_primitive_dialog)
+        self.boolean_action = action(edit_menu, "Operación booleana…", self.boolean_dialog)
         self.undo_action = action(edit_menu, "&Deshacer", self.start_undo, QKeySequence.StandardKey.Undo)
         self.redo_action = action(edit_menu, "&Rehacer", self.start_redo, QKeySequence.StandardKey.Redo)
         self.cancel_action = action(edit_menu, "Cancelar operación", self.cancel_task)
@@ -227,6 +230,8 @@ class MainWindow(QMainWindow):
         for action in (self.new_action, self.open_action, self.recover_action, self.autosave_recover_action,
                        self.autosave_settings_action, self.save_action, self.save_as_action, self.refresh_action):
             action.setEnabled(not busy)
+        self.add_primitive_action.setEnabled(not busy)
+        self.boolean_action.setEnabled(not busy and self.bodies.count()>=2)
         self.parameters.setEnabled(not busy)
         self.bodies.setEnabled(not busy)
         self.viewport.set_render_suspended(busy)
@@ -543,6 +548,39 @@ class MainWindow(QMainWindow):
             return self.request_save(after=action)
         if choice == QMessageBox.StandardButton.Discard:
             return action()
+        return False
+
+    def request_append_feature(self, spec):
+        if self.tasks.busy:
+            return False
+        def append_after_parameters():
+            try:
+                request = self.scene.plan_refresh(terminal_bodies(self.session.document))
+            except Exception as exc:
+                self._error(exc)
+                return False
+            return self._start_task(self.tasks.append_feature,spec,
+                                    expected_revision=self.session.document.revision,
+                                    display_request=request)
+        return self.start_parameter_edit(after=append_after_parameters)
+
+    def add_primitive_dialog(self):
+        if self.tasks.busy:
+            return False
+        dialog = PrimitiveDialog(self,adding=True)
+        if dialog.exec():
+            return self.request_append_feature(dialog.specification())
+        return False
+
+    def boolean_dialog(self):
+        if self.tasks.busy:
+            return False
+        bodies = terminal_bodies(self.session.document)
+        if len(bodies)<2:
+            return False
+        dialog = BooleanDialog(bodies,self)
+        if dialog.exec():
+            return self.request_append_feature(dialog.specification())
         return False
 
     def request_new_primitive(self, spec):
