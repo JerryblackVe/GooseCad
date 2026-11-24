@@ -1,0 +1,26 @@
+Wall stage medians (ms): validate/faces, copy/mesh, metadata, extraction: [1.5051065006446152, 69.1281459999118, 0.19033450007555075, 40.517153999644506]
+Profile wall ms: 138.05540900011692
+         59378 function calls in 0.008 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    19760    0.003    0.000    0.003    0.000 {built-in method builtins.min}
+    19760    0.002    0.000    0.002    0.000 {built-in method builtins.max}
+    19760    0.002    0.000    0.002    0.000 {built-in method builtins.len}
+        1    0.000    0.000    0.000    0.000 mesh_review_instrumented.py:31(_faces)
+        1    0.000    0.000    0.000    0.000 {built-in method OCP.OCP.TopExp.MapShapes_s}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {method 'all' of 'numpy.ndarray' objects}
+       20    0.000    0.000    0.000    0.000 {built-in method OCP.OCP.BRep.Triangulation_s}
+       20    0.000    0.000    0.000    0.000 {built-in method OCP.OCP.TopoDS.TopoDS.Face}
+        1    0.000    0.000    0.000    0.000 /opt/pyvenv/lib/python3.13/site-packages/numpy/_core/_methods.py:66(_all)
+        1    0.000    0.000    0.000    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+       41    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method numpy.empty}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        2    0.000    0.000    0.000    0.000 {method 'setflags' of 'numpy.ndarray' objects}
+        1    0.000    0.000    0.000    0.000 <string>:2(__init__)
+        5    0.000    0.000    0.000    0.000 {built-in method time.perf_counter}
+
+

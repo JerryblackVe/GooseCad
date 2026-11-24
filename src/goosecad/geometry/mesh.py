@@ -60,15 +60,37 @@ def tessellate(shape,*,linear=.1,angular=.5,parallel=False,max_vertices=MAX_VERT
             if nv>max_vertices or nt>max_triangles: raise GeometryError('Display mesh exceeds output budget')
         vertices=np.empty((nv,3),dtype=np.float64); triangles=np.empty((nt,3),dtype=np.uint32)
         for tri,tr,reverse,identity,vo,to in chunks:
-            for i in range(1,tri.NbNodes()+1):
-                p=tri.Node(i)
-                if not (_identity_fast and identity): p=p.Transformed(tr)
-                vertices[vo+i-1]=p.Coord()
-            for i in range(1,tri.NbTriangles()+1):
-                a,b,c=tri.Triangle(i).Get()
-                if min(a,b,c)<1 or max(a,b,c)>tri.NbNodes() or len({a,b,c})!=3: raise GeometryError('Invalid triangle indices')
-                if reverse: b,c=c,b
-                triangles[to+i-1]=(vo+a-1,vo+b-1,vo+c-1)
+            nodes = tri.NbNodes()
+            count = tri.NbTriangles()
+            transform = not (_identity_fast and identity)
+            # NumPy allocation overhead dominates tiny faces (e.g. planar boxes).
+            if count < 64:
+                for i in range(1,tri.NbNodes()+1):
+                    p=tri.Node(i)
+                    if transform: p=p.Transformed(tr)
+                    vertices[vo+i-1]=p.Coord()
+                for i in range(1,tri.NbTriangles()+1):
+                    a,b,c=tri.Triangle(i).Get()
+                    if min(a,b,c)<1 or max(a,b,c)>tri.NbNodes() or len({a,b,c})!=3: raise GeometryError('Invalid triangle indices')
+                    if reverse: b,c=c,b
+                    triangles[to+i-1]=(vo+a-1,vo+b-1,vo+c-1)
+                continue
+            # OCP 7.9 exposes individual accessors, not a NumPy buffer view.
+            # Bounded batches avoid a temporary Python list for an entire large face.
+            for start in range(0,nodes,8192):
+                stop=min(start+8192,nodes)
+                ids=range(start+1,stop+1)
+                if not transform:
+                    vertices[vo+start:vo+stop]=[tri.Node(i).Coord() for i in ids]
+                else:
+                    vertices[vo+start:vo+stop]=[tri.Node(i).Transformed(tr).Coord() for i in ids]
+            for start in range(0,count,8192):
+                stop=min(start+8192,count)
+                indices=np.array([tri.Triangle(i).Get() for i in range(start+1,stop+1)],dtype=np.int64)
+                if (indices.min()<1 or indices.max()>nodes or np.any(indices[:,0]==indices[:,1]) or np.any(indices[:,1]==indices[:,2]) or np.any(indices[:,0]==indices[:,2])):
+                    raise GeometryError('Invalid triangle indices')
+                if reverse: indices=indices[:,[0,2,1]]
+                triangles[to+start:to+stop]=indices+(vo-1)
         if not np.isfinite(vertices).all(): raise GeometryError('Nonfinite mesh vertex')
         vertices.setflags(write=False);triangles.setflags(write=False)
         return DisplayMesh(vertices,triangles,tuple(offsets))
