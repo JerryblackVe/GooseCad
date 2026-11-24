@@ -204,6 +204,14 @@ class DocumentSession:
         self._selection = None
         return changed
 
+    def publish_refresh(self, prepared):
+        if self._scene is None:
+            raise SessionError("No scene attached")
+        changed = self._scene.publish(prepared)
+        self._visible = prepared.request.bodies
+        self._selection = None
+        return changed
+
     def select_at(self, x, y):
         if self._scene is None:
             raise SessionError("No scene attached")

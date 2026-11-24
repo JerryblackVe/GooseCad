@@ -48,3 +48,47 @@ class ViewTests(unittest.TestCase):
             with self.assertRaises(ViewError):s.refresh(['box','sphere'])
             self.assertIs(old,s._actors['box'][1]);self.assertEqual(s.renderer.GetActors().GetNumberOfItems(),1)
         finally:s.close()
+
+    def test_prepare_worker_publish_owner_and_reject_stale(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from goosecad.parametric import Cancelled
+        from threading import get_ident
+        d=model();s=Scene(d,offscreen=True)
+        try:
+            s.refresh(['box','sphere'])
+            old_sphere=s._actors['sphere'][1]
+            old_box=s._actors['box'][1]
+            d.edit({'x':6})
+            plan=s.plan_refresh(['box','sphere'])
+            owner=get_ident()
+            def prepare():
+                self.assertNotEqual(get_ident(),owner)
+                return plan.prepare()
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                prepared=pool.submit(prepare).result(timeout=10)
+                self.assertIs(old_box,s._actors['box'][1])
+                self.assertEqual(s.publish(prepared),('box',))
+                self.assertIs(old_sphere,s._actors['sphere'][1])
+                self.assertIsNot(old_box,s._actors['box'][1])
+                with self.assertRaises(ViewError):
+                    pool.submit(s.publish,prepared).result(timeout=10)
+                with self.assertRaises(Cancelled):
+                    pool.submit(plan.prepare,cancelled=lambda:True).result(timeout=10)
+                d.edit({'x':9})
+                with self.assertRaises(ViewError):
+                    s.publish(prepared)
+                self.assertEqual(s.refresh(['box','sphere']),('box',))
+        finally:s.close()
+
+    def test_foreign_prepared_scene_and_budget(self):
+        d=model();s=Scene(d,offscreen=True,max_vertices=24,max_triangles=12)
+        other=Scene(d,offscreen=True)
+        try:
+            s.refresh(['box']);old=s._actors['box'][1]
+            with self.assertRaises(ViewError):
+                s.plan_refresh(['box','sphere']).prepare()
+            with self.assertRaises(ViewError):
+                s.publish(other.plan_refresh(['box']).prepare())
+            self.assertIs(old,s._actors['box'][1])
+        finally:
+            other.close();s.close()

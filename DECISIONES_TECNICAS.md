@@ -50,3 +50,5 @@ Mantener parallel=False por defecto. En el entorno de referencia (cuota 4 CPU), 
 GC-UI-03: QVTKRenderWindowInteractor posee la ventana VTK; Scene admite render_window externo y no lo finaliza. Mostrar únicamente cuerpos terminales evita superponer operandos booleanos. Edición por lote con revisión esperada; Save As no reemplaza existentes. UI de momento síncrona; planificador P0 pendiente. Qt opcional y pruebas gráficas opt-in, CI Linux software no sustituye Windows real.
 
 GC-UI-04: se separa ejecución documental asíncrona de Qt; ThreadPoolExecutor de un hilo, Event de cancelación, revisión esperada y recogida por dueño. Session y Scene se conservan en GUI; el worker solo muta NativeDocument. Mientras busy no hay acceso concurrente a documento/escena; no se impone paralelismo inseguro en OCCT.
+
+GC-UI-08: separación preparación CPU / publicación VTK con revisión de documento, identidad cache, settings y presupuestos, snapshots inmutables. Cancelación de visualización no revierte una mutación ya publicada. No se paraleliza acceso a OCCT de una sesión.

@@ -110,6 +110,14 @@ class DocumentTasks:
             return candidate
         self._submit("recovery" if recovery else "open", load_candidate, (), token=token)
 
+    def prepare_meshes(self, request):
+        self._idle()
+        if request.document is not self.session.document:
+            raise TaskStateError("Mesh request belongs to another document")
+        token = Event()
+        self._submit("mesh", request.prepare, (), token=token,
+                     kwargs={"cancelled": token.is_set})
+
     def save(self):
         """Exclusive session access; retain the existing disk CAS semantics.
 

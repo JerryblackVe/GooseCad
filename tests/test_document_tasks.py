@@ -226,3 +226,29 @@ class DocumentTaskTests(unittest.TestCase):
                 except Exception:
                     pass
             tasks.close()
+
+    def test_mesh_task_returns_cpu_snapshots_without_publishing(self):
+        from goosecad.view.scene import Scene
+        current = session()
+        scene = Scene(current.document, offscreen=True)
+        current.attach_scene(scene)
+        tasks = DocumentTasks(current)
+        try:
+            current.refresh(["box"])
+            old = scene._actors["box"][1]
+            tasks.edit({"x": 8})
+            collect(tasks)
+            tasks.prepare_meshes(scene.plan_refresh(["box"]))
+            prepared = collect(tasks)
+            self.assertIs(scene._actors["box"][1], old)
+            self.assertEqual(current.publish_refresh(prepared), ("box",))
+            self.assertIsNot(scene._actors["box"][1], old)
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()
+            current.detach_scene()
+            scene.close()

@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "8fe74587ff1acaed5b7530aea66ac6af491951aa",
-  "remote_checkpoint": "8fe74587ff1acaed5b7530aea66ac6af491951aa",
+  "remote_base_observed": "78b0c5d7bdf4ab97aad5f7b60af8787001f74c00",
+  "remote_checkpoint": "78b0c5d7bdf4ab97aad5f7b60af8787001f74c00",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,13 +15,13 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-07",
+  "next_task": "GC-UI-08",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45506703643,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45507091254,
+  "ci_pending_run": 45507428350,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -48,7 +48,7 @@
   "tests_discovered": 173,
   "tests_skipped_default_ci": 4,
   "tests_graphics_verified": 5,
-  "qt_workspace": "Mesa software Windows both Qt versions passed; Qt async closure error found in Linux log, fix pending CI",
+  "qt_workspace": "GC-UI-05 four graphic jobs passed; GC-UI-06/07/08 pending",
   "prompt_remote_revision": "3.2 verified exact text",
   "async_document_tasks": "Qt actions integrated; sync/async benchmark pending",
   "qt_baseline_samples": 60,
@@ -61,5 +61,7 @@
   "qt_close_regression_job": 138843657070,
   "async_file_tasks": "GUI actions integrated; tests pending",
   "qt_close_linux_qt693": "4 tests passed job 138844980747; no close exception in inspected log",
-  "async_notification": "queued Qt signal implemented; CI pending"
+  "async_notification": "queued Qt signal implemented; CI pending",
+  "mesh_preparation": "CPU-only worker, owner VTK publication, tests pending",
+  "qt_close_verified_run": 45507091254
 }

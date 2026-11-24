@@ -1,7 +1,7 @@
 """Qt desktop workspace for native parameter documents (experimental).
 
 Parameter commands use a single document worker; Qt/VTK refresh stays on
-its owning thread. File commands also use the worker; meshing remains synchronous.
+its owning thread. File commands and display preparation also use the worker.
 """
 from pathlib import Path
 from math import isfinite
@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
         self.redo_action = action(edit_menu, "&Rehacer", self.start_redo, QKeySequence.StandardKey.Redo)
         self.cancel_action = action(edit_menu, "Cancelar operación", self.cancel_task)
         self.fit_action = action(view_menu, "Ajustar vista", self.fit_view)
-        self.refresh_action = action(view_menu, "Actualizar vista", self.refresh_view)
+        self.refresh_action = action(view_menu, "Actualizar vista", self.request_refresh)
 
     def _install(self, candidate):
         # Stage the new scene before discarding the previous document.
@@ -277,10 +277,15 @@ class MainWindow(QMainWindow):
             result = self.tasks.collect()
         except Cancelled:
             self._update_actions()
-            self.statusBar().showMessage("Operación cancelada sin publicar cambios.")
+            if kind == "mesh":
+                self.statusBar().showMessage("Vista cancelada; el modelo conserva sus cambios.")
+            else:
+                self.statusBar().showMessage("Operación cancelada sin publicar cambios.")
             return
         except Exception as exc:
             self._update_actions()
+            if kind == "mesh":
+                self.statusBar().showMessage("Modelo conservado; vista no actualizada.")
             self._error(exc)
             return
         if kind in ("open", "recovery"):
@@ -296,10 +301,24 @@ class MainWindow(QMainWindow):
         elif kind == "save":
             self._update_actions()
             self.statusBar().showMessage("Documento guardado.")
+        elif kind == "mesh":
+            try:
+                self.session.publish_refresh(result)
+                if self._ready:
+                    self.scene.render()
+            except Exception as exc:
+                self._update_actions()
+                self.statusBar().showMessage("Modelo conservado; vista no actualizada.")
+                self._error(exc)
+                return
+            self._view_ok = True
+            self.viewport.show()
+            self._update_actions()
+            self.statusBar().showMessage("Vista actualizada.")
         else:
             self._populate()
-            if self.refresh_view():
-                self.statusBar().showMessage("Cálculo completado.")
+            self.request_refresh(after=after)
+            return
         if after is not None:
             after()
 
@@ -335,6 +354,23 @@ class MainWindow(QMainWindow):
 
     def redo(self):
         return self._history(self.session.redo)
+
+    def request_refresh(self, *, after=None):
+        if self.tasks.busy:
+            return False
+        # Never present obsolete geometry as the new document revision.
+        self._view_ok = False
+        self.viewport.hide()
+        try:
+            request = self.scene.plan_refresh(terminal_bodies(self.session.document))
+        except Exception as exc:
+            self._update_actions()
+            self._error(exc)
+            return False
+        started = self._start_task(self.tasks.prepare_meshes, request, after=after)
+        if not started:
+            self._update_actions()
+        return started
 
     def refresh_view(self):
         if self.tasks.busy:

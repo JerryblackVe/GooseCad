@@ -11,7 +11,7 @@ import vtk
 from vtk.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray
 from goosecad.geometry.mesh_cache import MeshCache,MeshSettings
 
-class ViewError(RuntimeError): pass
+from goosecad.view.preparation import MeshRequest, PreparedMeshes, ViewError
 
 @dataclass(frozen=True,slots=True)
 class Selection:
@@ -63,25 +63,47 @@ class Scene:
 
     def _check(self):
         if get_ident()!=self._thread or self._closed:raise ViewError('Scene must be open on its owning thread')
-    def refresh(self,bodies):
-        self._check();bodies=tuple(bodies)
-        if len(bodies)>256 or len(set(bodies))!=len(bodies):raise ViewError('Invalid body list')
-        revision=self._document.revision;staged={};changed=[];nv=nt=0
-        for body in bodies:
+    def plan_refresh(self, bodies):
+        """Capture only CPU data on the scene-owning thread."""
+        self._check()
+        bodies=tuple(bodies)
+        if (len(bodies)>256 or any(type(b) is not str for b in bodies)
+                or len(set(bodies))!=len(bodies)):
+            raise ViewError('Invalid body list')
+        return MeshRequest(self._document,self.cache,self._document.revision,
+                           bodies,self.settings,
+                           tuple(self._actors[b][0] for b in bodies if b in self._actors),
+                           self._max_vertices,self._max_triangles)
+
+    def publish(self, prepared):
+        """Build VTK buffers transactionally on the owner, never in a worker."""
+        self._check()
+        if type(prepared) is not PreparedMeshes:
+            raise ViewError('Expected prepared display meshes')
+        plan=prepared.request
+        if (plan.document is not self._document or plan.cache is not self.cache
+                or plan.settings!=self.settings
+                or plan.max_vertices!=self._max_vertices
+                or plan.max_triangles!=self._max_triangles):
+            raise ViewError('Prepared display belongs to another scene or settings')
+        prepared.validate()
+        staged={};changed=[]
+        for snapshot in prepared.snapshots:
+            body=snapshot.body
             old=self._actors.get(body)
-            reuse=old is not None and old[0].settings==self.settings and self.cache.is_current(old[0])
-            snapshot=old[0] if reuse else self.cache.get(body,self.settings)
-            nv+=len(snapshot.mesh.vertices);nt+=len(snapshot.mesh.triangles)
-            if nv>self._max_vertices or nt>self._max_triangles:raise ViewError('Scene output budget exceeded')
-            if reuse:staged[body]=old;continue
+            if old is not None and old[0] is snapshot:
+                staged[body]=old;continue
             mapper=vtk.vtkPolyDataMapper();mapper.SetInputData(polydata(snapshot.mesh));mapper.ScalarVisibilityOff()
             actor=vtk.vtkActor();actor.SetMapper(mapper);actor.GetProperty().SetColor(.44,.68,.89);actor.GetProperty().SetInterpolationToFlat()
             staged[body]=(snapshot,actor);changed.append(body)
-        if revision!=self._document.revision or not all(self.cache.is_current(s) for s,a in staged.values()):raise ViewError('Document changed during scene refresh')
-        for body,(s,a) in self._actors.items():
-            if body not in staged or staged[body][1] is not a:self.renderer.RemoveActor(a)
+        prepared.validate()
+        for body,(snapshot,actor) in self._actors.items():
+            if body not in staged or staged[body][1] is not actor:self.renderer.RemoveActor(actor)
         for body in changed:self.renderer.AddActor(staged[body][1])
         self._actors=staged;self.renderer.ResetCameraClippingRange();return tuple(changed)
+
+    def refresh(self,bodies):
+        return self.publish(self.plan_refresh(bodies).prepare())
     def fit(self):
         self._check();self.renderer.ResetCamera();self.renderer.ResetCameraClippingRange()
     def orbit(self,azimuth,elevation):
