@@ -84,7 +84,10 @@ class MeshCache:
         # Identity of the cache/document is encoded by the snapshot owner check
         # in the viewer; a snapshot from another cache is not accepted here.
         if type(snapshot) is not MeshSnapshot or snapshot._owner is not self._owner: return False
-        revision,_=self._document.versioned_value(snapshot.body)
+        try:
+            revision,_=self._document.versioned_value(snapshot.body)
+        except KeyError:
+            return False
         return revision==snapshot.revision
 
     def get(self, body, settings=MeshSettings()):

@@ -13,7 +13,7 @@ import stat
 import tempfile
 from threading import RLock
 
-from goosecad.document.document import Document, DocumentError
+from goosecad.document.document import Document, DocumentError, RevisionConflict
 from goosecad.parametric import Input, Operation
 from goosecad.geometry.kernel import box, cylinder, sphere, boolean
 
@@ -62,6 +62,11 @@ class Feature:
     id: str
     kind: str
     dependencies: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class _FeatureOperation(Operation):
+    feature: Feature
 
 
 def _number(v):
@@ -176,7 +181,7 @@ def _decode(data):
 
 
 class NativeDocument:
-    """Closed-schema document; only parameters editable. History is session-only."""
+    """Closed-schema document; append and parameter history are session-only."""
     def __init__(self, parameters, features=(), *, sketches=(), regions=(), version=None):
         sketches=tuple(sketches); regions=tuple(regions)
         if any(type(s) is not SketchSpec for s in sketches) or any(type(s) is not RegionSpec for s in regions): raise NativeError("Invalid sketch or region type")
@@ -192,7 +197,7 @@ class NativeDocument:
         self._features=features; self._ids=tuple(params); registry=_registry(version)
         self._document=Document([*(Input(k,v) for k,v in params.items()),
           *(s.operation() for s in sketches),
-          *(Operation(f.id,f.dependencies,registry[f.kind][2]) for f in features)])
+          *(_FeatureOperation(f.id,f.dependencies,registry[f.kind][2],f) for f in features)])
         self._lock=RLock()
 
     @property
@@ -204,7 +209,8 @@ class NativeDocument:
         with self._lock:
             return NativeDocument({k:self._document.value(k) for k in self._ids},self._features,sketches=tuple(s for s in self._sketches if type(s) is SketchSpec),regions=tuple(s for s in self._sketches if type(s) is RegionSpec),version=version)
     @property
-    def revision(self): return self._document.revision
+    def revision(self):
+        with self._lock: return self._document.revision
     def parameter_values(self):
         """Return a detached snapshot of editable numeric inputs only."""
         with self._lock:
@@ -213,22 +219,70 @@ class NativeDocument:
     @property
     def features(self):
         """Immutable feature definitions in native document order."""
-        return self._features
+        with self._lock: return self._features
+
+    @property
+    def node_ids(self):
+        with self._lock: return tuple(n.id for n in self._document.nodes)
 
     @property
     def history_depths(self):
-        return self._document.history_depths
+        with self._lock: return self._document.history_depths
 
-    def value(self,name): return self._document.value(name)
-    def versioned_value(self,name): return self._document.versioned_value(name)
+    def value(self,name):
+        with self._lock: return self._document.value(name)
+    def versioned_value(self,name):
+        with self._lock: return self._document.versioned_value(name)
+
+    def _sync_structure(self):
+        nodes = self._document.nodes
+        self._ids = tuple(n.id for n in nodes if isinstance(n,Input))
+        self._features = tuple(n.feature for n in nodes if type(n) is _FeatureOperation)
+
+    def append_features(self, parameters, features, *, expected_revision=None, cancelled=None):
+        """Validate full declarative schema, then append in one DAG transaction.
+
+        Existing definitions/values are retained; no arbitrary callback accepted.
+        Undo removes just the appended definitions, redo re-evaluates them.
+        No automatic format upgrade and no persistence side effects.
+        """
+        if type(parameters) is not dict or type(features) is not tuple or not features:
+            raise NativeError("Expected new parameter dictionary and feature tuple")
+        if any(type(f) is not Feature or type(f.dependencies) is not tuple for f in features):
+            raise NativeError("Invalid appended feature")
+        with self._lock:
+            if expected_revision is not None and (type(expected_revision) is not int or expected_revision != self.revision):
+                raise RevisionConflict("Document revision changed")
+            current = self.parameter_values()
+            if set(parameters).intersection(self.node_ids):
+                raise NativeError("Appended parameter identifier already exists")
+            added = {_id(k): _number(v) for k,v in parameters.items()}
+            payload = _payload({**current,**added},self._features+features,self._sketches,self._version)
+            validated,definitions,_ = _spec(payload,self._version)
+            _encode(payload,self._version)  # enforce on-disk size before kernel work
+            registry = _registry(self._version)
+            extra = (*(Input(k,validated[k]) for k in added),
+                     *(_FeatureOperation(f.id,f.dependencies,registry[f.kind][2],f)
+                       for f in definitions[len(self._features):]))
+            report = self._document.append(extra,expected_revision=expected_revision,cancelled=cancelled)
+            self._sync_structure()
+            return report
     def edit(self,changes,**kwargs):
         if type(changes) is not dict or any(type(k) is not str for k in changes):
             raise NativeError("Native edits require a plain dictionary of string identifiers")
         with self._lock: return self._document.edit({k:_number(v) for k,v in changes.items()},**kwargs)
     def undo(self,**kwargs):
-        with self._lock: return self._document.undo(**kwargs)
+        with self._lock:
+            before = self._document.nodes
+            report = self._document.undo(**kwargs)
+            if self._document.nodes is not before: self._sync_structure()
+            return report
     def redo(self,**kwargs):
-        with self._lock: return self._document.redo(**kwargs)
+        with self._lock:
+            before = self._document.nodes
+            report = self._document.redo(**kwargs)
+            if self._document.nodes is not before: self._sync_structure()
+            return report
     def to_bytes(self):
         with self._lock:
             # Read only input values, not a full graph snapshot or B-Rep copies.

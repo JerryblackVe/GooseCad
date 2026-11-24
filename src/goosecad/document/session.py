@@ -104,8 +104,11 @@ class DocumentSession:
     def selection(self):
         selected = self._selection
         if type(selected) is BodySelection:
-            if self.document.versioned_value(selected.body)[0] == selected.revision:
-                return selected
+            try:
+                if self.document.versioned_value(selected.body)[0] == selected.revision:
+                    return selected
+            except KeyError:
+                pass
         elif type(selected) is Selection and self._scene is not None:
             if self._scene.is_current_selection(selected):
                 return selected

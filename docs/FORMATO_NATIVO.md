@@ -25,3 +25,5 @@ r = RegionSpec('ring', ((CurveSpec('circle', ('x','y','r')),), (CurveSpec('circl
 d = NativeDocument({'x':5,'y':0,'r':2,'hole':1,'h':3}, (Feature('tube','extrude_curves',('ring','h')),), regions=(r,))
 ```
 `upgraded()` sube una versión (máximo v3); `upgraded(3)` explícito desde v1/v2. Guardado de versión superior sobre un archivo existente exige allow_upgrade=True y conserva .previous. El downgrade está prohibido; v1/v2 siguen abiertos sin conversión automática.
+
+GC-STRUCT-02: se permite añadir parámetros/features a la sesión bajo las mismas reglas de esquema v1/v2/v3, sin migrar formato ni guardar automáticamente. Undo/redo mixtos son exclusivos de sesión; al guardar se serializa el estado declarativo actual, nunca el historial ni B-Rep. IDs de cuerpos retirados no son seleccionables; reintroducción tiene sello nuevo. Operaciones nuevas no reemplazan definiciones existentes.

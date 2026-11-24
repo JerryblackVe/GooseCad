@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "9f26224edd90a4e9a9e034b901dd3654db0fd440",
-  "remote_checkpoint": "9f26224edd90a4e9a9e034b901dd3654db0fd440",
+  "remote_base_observed": "6bf9ae2f712c6c074d3e0af9ef23984983148361",
+  "remote_checkpoint": "6bf9ae2f712c6c074d3e0af9ef23984983148361",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-STRUCT-02",
+  "next_task": "GC-STRUCT-03",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508375966,
@@ -91,5 +91,6 @@
   "render_suspension": "Qt run 45508976437 passed 4/4",
   "primitive_creation": "new parametric document templates implemented; CI pending",
   "package_ci_run": 45508839661,
-  "structural_history": "core append/undo/redo implemented; CI pending"
+  "structural_history": "core append/undo/redo implemented; CI pending",
+  "structural_native": "append-only native operations and mixed history implemented; CI pending"
 }

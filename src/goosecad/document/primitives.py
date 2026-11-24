@@ -25,6 +25,21 @@ class PrimitiveSpec:
                        or not MIN_LENGTH < v <= MAX_LENGTH for v in self.dimensions)):
             raise NativeError("Invalid primitive dimensions")
 
+    def append_to(self, document, *, expected_revision=None, cancelled=None):
+        if not isinstance(document,NativeDocument):
+            raise NativeError("Expected native document")
+        revision = document.revision if expected_revision is None else expected_revision
+        used = set(document.node_ids)
+        suffix = 1
+        while True:
+            body = self.kind if suffix == 1 else f"{self.kind}_{suffix}"
+            names = tuple(f"{body}_{name}" for name in PRIMITIVES[self.kind])
+            if body not in used and not used.intersection(names):
+                break
+            suffix += 1
+        return document.append_features(dict(zip(names,self.dimensions)),
+                  (Feature(body,self.kind,names),),expected_revision=revision,cancelled=cancelled)
+
     def build(self):
         names = PRIMITIVES[self.kind]
         return NativeDocument(dict(zip(names,self.dimensions)),
