@@ -2,7 +2,7 @@ name: Qt VTK compatibility probe
 on:
   push:
     branches: ['feature/**']
-    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml']
+    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml', 'src/goosecad/ui/**', 'src/goosecad/view/**', 'src/goosecad/document/**', 'tests/test_qt_workspace.py', 'benchmarks/qt_workspace_bench.py']
   workflow_dispatch:
 permissions:
   contents: read
@@ -41,3 +41,21 @@ jobs:
         run: xvfb-run -a python experiments/qt_probe.py
       - if: runner.os == 'Windows'
         run: python experiments/qt_probe.py
+      - name: Qt workspace integration (Linux virtual display)
+        if: runner.os == 'Linux'
+        env:
+          GOOSECAD_TEST_QT: '1'
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: xvfb-run -a python -m unittest discover -s tests -p test_qt_workspace.py -v
+      - name: Qt workspace latency benchmark (Linux virtual display)
+        if: runner.os == 'Linux'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: xvfb-run -a python benchmarks/qt_workspace_bench.py qt-workspace.csv
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Linux'
+        with:
+          name: qt-workspace-${{ matrix.qt }}
+          path: qt-workspace.csv

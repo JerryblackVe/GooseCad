@@ -1,13 +1,13 @@
-# GOOSECAD PROFESSIONAL 3.0
+# GOOSECAD PROFESSIONAL 3.2
 ## PROTOCOLO MAESTRO DE DESARROLLO, GESTIÓN, AUDITORÍA Y CONTINUIDAD DEL PROYECTO
 
-**Revisión 3.0 — Inicio limpio, GitHub como fuente de verdad, continuidad entre chats y rendimiento P0.**
+**Revisión 3.2 — Continuidad del desarrollo existente, acción antes que informe, ejecución autónoma por bloques múltiples, GitHub como fuente de verdad y rendimiento P0.**
 
 **Repositorio oficial único:** https://github.com/JerryblackVe/GooseCad
 
-**Modalidad inicial:** comenzar desde cero en la primera ejecución de esta revisión, sin importar los backups ni el código de las sesiones anteriores. Una vez creado el nuevo estado inicial, todas las conversaciones posteriores deben continuar desde GitHub. No borrar ni sobrescribir historial remoto existente para iniciar de cero.
+**Modalidad vigente:** esta actualización de instrucciones NO reinicia el proyecto. Recuperar el desarrollo ya iniciado bajo la revisión 3.0 desde GitHub, preferentemente desde la rama activa registrada `feature/000-clean-start` si sigue vigente. Verificar el HEAD remoto, el CI y los documentos de continuidad. No usar un SHA histórico como destino fijo ni borrar o sobrescribir historial. El inicio limpio descrito en la revisión 3.0 es un hito histórico ya iniciado; solo se repetirá por orden expresa del usuario.
 
-**Regla central:** guardar y verificar los cambios en GitHub después de cada unidad de trabajo significativa. Generar ZIP únicamente en los supuestos del apartado 25. Las reglas de los apartados 23–28 y 39 prevalecen sobre cualquier referencia genérica a respaldos o recuperación.
+**Regla central:** guardar y verificar los cambios en GitHub después de cada unidad de trabajo significativa. Generar ZIP únicamente en los supuestos del apartado 25. Las reglas de los apartados 23–28 y 39 prevalecen sobre cualquier referencia genérica a respaldos o recuperación. Los apartados 41 y 42 prevalecen sobre cualquier interpretación de los puntos de control, informes o consultas iniciales como pausas obligatorias. El apartado 42 establece la secuencia operativa de acción antes que informe. Conservar todas las exigencias de calidad, privacidad y seguridad.
 
 ---
 
@@ -62,7 +62,7 @@ El desarrollo se realizará principalmente desde un proyecto de ChatGPT Web.
 
 Debes adaptar todas las estrategias a las capacidades reales disponibles en cada conversación.
 
-Al comenzar una sesión, comprueba:
+Al inicializar un entorno nuevo, o cuando cambien las capacidades relevantes, comprueba los puntos siguientes. En turnos CONTINUAR reutiliza los resultados vigentes y comprueba solo lo necesario para la tarea; no repitas un inventario completo por turno:
 
 - Disponibilidad de terminal.
 - Ejecución de Python.
@@ -89,7 +89,7 @@ No prometas trabajar en segundo plano si el entorno no lo permite.
 
 Trabaja todo lo posible dentro de cada respuesta o sesión activa.
 
-Si necesitas una nueva intervención del usuario para continuar, proporciona un punto de recuperación completo y una instrucción concreta.
+Si necesitas una nueva intervención del usuario para continuar, proporciona un punto de recuperación completo y una instrucción concreta. Agota primero las acciones viables autorizadas de acuerdo con el apartado 41.
 
 ---
 
@@ -622,7 +622,7 @@ Después de tres intentos sustancialmente diferentes sin progreso, reconsidera l
 
 No interpretes este ciclo como autorización para ejecutar bucles infinitos.
 
-Trabaja hasta donde permitan los recursos de la sesión activa. Después de cada unidad significativa, aplica el protocolo de persistencia GitHub; no acumules cambios locales sin sincronizar. Un ciclo no exige un ZIP si el estado remoto está verificado.
+Trabaja hasta donde permitan los recursos de la sesión activa. Después de cada unidad significativa, aplica el protocolo de persistencia GitHub; no acumules cambios locales sin sincronizar. Un ciclo no exige un ZIP si el estado remoto está verificado. Un commit, una prueba fallida o un CI pendiente no constituyen por sí mismos el fin de la ejecución: encadena otras unidades viables según el apartado 41.
 
 ---
 
@@ -1259,7 +1259,7 @@ GitHub es la fuente de verdad del desarrollo, no un respaldo opcional. El entorn
 
 Verifica conexión, identidad autorizada, URL, permisos efectivos, visibilidad, ramas, último commit y protecciones. Si el repositorio es público, informa antes de subir código, documentos o referencias del usuario; recomienda hacerlo privado y solicita confirmación de que se acepta la publicación si sigue público. Nunca incluyas secretos, datos privados ni capturas sin autorización de publicación. Puedes seguir desarrollando localmente mientras se resuelve ese bloqueo, con ZIP de emergencia si es necesario.
 
-En el primer inicio de esta revisión no importes backups ni código anterior. Si el remoto está vacío, inicializa el proyecto limpio. Si contiene commits, no fuerces un push ni borres contenido: crea una rama de inicio limpio preservando el historial y documenta cómo se integrará; solicita autorización antes de reemplazar contenido de main. A partir del primer checkpoint, recupera siempre el desarrollo de esta revisión desde la rama registrada.
+En el primer inicio histórico de la revisión 3.0 no se debían importar backups ni código anterior. La revisión 3.2 continúa el estado remoto resultante, sin reiniciar. Si el remoto está vacío, inicializa el proyecto limpio. Si contiene commits, no fuerces un push ni borres contenido: crea una rama de inicio limpio preservando el historial y documenta cómo se integrará; solicita autorización antes de reemplazar contenido de main. A partir del primer checkpoint, recupera siempre el desarrollo de esta revisión desde la rama registrada.
 
 ## 24.2. Rutas de ejecución
 
@@ -1280,7 +1280,7 @@ Después de cada unidad significativa y antes de finalizar la respuesta de traba
 4. Crear commit descriptivo con identificador de tarea y estado de pruebas. Mantener estados incompletos en ramas de trabajo, no presentarlos como estables.
 5. Sincronizar con el remoto autorizado sin force push.
 6. Consultar de nuevo la referencia remota y comprobar SHA, rama y presencia de los archivos modificados. Cuando sea viable, validar contenido o hashes. Ante discrepancias, corregir o documentar el bloqueo.
-7. Informar rama, SHA remoto confirmado, enlace al commit, resultado de pruebas y cambios pendientes. Distinguir sincronización del éxito de CI.
+7. Registrar rama, SHA remoto confirmado, enlace al commit, resultado de pruebas y cambios pendientes. Agrupar los resultados en el informe final del turno según el apartado 42. Distinguir sincronización del éxito de CI.
 
 No fabricar un SHA. No afirmar que GitHub conserva archivos que no pudieron transferirse. Si solo existe un commit local, el estado es NO SINCRONIZADO. El identificador del commit que contiene un archivo no se puede escribir dentro de ese mismo commit sin cambiar su hash: registra en el manifiesto el commit base cuando corresponda y reporta el SHA final externamente o en el checkpoint siguiente, sin generar commits recursivos solo para actualizar el SHA.
 
@@ -1335,7 +1335,7 @@ No presupongas acceso a un contador exacto del contexto restante. Evalúa preven
 
 Si conviene migrar, emite **AVISO DE CONTINUIDAD: SE RECOMIENDA CAMBIAR DE CONVERSACIÓN.** Completa una unidad coherente, guarda los cambios, actualiza matriz, estado, errores, pruebas, decisiones, benchmarks y siguiente paso. Sincroniza y verifica rama y SHA remoto. Si quedan cambios no sincronizados, genera ZIP según apartado 25. Si todo es recuperable desde GitHub, no generes ZIP por el mero cambio de chat.
 
-En cada cierre de bloque informa de forma compacta qué se realizó, qué falta, dónde está guardado, si el estado remoto fue verificado y cuál es el siguiente paso. No producir informes largos repetitivos ni nuevas copias de todos los documentos si no aportan valor. El trabajo solo continúa durante sesiones activas; no prometas ejecución autónoma en segundo plano.
+En cada cierre de turno de trabajo agrupa de forma compacta qué se realizó, qué falta, dónde está guardado, si el estado remoto fue verificado y cuál es el siguiente paso. Los cierres internos de bloque no requieren una respuesta final ni un informe al usuario. No producir informes largos repetitivos ni nuevas copias de todos los documentos si no aportan valor. El trabajo solo continúa durante sesiones activas; no prometas ejecución autónoma en segundo plano.
 
 ---
 
@@ -1351,7 +1351,7 @@ Mensaje estándar de continuación (sustituir los campos por valores reales):
 
 > Continúa GooseCAD Professional desde https://github.com/JerryblackVe/GooseCad, rama [RAMA], checkpoint [SHA]. Lee PROMPT_MAESTRO.md, ESTADO_PROYECTO.md, CONTINUIDAD.md, SIGUIENTE_PASO.md y MANIFIESTO.json. Verifica la rama, cambios posteriores y entorno disponible. Recupera el código actual, no reinicies ni importes backups anteriores a la nueva inicialización. Ejecuta la siguiente tarea prioritaria, verifica pruebas y rendimiento, actualiza la documentación y sincroniza el nuevo checkpoint con GitHub. Si faltan permisos o archivos, usa el procedimiento de emergencia del apartado 25.
 
-Para una conversación nueva se recomienda abrirla dentro del mismo proyecto de ChatGPT y mantener el Prompt Maestro 3.0 como instrucción base. No exigir al usuario subir un ZIP cuando el estado remoto está completo.
+Para una conversación nueva se recomienda abrirla dentro del mismo proyecto de ChatGPT y mantener el Prompt Maestro 3.2 como instrucción base. No exigir al usuario subir un ZIP cuando el estado remoto está completo.
 
 ---
 
@@ -1366,7 +1366,7 @@ Para una conversación nueva se recomienda abrirla dentro del mismo proyecto de 
 7. Si existe ZIP posterior con trabajo local no sincronizado, comprobar integridad, comparar su contenido y base con GitHub y reconciliar los cambios sin destruir historial.
 8. Si no hay acceso a GitHub, usar el último ZIP de la revisión actual disponible. Si faltan archivos indispensables, solicitar únicamente esos archivos o la intervención mínima necesaria.
 
-La instrucción de comenzar desde cero solo se aplica a la primera inicialización de esta revisión. No significa reiniciar en cada conversación. No borrar repositorios, ramas ni versiones previas. No afirmar recuperación exitosa cuando no se pudo verificar.
+La instrucción de comenzar desde cero solo se aplicó a la primera inicialización de la revisión 3.0; la revisión 3.2 no la repite. No significa reiniciar en cada conversación. No borrar repositorios, ramas ni versiones previas. No afirmar recuperación exitosa cuando no se pudo verificar.
 
 ---
 
@@ -1595,7 +1595,7 @@ La experiencia del usuario será parte del proceso de calidad.
 
 # 35. PANEL DE CONTROL DEL PROYECTO
 
-Al finalizar cada bloque importante de trabajo, presenta un resumen compacto:
+El siguiente formato es un registro de control, no un requisito de salida por cada checkpoint. Mantén los detalles pertinentes en GitHub. En las respuestas CONTINUAR utiliza exclusivamente el informe breve del apartado 42.8, salvo que el usuario solicite ESTADO o un informe detallado:
 
 ```text
 PROYECTO: GooseCAD Professional
@@ -1648,7 +1648,7 @@ Interpreta los siguientes comandos del usuario:
 
 | Comando | Acción |
 |---|---|
-| CONTINUAR | Ejecutar la siguiente tarea prioritaria |
+| CONTINUAR | Ejecutar inmediatamente una o varias tareas prioritarias viables, según los apartados 41 y 42 |
 | ESTADO | Mostrar el estado real del proyecto |
 | BACKUP | Crear y verificar un ZIP completo |
 | MIGRAR | Preparar el cambio de conversación |
@@ -1668,7 +1668,7 @@ Interpreta los siguientes comandos del usuario:
 | ROADMAP | Mostrar las fases pendientes |
 | PAUSAR | Guardar el estado y detener el trabajo activo |
 
-El comando CONTINUAR debe permitir seguir avanzando sin que el usuario tenga que volver a explicar el proyecto.
+El comando CONTINUAR autoriza ejecutar tantas unidades de trabajo consecutivas como permitan los recursos reales de la respuesta activa, no una única unidad. Aplicar los apartados 41 y 42 sin pedir confirmaciones rutinarias.
 
 ---
 
@@ -1725,9 +1725,9 @@ La prioridad fundamental es conseguir un software profesional, funcional, establ
 
 ---
 
-# 39. ORDEN DE INICIO — NUEVO DESARROLLO DESDE CERO
+# 39. ORDEN DE INICIO — HITO HISTÓRICO 3.0 Y CONTINUIDAD 3.2
 
-Al recibir la orden de inicio de esta revisión 3.0, comenzar un nuevo desarrollo limpio de GooseCAD Professional, sin utilizar código, ZIP ni estados del desarrollo previo. Conservar como referencias únicamente este Prompt Maestro, las capturas aportadas por el usuario y la documentación técnica autorizada. No confundir inicio limpio con permiso para borrar contenido remoto.
+El inicio limpio de la revisión 3.0 ya fue ordenado. La revisión 3.2 conserva íntegramente el nuevo desarrollo y no autoriza otro reinicio. Recuperar primero el checkpoint remoto actual y continuar las tareas pendientes. Los pasos siguientes describen la inicialización original y solo se aplican a trabajos aún pendientes o a una nueva orden expresa de reinicio. No confundir inicio limpio con permiso para borrar contenido remoto.
 
 1. Inspeccionar entorno y herramientas reales; comprobar conexión, permisos y visibilidad de https://github.com/JerryblackVe/GooseCad.
 2. Verificar si ya existe un checkpoint de la revisión 3.0. Si existe, continuar desde él, salvo una nueva orden expresa de reinicio. Si no existe, inicializar limpiamente conforme al apartado 24.1.
@@ -1738,7 +1738,7 @@ Al recibir la orden de inicio de esta revisión 3.0, comenzar un nuevo desarroll
 7. Preparar CI Windows y benchmarks reproducibles cuando los permisos y recursos lo permitan. Comenzar implementación real del núcleo CAD.
 8. Después de cada unidad significativa, actualizar documentación, realizar commit, sincronizar y comprobar el remoto. Continuar con la siguiente tarea viable en la sesión activa. Generar ZIP solo según apartado 25.
 
-No detenerse voluntariamente después de entregar un plan si es posible implementar y probar algo útil. No afirmar que se ejecutó una tarea que no pudo realizarse. No prometer trabajo fuera de la sesión. En cada punto de control entregar un informe breve, enlace al commit confirmado y siguiente tarea; si no se pudo sincronizar, explicar el motivo y proporcionar el estado recuperable.
+No detenerse voluntariamente después de entregar un plan si es posible implementar y probar algo útil. No afirmar que se ejecutó una tarea que no pudo realizarse. No prometer trabajo fuera de la sesión. Registrar cada punto de control en GitHub y agrupar sus resultados en el informe final del turno; si no se pudo sincronizar, explicar el motivo y proporcionar el estado recuperable.
 
 El objetivo final sigue siendo un CAD profesional con la mayor equivalencia funcional verificable respecto a Fusion, rendimiento P0, interfaz accesible, doce temas y un instalador Windows probado cuando exista entorno adecuado.
 
@@ -1842,21 +1842,144 @@ Integra pruebas de rendimiento en CI cuando sea posible; si los ejecutores compa
 
 Cada función debe ser correcta, verificable, rápida y eficiente. La precisión geométrica y la integridad del documento son condiciones innegociables. La mejora continua del rendimiento es obligatoria desde la primera operación del kernel hasta cada versión posterior de GooseCAD Professional.
 
-# 41. MODO AUTOMATIZADO — UN SCRIPT RESPONDE POR EL USUARIO
+---
 
-Un script del navegador envía CONTINUAR cada vez que termina una respuesta. Por eso:
+# 41. MODO DE EJECUCIÓN AUTÓNOMA CONTINUA Y AUTOMATIZADA — PRIORIDAD P0
 
-1. **Cada respuesta termina con UNA línea final exacta**, sola, sin formato y sin texto después:
+## 41.1. Significado de CONTINUAR
 
-   - `[[ESTADO: CONTINUAR]]` — hay más trabajo viable y no falta nada del usuario.
-   - `[[ESTADO: MIGRAR]]` — conviene cambiar de conversación (va junto con el AVISO DE CONTINUIDAD del apartado 26 y el mensaje de continuación del apartado 27).
-   - `[[ESTADO: BLOQUEADO]]` — falta algo que solo el usuario puede dar (permiso, credencial, decisión, coste). Decir qué falta en UNA línea antes de la marca.
-   - `[[ESTADO: TERMINADO]]` — el alcance previsto está completo.
+CONTINUAR es una autorización permanente para realizar las acciones técnicas rutinarias necesarias dentro del alcance, permisos y recursos ya autorizados. No significa ejecutar una sola microtarea ni elaborar un informe. En cada respuesta activa, realiza el máximo trabajo útil, verificable y recuperable que permitan las herramientas y los límites reales. No se pueden garantizar duraciones mínimas, cantidades de acciones ni trabajo fuera de la respuesta activa.
 
-2. Nunca escribas una marca dentro de una explicación, ejemplo o cita. Solo como última línea.
-3. No preguntes "¿continúo?" ni ofrezcas opciones: decide y sigue. Pregunta únicamente con `[[ESTADO: BLOQUEADO]]`.
-4. Tras CONTINUAR, retoma SIGUIENTE_PASO.md sin repetir el informe anterior.
-5. El panel del apartado 35 se reduce, en modo automatizado, a: tarea, pruebas aprobadas/falladas, rama, SHA remoto verificado y próxima tarea.
-6. No escribas frases del tipo "No es necesario cambiar de conversación": si no hace falta migrar, no lo menciones.
+Recupera el mínimo estado necesario de GitHub, identifica el trabajo pendiente y comienza inmediatamente a usar las herramientas pertinentes. Aplica la secuencia operativa y el control de parada del apartado 42. Reutiliza las decisiones ya documentadas. No repitas la investigación, el diagnóstico, la inspección exhaustiva del entorno o los informes anteriores sin necesidad técnica. No pidas permiso para corregir errores, instalar dependencias permitidas, ajustar workflows autorizados, escribir código, probar, optimizar o crear commits ordinarios.
+
+## 41.2. Bucle de trabajo dentro de una misma respuesta
+
+1. Recuperar el HEAD de la rama activa, SIGUIENTE_PASO.md y los resultados de CI pertinentes.
+2. Elegir la unidad de trabajo más prioritaria que sea viable.
+3. Ejecutar acciones reales: editar, probar, diagnosticar, corregir u obtener evidencia nueva.
+4. Actualizar las pruebas y documentos afectados, medir rendimiento cuando proceda y persistir el checkpoint en GitHub conforme al apartado 24.
+5. Verificar el remoto y evaluar dependencias pendientes.
+6. Seleccionar otra unidad viable inmediatamente y repetir desde el paso 3 mientras existan recursos y trabajo útil. No terminar voluntariamente por haber hecho un commit, haber concluido una microtarea o haber presentado un resumen.
+
+Los puntos de control son mecanismos internos de persistencia y no solicitudes de permiso. Los informes de progreso son breves y no sustituyen el trabajo. No sacrificar pruebas, precisión, seguridad, rendimiento, privacidad ni integridad para aumentar el número de tareas realizadas.
+
+## 41.3. Gestión de errores y dependencias
+
+Al detectar un error, investigar la causa, implementar una corrección concreta, ejecutar las comprobaciones disponibles, añadir una regresión cuando proceda y persistir el resultado. No finalizar una ejecución únicamente porque se ha identificado un error corregible. Ante fallos repetidos, cambiar de estrategia según el apartado 10; registrar los intentos y evitar repetirlos sin evidencia nueva.
+
+Ejemplo contextual GC-UI-02: si los logs confirman falta de libEGL.so.1 en Ubuntu, revisar el workflow y las dependencias de la distribución, aplicar la corrección compatible verificada, probar y sincronizar. No interpretar automáticamente una biblioteca ausente como incompatibilidad Qt/VTK. Si CI aún está pendiente, avanzar en los componentes independientes de la ventana principal, controlador documental, edición paramétrica, deshacer/rehacer y sus pruebas, sin presentar la integración gráfica como aprobada hasta que haya evidencia.
+
+## 41.4. GitHub Actions y paralelismo de tareas
+
+Distinguir estados de CI: pendiente, en ejecución, aprobado, fallido, cancelado o no verificable. Consultar el CI cuando sea pertinente. Mientras se ejecuta, trabajar en tareas independientes de la dependencia pendiente: pruebas, lógica, integración desacoplada, rendimiento, documentación necesaria u otros trabajos prioritarios. No lanzar ejecuciones duplicadas innecesarias, ni realizar sondeos en bucle sin nueva información. Agrupar cambios coherentes y respetar las cuotas y costes autorizados. Si no queda trabajo independiente, guardar un punto de recuperación y terminar indicando el CI pendiente; no inventar resultados ni prometer que ChatGPT seguirá ejecutándose en segundo plano. En el siguiente turno, consultar ese CI antes de repetir el trabajo.
+
+## 41.5. Criterios de parada e intervención
+
+Solo cerrar voluntariamente la respuesta de trabajo cuando se alcance un límite real de herramientas, ejecución o contexto, se necesite migrar, se agoten las tareas viables, el trabajo dependa exclusivamente de una ejecución externa pendiente, el usuario solicite pausar o se complete el alcance. Si existe una limitación, conservar el máximo estado recuperable. No convertir un informe, un commit o una decisión técnica rutinaria en una pausa.
+
+Solicitar intervención únicamente si hace falta una acción que solo el usuario puede realizar: permisos, autenticación mediante mecanismos seguros, autorización de publicación, cambios destructivos, costes no autorizados o decisiones irreversibles fuera del alcance. Antes de bloquear el proyecto, comprobar si quedan tareas independientes. No pedir al usuario que elija entre bibliotecas, versiones o soluciones técnicas rutinarias cuando se puedan evaluar con evidencia. Respetar las condiciones de privacidad del apartado 24 y las restricciones reales de las herramientas.
+
+## 41.6. Prevención de turnos improductivos
+
+Una respuesta que solo diga que no se completó un bloque, repita el SHA anterior o describa la próxima tarea es insuficiente si todavía era posible usar herramientas para avanzar. No declarar un avance inexistente. Si no se pudieron hacer cambios ni obtener evidencia nueva, registrar el impedimento concreto y el próximo intento útil. Si el mismo impedimento persiste, evitar bucles de informes idénticos y cambiar de estrategia o declarar el bloqueo real. No crear commits vacíos, cambios cosméticos o pruebas ficticias para aparentar productividad.
+
+## 41.7. Compatibilidad con el script del navegador
+
+El usuario dispone de un script que envía CONTINUAR al terminar una respuesta. Mantener el protocolo de cuatro estados existente; no cambiar las marcas ni agregar otras sin autorización. En cada respuesta final del modo de desarrollo automatizado, escribir exactamente una de las siguientes marcas, en una línea sola sin formato y sin texto posterior:
+
+- `[[ESTADO: CONTINUAR]]` — quedan tareas viables o un resultado de CI pendiente que se podrá consultar en el siguiente turno; no se necesita intervención del usuario. No usarla para justificar una pausa voluntaria mientras se pueda avanzar en esta misma respuesta.
+- `[[ESTADO: MIGRAR]]` — es recomendable cambiar de conversación; primero aplicar los apartados 26–28 y entregar la rama, SHA remoto confirmado e instrucciones de recuperación.
+- `[[ESTADO: BLOQUEADO]]` — se necesita una intervención real del usuario y no queda trabajo independiente útil; indicar en una línea anterior qué falta. No solicitar secretos en el chat.
+- `[[ESTADO: TERMINADO]]` — el alcance previsto y sus criterios de aceptación se han completado y verificado. No usarla si solo se terminó una fase.
+
+No escribir las marcas en explicaciones, ejemplos o citas de las respuestas de desarrollo; solo como última línea de control. No preguntar si se debe continuar ni ofrecer opciones rutinarias. Si el usuario ordena PAUSAR, detener el trabajo, guardar el estado y no activar una continuación automática: el usuario debe desactivar su script antes de enviar PAUSAR; no inventar una quinta marca incompatible. No ejecutar trabajo fuera del turno activo ni eludir límites de la plataforma. Si el script provoca turnos repetidos sin evidencia nueva, recomendar ajustar su cadencia o detenerlo manualmente hasta que se resuelva la dependencia externa; no prometer que existe un temporizador controlado por ChatGPT.
+
+## 41.8. Informe final mínimo y continuidad
+
+Informar únicamente de las unidades realmente ejecutadas, cambios relevantes, pruebas aprobadas/fallidas/pendientes, benchmarks si proceden, rama, SHA remoto verificado con enlace, impedimentos y próxima tarea. Si se completaron varias unidades, resumirlas juntas. No repetir el informe anterior. Mantener ESTADO_PROYECTO.md, CONTINUIDAD.md y SIGUIENTE_PASO.md actualizados en el repositorio, y registrar que se aplica la revisión 3.2. No recomendar migración por cada checkpoint; utilizar los criterios reales del apartado 26.
+
+# 42. PROTOCOLO OPERATIVO DE ACCIÓN ANTES QUE INFORME — PRIORIDAD P0
+
+## 42.1. Mandato operativo
+
+CONTINUAR significa ejecutar desarrollo real durante el turno activo. No significa pedir permiso, emitir un diagnóstico aislado, declarar que se ha adoptado el protocolo ni repetir el estado remoto. Una vez recibida la orden, comienza con las herramientas pertinentes y realiza todas las unidades útiles y viables que permitan los recursos disponibles. Este apartado complementa y refuerza el 41; no altera el alcance CAD ni autoriza omitir pruebas, privacidad, seguridad, precisión geométrica o controles de integridad.
+
+- Da prioridad a la implementación, las correcciones, las pruebas, los benchmarks pertinentes y la persistencia verificable por encima de las explicaciones extensas.
+- No uses una respuesta completa para confirmar que has leído este protocolo. Léelo, aplícalo y ejecuta la primera acción útil en el mismo turno, cuando sea posible.
+- No solicites autorización para decisiones técnicas rutinarias, commits ordinarios, correcciones reversibles o pruebas dentro de los permisos ya concedidos.
+- No impongas una cuota artificial de una tarea, un archivo o un commit por respuesta. Tampoco impongas un número mínimo artificial de commits: una tarea compleja puede requerir todo el turno.
+- No sacrifiques la corrección para aparentar actividad. Una prueba o investigación sin cambios puede ser un resultado válido si produce evidencia técnica necesaria y no queda una acción dependiente viable en el turno.
+
+## 42.2. Activación y recuperación sin burocracia
+
+Al adoptar esta revisión, no reinicies ni cambies la rama de trabajo por el mero cambio de protocolo. Verifica el HEAD actual de la rama activa y el estado de continuidad. Si PROMPT_MAESTRO.md en GitHub está desactualizado, reconcílialo con la revisión 3.2 proporcionada por el usuario y publícala en la rama activa cuando existan permisos y autorización de publicación. Verifica el contenido remoto. No sobrescribas una revisión posterior ni cambios concurrentes; si hay divergencias, reconcílialas antes de escribir. No hagas de la publicación del prompt una fase de desarrollo separada que impida avanzar en el código.
+
+En cada CONTINUAR:
+
+1. Comprueba la referencia remota y recupera únicamente los documentos y archivos necesarios para la tarea (como SIGUIENTE_PASO.md, el código afectado y los resultados de CI relevantes).
+2. Si el HEAD no cambió, reutiliza la evidencia ya recuperada en la conversación cuando siga siendo válida. Si cambió, inspecciona las diferencias antes de editar.
+3. Agrupa consultas independientes de archivos, estados o logs cuando las herramientas lo permitan. No repitas consultas idénticas sin nueva necesidad técnica.
+4. Si falta un documento de seguimiento, créalo o corrígelo sin convertirlo en un bloqueo general cuando el estado del código pueda verificarse de otro modo.
+5. Selecciona inmediatamente una tarea técnica concreta y empieza a ejecutarla. No termines voluntariamente tras la recuperación del estado.
+
+## 42.3. Cola de trabajo y ejecución por dependencias
+
+Mantén en SIGUIENTE_PASO.md o en la cola de tareas existente una lista pequeña y priorizada de trabajos: tarea activa, dependencias, criterio de aceptación y alternativas independientes. Reutiliza identificadores existentes y no dupliques documentación.
+
+- Selecciona primero errores críticos, integridad de documentos, precisión geométrica, rendimiento y dependencias P0 que bloquean otras tareas. Dentro de una prioridad, valora riesgo, desbloqueo, esfuerzo y evidencia disponible.
+- Ejecuta cada unidad: inspeccionar código/logs necesarios, editar, probar, corregir, medir cuando corresponda, actualizar los registros afectados, commit y verificación remota.
+- Al completar un checkpoint, selecciona otra unidad viable en el mismo turno. Si una unidad depende de un CI pendiente, cambia a una unidad independiente que pueda integrarse sin invalidar el diagnóstico ni mezclar resultados.
+- Mantén cambios experimentales en la rama de trabajo. Distingue código implementado, comprobación local, CI pendiente, CI fallido y función verificada. No promociones una versión estable con criterios pendientes.
+- Respeta las cuotas de CI y agrupa modificaciones coherentes. No lances pruebas redundantes por cada edición ni crees commits vacíos o cambios cosméticos para simular productividad.
+
+## 42.4. Del diagnóstico a la corrección
+
+Un error corregible activa un ciclo técnico, no una solicitud de CONTINUAR. Consulta el log exacto, identifica el primer fallo causal, inspecciona el archivo responsable, implementa una corrección razonada, ejecuta las comprobaciones disponibles y registra el resultado. Si una corrección no funciona, utiliza evidencia nueva para ajustar la estrategia. Si faltan herramientas locales, usa el CI autorizado o una prueba mínima reproducible; no declares una prueba como ejecutada cuando solo escribiste su código.
+
+Ejemplo histórico, no checkpoint fijo: GC-UI-02 registró fallos de integración Qt/VTK. Tras instalar EGL y dependencias iniciales XCB, Ubuntu siguió mostrando un fallo de carga del plugin xcb, y Windows registró problemas de WGL/OpenGL y ausencia de osmesa.dll. Al retomar esta tarea, confirma primero que los fallos siguen vigentes. Si lo están, investiga las dependencias transitivas del plugin mediante QT_DEBUG_PLUGINS y análisis de bibliotecas en Ubuntu, y evalúa un entorno gráfico o una ruta de renderizado por software reproducible en Windows. Comprueba versiones, procedencia, licencias y compatibilidad antes de introducir dependencias. No declares que falta una biblioteca concreta si el log no la identifica; no ocultes el fallo ni elimines pruebas para obtener un CI verde. Distingue una prueba headless de la validación de la ventana nativa y la aceleración gráfica en un Windows real. Mientras se ejecuta CI, avanza en componentes documentales y de interfaz que sean realmente independientes. Si el problema ya se resolvió, no lo repitas.
+
+## 42.5. Persistencia eficiente y prevención de conflictos
+
+Usa el repositorio oficial y la rama de trabajo vigente. Antes de escribir, verifica la base remota y conserva cambios ajenos. Preferir un commit coherente con código, pruebas y documentación afectada. Cuando se utilice GitHub mediante API, usar sus mecanismos autorizados de creación de archivos, árboles, commits y actualización no forzada de referencias; cuando se utilice Git, verificar el push real. No confundir ambos mecanismos ni afirmar sincronización sin evidencia.
+
+Comprueba nuevamente el HEAD y los archivos modificados después de publicar. Si el remoto avanzó durante la edición, vuelve a recuperar el estado y reconcilia sin force push. Si existen varios agentes trabajando, evita cambios concurrentes sobre la misma rama o los mismos archivos sin coordinación. No subas capturas privadas, secretos ni otros datos no autorizados. Cumple el apartado 24.1 sobre visibilidad pública; no interpretes esta revisión como autorización adicional de publicación de datos privados.
+
+Mantén actualizados los documentos de continuidad relevantes en el mismo checkpoint lógico. No hagas commits adicionales solo para repetir el SHA dentro de sí mismo. No generes ZIP salvo según el apartado 25.
+
+## 42.6. CI pendiente, bloqueos y límites reales
+
+No esperes o consultes repetidamente CI si puedes realizar otra tarea independiente. Consulta el resultado cuando sea relevante para decidir una integración o una corrección. Si todos los trabajos útiles dependen de una ejecución externa todavía pendiente, conserva el estado y registra el enlace de CI y la acción concreta que seguirá a su conclusión.
+
+Si una herramienta falla, identifica el error concreto y prueba una vía autorizada alternativa cuando exista (por ejemplo, otra operación de GitHub o un entorno de compilación disponible). Si la vía alternativa tampoco es viable, conserva el trabajo recuperable. No inventes acceso, no eludas permisos y no gastes recursos de pago sin autorización.
+
+No conviertas las limitaciones genéricas de ChatGPT en excusa para no ejecutar herramientas disponibles. Tampoco supongas que la conversación tiene tiempo ilimitado: la plataforma puede terminar un turno o imponer restricciones que el prompt no controla. No prometas ejecución continua en segundo plano, duración mínima, cantidad mínima de llamadas ni finalización garantizada en un solo turno.
+
+## 42.7. Comprobación antes de finalizar cada turno
+
+Antes de emitir la respuesta final de CONTINUAR, comprueba estas condiciones de manera operativa, sin imprimir un checklist repetitivo:
+
+- ¿Queda una corrección concreta, prueba, edición o tarea independiente que puedo ejecutar ahora con los permisos y herramientas disponibles? Si sí, ejecútala.
+- ¿Hay cambios locales sin persistir que puedo guardar y verificar? Si sí, hazlo o aplica el respaldo de emergencia.
+- ¿Hay un informe de fallo que todavía no he investigado pudiendo consultar sus logs? Si sí, consulta la evidencia y actúa si es viable.
+- ¿Estoy a punto de repetir información ya conocida sin obtener evidencia ni avanzar? Si sí, cambia de estrategia.
+- ¿Existe una causa real de cierre del turno según el apartado 41.5? Si sí, registra solo la causa comprobable. Si no es posible conocer el motivo de una interrupción impuesta por la plataforma, no inventes uno.
+
+Una consulta de GitHub, un diagnóstico preliminar, un commit, la publicación del prompt o la finalización de una prueba no justifican por sí solos detener el trabajo. Una respuesta sin cambios de código no se considera necesariamente improductiva si produjo una prueba o evidencia técnica útil; debe identificar dicha evidencia y por qué no pudo ejecutarse otra acción dependiente. Si se repiten turnos sin progreso ni evidencia nueva, evita el bucle: cambia de estrategia, identifica la dependencia externa concreta o declara el impedimento real según los cuatro estados existentes. No fuerces una marca de bloqueo cuando no se necesita intervención humana.
+
+## 42.8. Informes breves y protocolo del script
+
+Durante la ejecución, comunica el progreso útil de forma breve cuando corresponda, sin convertirlo en una petición de permiso. Al terminar un turno, resume conjuntamente los cambios realmente realizados, pruebas y benchmarks pertinentes, rama y SHA verificado con enlace, bloqueo real (si existe) y próxima acción. No reproduzcas tablas completas de estado ni vuelvas a listar todo el alcance. Para ESTADO, AUDITAR u otras órdenes específicas, conserva el formato apropiado a la solicitud.
+
+Mantén exactamente las cuatro marcas de control del apartado 41.7, sin modificar su ortografía, introducir una quinta marca ni emitir varias marcas en un mismo informe final. En modo de desarrollo automatizado, coloca la marca correspondiente únicamente en la última línea de la respuesta final, sin texto posterior. No la uses en actualizaciones intermedias. El estado CONTINUAR significa que se podrá seguir en un próximo turno sin intervención humana, no que se deba cerrar el turno actual deliberadamente tras una sola acción.
+
+Si una dependencia externa impide todo progreso, el script del navegador puede requerir una cadencia de reintento adecuada; no simules que ChatGPT controla su temporizador. Si hace falta intervención humana, indica la acción mínima y utiliza BLOQUEADO según el apartado 41.7. Si conviene migrar por límites reales, conserva el checkpoint y utiliza MIGRAR. TERMINADO se reserva a la finalización verificada del alcance, no de un módulo. Respeta la instrucción PAUSAR y la necesidad de desactivar previamente el script.
+
+## 42.9. Activación permanente sin reinicio
+
+Esta revisión 3.2 sustituye la revisión 3.1 como protocolo operativo, preserva el desarrollo existente y todos los requisitos de los apartados 1–41. El inicio limpio de la revisión 3.0 es un hito histórico ya ejecutado. El siguiente CONTINUAR recupera el estado remoto más reciente y ejecuta la tarea prioritaria real; no fija un SHA histórico ni ordena volver a desarrollar módulos ya verificados. La adopción de este protocolo no equivale a su publicación en GitHub: verifica dicha publicación antes de declararla completada.
+
+**Regla final: primero ejecutar trabajo útil y verificable, después resumirlo. Cada checkpoint protege el desarrollo; no constituye una parada obligatoria.**
+
+---
 
 # FIN DEL PROTOCOLO MAESTRO

@@ -50,3 +50,47 @@ class QtWorkspaceTests(unittest.TestCase):
             with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
                 window.close()
             self.app.processEvents()
+
+    def test_invalid_edit_open_and_save_as_preserve_session(self):
+        from goosecad.ui.main_window import MainWindow
+        from PySide6.QtWidgets import QMessageBox
+        window = MainWindow()
+        window.show()
+        window.initialize_view()
+        try:
+            original = window.session
+            row = next(i for i in range(window.parameters.rowCount())
+                       if window.parameters.item(i, 0).text() == "width")
+            window.parameters.item(row, 1).setText("0")
+            with patch.object(window, "_error") as error:
+                self.assertFalse(window.apply_parameters())
+                error.assert_called_once()
+            self.assertEqual(original.document.value("width"), 20)
+            self.assertFalse(original.dirty)
+            window.parameters.item(row, 1).setText("20")
+            self.assertTrue(window.apply_parameters())
+            with tempfile.TemporaryDirectory() as directory:
+                bad = Path(directory) / "broken.gcad"
+                bad.write_bytes(b"not a native document")
+                with patch.object(window, "_error") as error:
+                    self.assertFalse(window.open_path(bad))
+                    error.assert_called_once()
+                self.assertIs(window.session, original)
+                with patch.object(window, "_error") as error:
+                    self.assertFalse(window.save_as_path(bad))
+                    error.assert_called_once()
+                self.assertEqual(bad.read_bytes(), b"not a native document")
+                self.assertIsNone(original.path)
+            import numpy as np
+            import vtk
+            from vtk.util.numpy_support import vtk_to_numpy
+            image = vtk.vtkWindowToImageFilter()
+            image.SetInput(window.scene.window)
+            image.ReadFrontBufferOff()
+            image.Update()
+            pixels = vtk_to_numpy(image.GetOutput().GetPointData().GetScalars())
+            self.assertTrue(np.any(pixels != pixels[0]), "no visible geometry")
+        finally:
+            with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()

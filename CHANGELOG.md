@@ -45,3 +45,5 @@ GC-VIEW-01: visor experimental VTK 9.6.2, escena por NativeDocument/MeshCache, b
 - GC-UI-01 (experimental): controlador de documento para futura UI; guardado protegido por revisión, recuperación explícita, edición/deshacer/rehacer, selección y escenas con comprobación de obsolescencia. Pruebas de regresión añadidas; estado CI por verificar.
 
 - GC-UI-01 audit: protección del indicador dirty ante cambios directos y discrepancia documento/disco durante save; regresiones añadidas.
+
+- GC-UI-03: ventana Qt experimental integrada con DocumentSession y Scene, apertura, guardado CAS, parámetros, undo/redo y pruebas. CI gráfico nuevo pendiente; no se declara versión estable.

@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "83e57b18ba64e65d6282a58b9ebf33580613bfa3",
-  "remote_checkpoint": "83e57b18ba64e65d6282a58b9ebf33580613bfa3",
+  "remote_base_observed": "df4f07de18c3b542eafd4de680550258f8119e7e",
+  "remote_checkpoint": "df4f07de18c3b542eafd4de680550258f8119e7e",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -48,6 +48,6 @@
   "tests_discovered": 173,
   "tests_skipped_default_ci": 4,
   "tests_graphics_verified": 5,
-  "qt_workspace": "Qt probes Ubuntu success; Windows WGL failure; desktop implementation unverified",
-  "prompt_remote_revision": "3.0; full 3.2 transfer pending"
+  "qt_workspace": "Qt integration CI requested; Windows native OpenGL pending",
+  "prompt_remote_revision": "3.2 (exact source text transferred, verify remote SHA externally)"
 }
