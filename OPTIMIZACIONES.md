@@ -41,3 +41,5 @@ GC-VIEW-01: visor experimental VTK 9.6.2, escena por NativeDocument/MeshCache, b
 GC-MESH-01 revisión: cronómetro por etapas 20 esferas, ~69.13 ms nativo y 40.52 ms extracción. Vectorización de índices en bloques de 8192; conservar ruta escalar <64 triángulos/cara. Mediana 108.7732→94.1325 ms, P95 118.4344→102.5419 ms. Identidad privada solo diagnóstico y decisión por cara. Paralelo opt-in desde cinco caras curvas comparables, no umbral universal. Ver BENCHMARKS.csv y docs/REVISION_MESH_01.md.
 
 GC-UI-04: separación de cálculo documental y control GUI, cancelación cooperativa, una tarea activa, sin duplicar B-Rep para historia. No hay medición comparativa nueva aún. Se preservan las dos líneas base brutas CI de GC-UI-03; no atribuir diferencias entre runners a la versión de Qt.
+
+GC-UI-07: polling fijo sustituido por evento de finalización; no añade hilos ni cambia cálculos. Medición pendiente.

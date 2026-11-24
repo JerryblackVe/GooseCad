@@ -13,7 +13,8 @@ import time
 from time import perf_counter_ns
 
 from PySide6 import __version__ as qt_version
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMessageBox
+from unittest.mock import patch
 from goosecad.ui.main_window import MainWindow
 from vtk import vtkVersion
 
@@ -96,8 +97,8 @@ def main(path):
                 app.processEvents()
                 time.sleep(.005)
         if not window.tasks.busy:
-            window._can_replace = lambda: True
-            window.close()
+            with patch.object(QMessageBox, 'question', return_value=QMessageBox.StandardButton.Discard):
+                window.close()
             app.processEvents()
 
 

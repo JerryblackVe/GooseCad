@@ -197,3 +197,32 @@ class DocumentTaskTests(unittest.TestCase):
                 except Exception:
                     pass
             tasks.close()
+
+    def test_completion_notification_for_success_and_failure(self):
+        notifications = Event()
+        owner = get_ident()
+        observed = []
+        def notify():
+            observed.append(get_ident())
+            notifications.set()
+        tasks = DocumentTasks(session(), notify=notify)
+        try:
+            tasks.edit({"x": 8})
+            self.assertTrue(notifications.wait(5))
+            self.assertTrue(tasks.ready)
+            self.assertTrue(tasks.busy)
+            collect(tasks)
+            self.assertEqual(len(observed), 1)
+            notifications.clear()
+            tasks.edit({"x": 0})
+            self.assertTrue(notifications.wait(5))
+            with self.assertRaises(Exception):
+                collect(tasks)
+            self.assertEqual(len(observed), 2)
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()

@@ -6,7 +6,7 @@ its owning thread. File commands also use the worker; meshing remains synchronou
 from pathlib import Path
 from math import isfinite
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QDockWidget, QTableWidget,
@@ -37,6 +37,8 @@ def terminal_bodies(document):
 
 
 class MainWindow(QMainWindow):
+    task_finished = Signal()
+
     def __init__(self, session=None, *, viewport_factory=OwnedViewport,
                  scene_factory=Scene):
         super().__init__()
@@ -47,9 +49,7 @@ class MainWindow(QMainWindow):
         self.tasks = None
         self._after_task = None
         self._cancel_requested = False
-        self._task_timer = QTimer(self)
-        self._task_timer.setInterval(15)
-        self._task_timer.timeout.connect(self._poll_task)
+        self.task_finished.connect(self._poll_task, Qt.ConnectionType.QueuedConnection)
         self._ready = False
         self._pick_observer = None
         self._staged = False
@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
             raise
         old_session, old_scene, old_tasks = self.session, self.scene, self.tasks
         self.session, self.scene = candidate, scene
-        self.tasks = DocumentTasks(candidate)
+        self.tasks = DocumentTasks(candidate, notify=self.task_finished.emit)
         if old_tasks is not None:
             old_tasks.close()
         if old_scene is not None:
@@ -237,7 +237,6 @@ class MainWindow(QMainWindow):
             "Guardando… No interrumpa el guardado." if self.tasks.kind == "save"
             else "Operación en curso… Puede solicitar cancelación.")
         self._update_actions()
-        self._task_timer.start()
         return True
 
     def start_parameter_edit(self, *, after=None):
@@ -270,9 +269,8 @@ class MainWindow(QMainWindow):
             self._update_actions()
 
     def _poll_task(self):
-        if not self.tasks.ready:
+        if self.scene is None or not self.tasks.ready:
             return
-        self._task_timer.stop()
         after, self._after_task = self._after_task, None
         kind = self.tasks.kind
         try:
@@ -535,7 +533,6 @@ class MainWindow(QMainWindow):
             if choice != QMessageBox.StandardButton.Discard:
                 event.ignore()
                 return
-        self._task_timer.stop()
         if self.tasks is not None:
             self.tasks.close()
         if self.scene is not None:

@@ -20,8 +20,9 @@ class TaskStateError(RuntimeError):
 class DocumentTasks:
     """Own a reusable worker and at most one uncollected document operation."""
 
-    def __init__(self, session):
+    def __init__(self, session, *, notify=None):
         self.session = session
+        self._notify = notify
         self._owner = get_ident()
         self._executor = ThreadPoolExecutor(max_workers=1,
                                             thread_name_prefix="goosecad-document")
@@ -66,6 +67,13 @@ class DocumentTasks:
         self._future = self._executor.submit(method, *args, **(kwargs or {}))
         self._cancel = token
         self._kind = kind
+        if self._notify is not None:
+            self._future.add_done_callback(self._notify_done)
+
+    def _notify_done(self, future):
+        # May run on the worker or synchronously if already finished.
+        # Callback must only enqueue a notification; it must not collect.
+        self._notify()
 
     def _start(self, method, *args, expected_revision=None):
         self._idle()

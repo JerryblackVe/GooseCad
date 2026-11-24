@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "a1fd0c4fdefc2990541bef7101342cecd2dae03e",
-  "remote_checkpoint": "a1fd0c4fdefc2990541bef7101342cecd2dae03e",
+  "remote_base_observed": "8fe74587ff1acaed5b7530aea66ac6af491951aa",
+  "remote_checkpoint": "8fe74587ff1acaed5b7530aea66ac6af491951aa",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-06",
+  "next_task": "GC-UI-07",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45506703643,
@@ -60,5 +60,6 @@
   "qt_mesa_verified_run": 45506457843,
   "qt_close_regression_job": 138843657070,
   "async_file_tasks": "GUI actions integrated; tests pending",
-  "qt_close_linux_qt693": "4 tests passed job 138844980747; no close exception in inspected log"
+  "qt_close_linux_qt693": "4 tests passed job 138844980747; no close exception in inspected log",
+  "async_notification": "queued Qt signal implemented; CI pending"
 }

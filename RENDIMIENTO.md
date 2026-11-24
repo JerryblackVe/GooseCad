@@ -53,3 +53,5 @@ GC-UI-03 línea base CI Linux software, 30 muestras tras 5 calentamientos por ve
 GC-UI-06: worker reutilizado para carga y persistencia, evitando reconstrucción OCCT y fsync en GUI en futura integración. Sin cancelación de guardado durable; apertura descarta candidato si cancelación observada. No se ha medido latencia de estas rutas.
 
 GC-UI-05 job 138844980747 Qt 6.9.3: mismo runner Xvfb, 30+30 muestras. Retorno de comando mediana sync/async 7.336607/0.231027 ms; fin total 8.927976/30.827358 ms. La ruta async libera el GUI pero incrementa tiempo total en caja simple; investigar temporizador 15ms y usar notificación de finalización en hilo GUI. No cambiar tolerancias. Datos brutos en artefactos del run 45507091254; conservar al cerrar CI.
+
+GC-UI-07: se elimina espera fija del temporizador de 15 ms mediante notificación de finalización Future → Qt queued signal. Medir mismo runner antes/después; mejora total aún no verificada.
