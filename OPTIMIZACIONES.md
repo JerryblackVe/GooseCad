@@ -45,3 +45,5 @@ GC-UI-04: separación de cálculo documental y control GUI, cancelación coopera
 GC-UI-07: polling fijo sustituido por evento de finalización; no añade hilos ni cambia cálculos. Medición pendiente.
 
 GC-UI-11: un Future para edición y preparación de malla; se elimina doble dispatch/relayout, sin cambiar tolerancias ni propiedad VTK. Cancelación post-commit distingue fallo de vista de fallo de modelo; mediciones pendientes.
+
+GC-PERF-UI-01: separar medición de despacho, OCCT, preparación, copia VTK y render para decidir próximo cuello de botella medido. Comparación sync/async en mismo job; ninguna mejora declarada aún.

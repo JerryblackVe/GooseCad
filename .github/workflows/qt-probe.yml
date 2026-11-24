@@ -2,7 +2,7 @@ name: Qt VTK compatibility probe
 on:
   push:
     branches: ['feature/**']
-    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml', 'src/goosecad/ui/**', 'src/goosecad/view/**', 'src/goosecad/document/**', 'tests/test_qt_workspace.py', 'benchmarks/qt_workspace_bench.py', 'experiments/windows_mesa_runner.py', 'scripts/install-mesa-ci.ps1']
+    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml', 'src/goosecad/ui/**', 'src/goosecad/view/**', 'src/goosecad/document/**', 'tests/test_qt_workspace.py', 'benchmarks/qt_workspace_bench.py', 'benchmarks/qt_multibody_bench.py', 'experiments/windows_mesa_runner.py', 'scripts/install-mesa-ci.ps1']
   workflow_dispatch:
 permissions:
   contents: read
@@ -65,8 +65,17 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: '1'
           OPENBLAS_NUM_THREADS: '1'
         run: xvfb-run -a python benchmarks/qt_workspace_bench.py qt-workspace.csv
+      - name: Qt multibody phase benchmark (Linux software)
+        if: runner.os == 'Linux'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: xvfb-run -a python benchmarks/qt_multibody_bench.py qt-multibody.csv
       - uses: actions/upload-artifact@v4
         if: runner.os == 'Linux'
         with:
           name: qt-workspace-${{ matrix.qt }}
-          path: qt-workspace.csv
+          path: |
+            qt-workspace.csv
+            qt-multibody.csv

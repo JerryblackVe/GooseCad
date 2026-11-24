@@ -330,3 +330,46 @@ class QtWorkspaceTests(unittest.TestCase):
                 with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
                     window.close()
                 self.app.processEvents()
+
+    def test_recovery_catalog_dialog_archive_and_open_previous(self):
+        from PySide6.QtWidgets import QMessageBox
+        from goosecad.ui.recovery_dialog import RecoveryDialog
+        from goosecad.ui.main_window import sample_session
+        from goosecad.document.autosave import AutosaveSlot
+        from goosecad.document.session import DocumentSession
+        with tempfile.TemporaryDirectory() as directory:
+            session = sample_session()
+            slot = AutosaveSlot(directory,session.document)
+            session.edit({"width":25})
+            slot.capture(session)
+            session.edit({"width":30})
+            slot.capture(session)
+            dialog = RecoveryDialog(Path(directory),active_path=slot.path)
+            try:
+                self.assertEqual(dialog.table.rowCount(),2)
+                dialog.table.selectRow(0)
+                self.assertFalse(dialog.archive_button.isEnabled())
+                self.assertTrue(dialog.open_button.isEnabled())
+                dialog.active_path = None
+                previous = next(i for i,e in enumerate(dialog.entries) if e.previous)
+                dialog.table.selectRow(previous)
+                dialog.update_buttons()
+                self.assertTrue(dialog.archive_button.isEnabled())
+                with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.No):
+                    dialog.archive_selected()
+                self.assertEqual(dialog.table.rowCount(),2)
+                with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Yes):
+                    dialog.archive_selected()
+                self.assertEqual(dialog.table.rowCount(),1)
+                dialog.table.selectRow(0)
+                dialog.open_selected()
+                copy = DocumentSession.open_copy(dialog.selected_path)
+                self.assertTrue(copy.dirty)
+                self.assertEqual(copy.document.value("width"),30)
+                archived = list((Path(directory)/"archive").glob("slot-*/*.previous"))
+                self.assertEqual(len(archived),1)
+                self.assertEqual(DocumentSession.open_copy(archived[0]).document.value("width"),25)
+            finally:
+                dialog.close()
+                dialog.deleteLater()
+                self.app.processEvents()
