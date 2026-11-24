@@ -1,0 +1,20 @@
+--- a/src/goosecad/geometry/kernel.py
++++ b/src/goosecad/geometry/kernel.py
+@@ -77,6 +77,10 @@
+ 
+ def properties(shape: TopoDS_Shape) -> Properties:
+     _validate(shape, allow_empty=True)
++    return _properties_validated(shape)
++
++
++def _properties_validated(shape: TopoDS_Shape) -> Properties:
+     count = _solid_count(shape)
+     v, a = GProp_GProps(), GProp_GProps()
+     BRepGProp.VolumeProperties_s(shape, v, True, True)
+@@ -110,5 +114,5 @@
+         raise GeometryError("OCCT Boolean failed")
+     result = _validate(op.Shape(), allow_empty=True)
+     # A zero-volume common/cut is a valid empty result, not a failed operation.
+-    properties(result)
++    _properties_validated(result)
+     return result

@@ -1,3 +1,13 @@
-# GooseCAD Professional
+# GooseCAD Professional — 0.1.0-alpha.1
+Inicio limpio revisión 3.0. Núcleo experimental B-Rep, no aplicación de escritorio ni instalador todavía.
+Repositorio oficial: https://github.com/JerryblackVe/GooseCad. Rama de trabajo feature/000-clean-start; publicación de código y documentación autorizada, excluyendo datos privados y medios del usuario.
 
-Repositorio oficial. Desarrollo de un CAD de escritorio independiente. Fase 0: preparación y verificación técnica. No es todavía una aplicación distribuible.
+Python 3.13.5 y OCCT nativo mediante OCP. Ejecutar desde la raíz:
+```
+python -m pip install -r dependencies/requirements-core.txt
+python -m pip install --no-deps .
+python -m unittest discover -s tests -v
+python benchmarks/kernel_bench.py benchmark-local.csv
+python experiments/topology_history.py
+```
+Ver ESTADO_PROYECTO.md, CONTINUIDAD.md, SIGUIENTE_PASO.md y PROMPT_MAESTRO.md. No se incorporó código anterior.

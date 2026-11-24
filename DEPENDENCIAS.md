@@ -1,0 +1,2 @@
+# Dependencias
+CPython 3.13.5, cadquery-ocp 7.9.3.1.1 (OCP 7.9.3.1), VTK 9.6.2 y transitivas fijadas desde entorno real Linux en dependencies/requirements-core.txt. El lock no incluye hashes ni build backend transitivo y no está validado en Windows. No se incluye binario de terceros. GCC 14.2.0, CMake 3.31.6, Git 2.47.3 y Ninja detectados. Goose, C++ OCCT SDK, Qt/PySide, FreeCAD, SolveSpace, Eigen, OpenGL/Vulkan, instaladores y otras dependencias futuras no adoptados. Auditoría de versiones/licencias antes de distribución. Ver docs/FUENTES.md.

@@ -1,0 +1,2 @@
+# Prioridades
+P0 GC-BOOT: privacidad y sincronización; GC-TOPO-01 naming persistente (experimento inicial hecho); GC-ABI-01 C++ SDK/Goose FFI; GC-SOLVER-01 restricciones; GC-DAG-01 recálculo incremental; GC-DOC-01 transacciones/persistencia; GC-PERF-01 escalabilidad, concurrencia y tolerancias; CI Windows. P1 primitivas, extrusión, revolución, booleanas, visor, boceto, STEP. P2 superficies/ensamblajes, P3 espacios especializados, P4 automatización. Rendimiento, seguridad, integridad y accesibilidad transversales.

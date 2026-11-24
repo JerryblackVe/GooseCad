@@ -1,0 +1,28 @@
+offset=2 result_faces=12
+  input_face=1 modified=0 generated=0 deleted=False unchanged=True
+  input_face=2 modified=0 generated=0 deleted=False unchanged=True
+  input_face=3 modified=2 generated=2 deleted=False unchanged=False
+  input_face=4 modified=2 generated=2 deleted=False unchanged=False
+  input_face=5 modified=2 generated=2 deleted=False unchanged=False
+  input_face=6 modified=2 generated=2 deleted=False unchanged=False
+offset=4 result_faces=12
+  input_face=1 modified=0 generated=0 deleted=False unchanged=True
+  input_face=2 modified=0 generated=0 deleted=False unchanged=True
+  input_face=3 modified=2 generated=2 deleted=False unchanged=False
+  input_face=4 modified=2 generated=2 deleted=False unchanged=False
+  input_face=5 modified=2 generated=2 deleted=False unchanged=False
+  input_face=6 modified=2 generated=2 deleted=False unchanged=False
+offset=6 result_faces=12
+  input_face=1 modified=0 generated=0 deleted=False unchanged=True
+  input_face=2 modified=0 generated=0 deleted=False unchanged=True
+  input_face=3 modified=2 generated=2 deleted=False unchanged=False
+  input_face=4 modified=2 generated=2 deleted=False unchanged=False
+  input_face=5 modified=2 generated=2 deleted=False unchanged=False
+  input_face=6 modified=2 generated=2 deleted=False unchanged=False
+offset=11 result_faces=6
+  input_face=1 modified=0 generated=0 deleted=False unchanged=True
+  input_face=2 modified=0 generated=0 deleted=False unchanged=True
+  input_face=3 modified=0 generated=0 deleted=False unchanged=True
+  input_face=4 modified=0 generated=0 deleted=False unchanged=True
+  input_face=5 modified=0 generated=0 deleted=False unchanged=True
+  input_face=6 modified=0 generated=0 deleted=False unchanged=True

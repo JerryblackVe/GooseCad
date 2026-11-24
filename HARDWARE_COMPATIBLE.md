@@ -1,0 +1,2 @@
+# Hardware
+Medido: Debian 13 x86_64, Xeon Platinum 8573C, 5 CPU lógicas visibles, cuota equivalente 4, límite cgroup 4 GiB, GPU no medida, DISPLAY :0 y Xvfb disponibles; no se ejecutó GUI. C++20 probado. Propuesta Windows (no verificada): modesto 4C/8GiB/iGPU 1080p; referencia 8C/16GiB/GPU compatible Qt 1080p; avanzado 16C/32GiB/GPU discreta 1440p. Requisitos reales se establecerán por medición. Windows 10/11 x64 objetivo, CI Windows Server no sustituye ambas pruebas.

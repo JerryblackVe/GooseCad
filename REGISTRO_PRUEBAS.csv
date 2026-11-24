@@ -1,0 +1,16 @@
+id,caso,entorno,resultado,evidencia,fecha
+T-001,boolean_overlap,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-002,box,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-003,cylinder,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-004,disjoint,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-005,identical_cut,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-006,invalid_dimensions,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-007,invalid_origin,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-008,sphere,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-009,touching,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-010,unknown_operation,Linux/OCP 7.9.3.1,Aprobada antes/después,results/kernel-first.log; results/kernel-final.log,2026-11-24
+T-011,C++20 smoke,Linux o pendiente,Aprobada,results/compiler-smoke.log,2026-11-24
+T-012,Historia de caras,Linux o pendiente,Experimento ejecutado; naming no resuelto,results/topology-history.log,2026-11-24
+T-013,Python compileall,Linux o pendiente,Aprobada,"Comando local, exit 0",2026-11-24
+T-014,Windows CI,Linux o pendiente,No ejecutada,.github/workflows/kernel-ci.yml,2026-11-24
+T-015,UI y persistencia,Linux o pendiente,No ejecutada,No implementadas,2026-11-24

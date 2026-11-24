@@ -1,0 +1,2 @@
+# Pendientes
+P0 publicación autorizada; verificar escritura y remoto; CI Windows; resolver identidad Goose, instalar compilador y probar ABI; SDK C++ OCCT; naming 1:N, N:1 y referencias eliminadas; solver; DAG; casos booleanos complejos y precisión extrema; matriz exhaustiva por comando y variantes. P1 GUI, documentos, STEP y demás criterios alpha funcional. No se afirma paridad.

@@ -1,0 +1,10 @@
+Linux-6.18.57-x86_64-with-glibc2.41 3.13.5 7.9.3.1 logical_cpu 5
+box        parallel=False median=0.4985 ms p95=0.6637 ms
+cylinder   parallel=False median=0.1873 ms p95=0.2508 ms
+sphere     parallel=False median=0.0988 ms p95=0.2397 ms
+union      parallel=False median=6.7923 ms p95=7.8454 ms
+union      parallel=True  median=7.7142 ms p95=8.4481 ms
+cut        parallel=False median=5.3627 ms p95=5.9697 ms
+cut        parallel=True  median=6.2310 ms p95=7.1666 ms
+common     parallel=False median=5.4734 ms p95=6.3390 ms
+common     parallel=True  median=6.2508 ms p95=7.1191 ms
