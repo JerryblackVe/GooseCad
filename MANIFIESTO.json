@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "bf2a524da3671c99448ecb13de0b34125e9f1d65",
-  "remote_checkpoint": "bf2a524da3671c99448ecb13de0b34125e9f1d65",
+  "remote_base_observed": "d245e55cd47dfc1544c3dd06021e5e9acba57bf4",
+  "remote_checkpoint": "d245e55cd47dfc1544c3dd06021e5e9acba57bf4",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-PKG-02",
+  "next_task": "GC-GEO-TRANS-01",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508375966,
@@ -108,5 +108,6 @@
     "uncompressed_bytes": 762263751
   },
   "structural_benchmark": "implemented; CI pending",
-  "package_optimization": "targeted VTK imports and narrowed freeze; CI pending"
+  "package_optimization": "targeted VTK imports and narrowed freeze; CI pending",
+  "translation_kernel": "exact B-Rep location transform implemented; CI pending"
 }

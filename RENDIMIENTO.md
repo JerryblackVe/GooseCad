@@ -75,3 +75,5 @@ GC-PERF-UI-02: Qt 6.11.3 job 138851468603, mediana total sync/async 20 independi
 GC-STRUCT-PERF-01 benchmark compara append nativo y undo/redo con reconstrucción completa de mismo estado declarativo, 20 y 100 cuerpos, 10 muestras/caso y 3 warmups. Verifica identidad de B-Rep retenido, sellos, bytes y volumen. tracemalloc en prueba separada, no mide OCCT/RSS. Resultados pendientes. GC-PKG-01 bundle 762263751 bytes/2469 archivos; mayores OCP pyd 94209024 bytes, vtkCommonCore 48741376, vtkFiltersCore 22253056, Qt opengl32sw 20640480. Optimizar imports VTK antes de reempaquetar.
 
 GC-PKG-02: imports VTK específicos y eliminación collect-all, baseline bundle 762263751 bytes, nueva medición pendiente; no reducir precisión ni eliminar pruebas. Importación local de clases y factory comprobada, no GPU.
+
+GC-GEO-TRANS-01: movimiento rígido por ubicación, sin copiar geometría subyacente ni teselar; validez OCCT antes/después. Sin benchmark ni integración nativa aún.

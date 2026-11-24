@@ -13,7 +13,8 @@ from OCP.TopAbs import TopAbs_SOLID
 from OCP.TopExp import TopExp
 from OCP.TopTools import TopTools_IndexedMapOfShape, TopTools_ListOfShape
 from OCP.TopoDS import TopoDS_Shape
-from OCP.gp import gp_Ax2, gp_Dir, gp_Pnt
+from OCP.gp import gp_Ax2, gp_Dir, gp_Pnt, gp_Trsf, gp_Vec
+from OCP.TopLoc import TopLoc_Location
 
 MIN_LENGTH = Precision.Confusion_s()
 # Conservative experimental domain; not an OCCT-wide limit.
@@ -73,6 +74,27 @@ def cylinder(radius: float, height: float, origin=(0., 0., 0.)) -> TopoDS_Shape:
 
 def sphere(radius: float, origin=(0., 0., 0.)) -> TopoDS_Shape:
     return _primitive(BRepPrimAPI_MakeSphere(_point(origin), _dimension(radius)))
+
+
+def translate(shape: TopoDS_Shape, dx: float, dy: float, dz: float) -> TopoDS_Shape:
+    """Exact rigid B-Rep placement; offset components in mm within ±1e6.
+
+    New location shares underlying topology under the borrowed-read-only
+    contract; never mutates the source or tessellates. Empty compounds remain
+    valid. The offset bound is per operation, not a global workspace bound.
+    """
+    if not isinstance(shape, TopoDS_Shape):
+        raise GeometryError("Expected B-Rep shape")
+    if any(type(v) not in (int,float) or not isfinite(v)
+           or not -MAX_LENGTH <= v <= MAX_LENGTH for v in (dx,dy,dz)):
+        raise GeometryError("Translation must contain finite offsets within ±1e6 mm")
+    _validate(shape,allow_empty=True)
+    if dx == dy == dz == 0:
+        return shape
+    transform = gp_Trsf()
+    transform.SetTranslation(gp_Vec(dx,dy,dz))
+    result = shape.Moved(TopLoc_Location(transform))
+    return _validate(result,allow_empty=True)
 
 
 def properties(shape: TopoDS_Shape) -> Properties:

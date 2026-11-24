@@ -226,3 +226,4 @@ GC-STRUCT-03,Append Qt y booleano historial actor reuse roundtrip,GitHub Actions
 GC-PKG-01,Freeze install uninstall y sentinel preservado,GitHub Actions Windows Server 2022,Aprobado,run 45508839661 job 138850979308 artefacto 14974922994,2026-11-24
 GC-STRUCT-PERF-01,Append undo redo vs rebuild 20 y 100 cuerpos,GitHub Actions,Pendiente,benchmarks/structural_bench.py,2026-11-24
 GC-PKG-02,Imports VTK explícitos y freeze reducido self-test ampliado,GitHub Actions,Pendiente,windows-package.yml,2026-11-24
+GC-GEO-TRANS-01,Traslación exacta masa centro booleanos mesh y vacíos,GitHub Actions,Pendiente,tests/test_translation.py,2026-11-24
