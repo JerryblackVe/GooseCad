@@ -45,3 +45,5 @@ Revisión GC-MESH-01: 450 muestras emparejadas de optimización y 200 de paralel
 Revalidación MESH-02: 240 muestras emparejadas, 20 cuerpos: selectivo 8.34009→6.73369 ms; caliente ~0.03 ms; rebuild variable y mejora <10%. Ver BENCHMARKS.csv.
 
 GC-UI-04 P0: trabajador único reutilizable, ningún VTK en worker, CAS de revisión y cancelación cooperativa entre nodos DAG. No se interrumpe una operación OCCT en curso; no se promete rollback si ya publicó. El GUI no debe consultar el documento durante el cálculo (locks), ni realizar refresh de escena hasta recoger el resultado. Medición input-to-response y cálculo/render separada pendiente; no afirmar mejora aún.
+
+GC-UI-04: control normal de edición e historial devuelve el hilo GUI inmediatamente tras iniciar worker; QTimer 15ms, cancelación cooperativa. No hay medición de latencia de esta ruta todavía. Carga, persistencia, teselación/refresh y flujo modal permanecen síncronos; requieren experimentos separados.

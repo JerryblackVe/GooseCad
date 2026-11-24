@@ -191,3 +191,5 @@ GC-UI-02,Qt VTK probe Windows 6.9.3 y 6.11.3,GitHub Actions Windows 2022,Fallido
 GC-UI-03,Qt workspace integration y benchmark,GitHub Actions Ubuntu 24.04,Pendiente,run 45506319546,2026-11-24
 GC-UI-02,Qt WGL con Mesa LLVMpipe Windows x64,GitHub Actions Windows 2022,Pendiente,workflow actualizado; no ejecutado al registrar,2026-11-24
 GC-UI-04,DocumentTasks single worker cancel/history/reuse/ownership,GitHub Actions,Pendiente,tests/test_document_tasks.py,2026-11-24
+GC-UI-03,Qt workspace integration + benchmark Linux Qt 6.9.3 y 6.11.3,GitHub Actions Ubuntu 24.04,Aprobado,run 45506319546 jobs 138842334042 y 138842334770,2026-11-24
+GC-UI-04,Qt async edit cancel close guard undo redo,GitHub Actions,Pendiente,tests/test_qt_workspace.py,2026-11-24

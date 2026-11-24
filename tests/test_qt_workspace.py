@@ -94,3 +94,59 @@ class QtWorkspaceTests(unittest.TestCase):
             with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
                 window.close()
             self.app.processEvents()
+
+    def test_async_button_cancel_and_close_guard(self):
+        import time
+        from threading import Event
+        from PySide6.QtWidgets import QMessageBox
+        from goosecad.ui.main_window import MainWindow
+        window = MainWindow()
+        window.show()
+        window.initialize_view()
+        entered, release = Event(), Event()
+        real_edit = window.session.document.edit
+        def gated(*args, **kwargs):
+            entered.set()
+            if not release.wait(10):
+                raise RuntimeError("test gate timeout")
+            return real_edit(*args, **kwargs)
+        def finish():
+            deadline = time.monotonic() + 10
+            while window.tasks.busy:
+                self.app.processEvents()
+                if time.monotonic() > deadline:
+                    self.fail("Qt worker did not finish")
+                time.sleep(.005)
+        try:
+            row = next(i for i in range(window.parameters.rowCount())
+                       if window.parameters.item(i, 0).text() == "width")
+            window.parameters.item(row, 1).setText("27")
+            with patch.object(window.session.document, "edit", side_effect=gated):
+                window.apply_button.click()
+                self.assertTrue(entered.wait(5))
+                self.app.processEvents()
+                self.assertTrue(window.tasks.busy)
+                self.assertFalse(window.save_action.isEnabled())
+                self.assertTrue(window.cancel_action.isEnabled())
+                self.assertFalse(window.close())
+                window.cancel_action.trigger()
+                release.set()
+                finish()
+            self.assertEqual(window.session.document.value("width"), 20)
+            self.assertTrue(window.apply_button.isEnabled())
+            window.apply_button.click()
+            finish()
+            self.assertEqual(window.session.document.value("width"), 27)
+            self.assertTrue(window.undo_action.isEnabled())
+            window.undo_action.trigger()
+            finish()
+            self.assertEqual(window.session.document.value("width"), 20)
+            window.redo_action.trigger()
+            finish()
+            self.assertEqual(window.session.document.value("width"), 27)
+        finally:
+            release.set()
+            finish()
+            with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()

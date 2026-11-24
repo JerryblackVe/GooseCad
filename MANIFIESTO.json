@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "33b6a1773037162836540a4c2df4fb2c2f5137ae",
-  "remote_checkpoint": "33b6a1773037162836540a4c2df4fb2c2f5137ae",
+  "remote_base_observed": "c37ec10acf91490b375b9d3e7000d66909d976fe",
+  "remote_checkpoint": "c37ec10acf91490b375b9d3e7000d66909d976fe",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -18,7 +18,7 @@
   "next_task": "GC-UI-04",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
-  "ci_base_run": 45506319615,
+  "ci_base_run": 45506173910,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
   "ci_pending_run": 45506457843,
@@ -48,7 +48,7 @@
   "tests_discovered": 173,
   "tests_skipped_default_ci": 4,
   "tests_graphics_verified": 5,
-  "qt_workspace": "Windows software Mesa WGL experiment; CI pending; Linux probes success",
+  "qt_workspace": "Linux 6.9.3/6.11.3 integration and benchmark success on previous commit; async UI and Windows pending",
   "prompt_remote_revision": "3.2 verified exact text",
-  "async_document_tasks": "implemented; tests and Qt integration pending"
+  "async_document_tasks": "Qt actions integrated; tests pending"
 }

@@ -1,4 +1,2 @@
-# GC-UI-04 P0 — integrar trabajo asíncrono en Qt
-1. Consultar CI de HEAD; GC-UI-03 45506319546 y Mesa 45506457843, revisar resultados gráficos y mediciones. Corregir errores reproducibles.
-2. Integrar DocumentTasks en MainWindow: un QTimer recoge resultados, controles/documento/visor no se consultan durante worker, cancelación cooperativa y cierre seguro. Mantener edición por lote y protección CAS. Añadir pruebas Qt de éxito, cancelación y cierre.
-3. Medir latencia de respuesta y cálculo por separado. Validación Windows 10/11 real, instalador y resto de alcance pendientes.
+# GC-UI-04 — validar cálculo asíncrono y render Windows
+Consultar CI del HEAD, especialmente nuevos tests DocumentTasks y Qt cancel/undo/redo. Revisar Mesa 45506457843 y evidencias WGL/LLVMpipe. Medir inicio de interacción y cálculo/render por separado; mover carga/guardado/teselación costosos a estrategias seguras sin bloquear. Añadir recuperación de .previous, guardado automático y validación Windows 10/11 real. No declarar estable.

@@ -41,23 +41,23 @@ class DocumentTasks:
         self._check()
         return self._future is not None and self._future.done()
 
-    def _start(self, method, *args):
+    def _start(self, method, *args, expected_revision=None):
         self._check()
         if self._future is not None:
             raise TaskStateError("Collect the previous document operation first")
-        revision = self.session.document.revision
+        revision = self.session.document.revision if expected_revision is None else expected_revision
         token = Event()
         future = self._executor.submit(method, *args, expected_revision=revision,
                                        cancelled=token.is_set)
         self._cancel = token
         self._future = future
 
-    def edit(self, changes):
+    def edit(self, changes, *, expected_revision=None):
         self._check()
         if type(changes) is not dict or any(type(k) is not str or
                 type(v) not in (int, float) for k, v in changes.items()):
             raise TaskStateError("Expected a numeric parameter dictionary")
-        self._start(self.session.document.edit, dict(changes))
+        self._start(self.session.document.edit, dict(changes), expected_revision=expected_revision)
 
     def undo(self):
         self._start(self.session.document.undo)

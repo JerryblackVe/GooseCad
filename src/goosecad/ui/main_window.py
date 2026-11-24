@@ -1,12 +1,12 @@
 """Qt desktop workspace for native parameter documents (experimental).
 
-All document and VTK work currently runs on the GUI thread; asynchronous
-evaluation and cancellation are a separate P0 acceptance gate.
+Parameter commands use a single document worker; Qt/VTK refresh stays on
+its owning thread. Loading, disk saving and meshing remain synchronous.
 """
 from pathlib import Path
 from math import isfinite
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QDockWidget, QTableWidget,
@@ -18,6 +18,8 @@ from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
+from goosecad.document.tasks import DocumentTasks
+from goosecad.parametric import Cancelled
 from goosecad.view.scene import Scene
 
 
@@ -42,6 +44,12 @@ class MainWindow(QMainWindow):
         self._scene_factory = scene_factory
         self.session = None
         self.scene = None
+        self.tasks = None
+        self._after_task = None
+        self._cancel_requested = False
+        self._task_timer = QTimer(self)
+        self._task_timer.setInterval(15)
+        self._task_timer.timeout.connect(self._poll_task)
         self._ready = False
         self._staged = False
         self._view_ok = False
@@ -64,7 +72,7 @@ class MainWindow(QMainWindow):
         self.parameters.itemChanged.connect(self._mark_staged)
         layout.addWidget(self.parameters)
         self.apply_button = QPushButton("Aplicar cambios", panel)
-        self.apply_button.clicked.connect(self.apply_parameters)
+        self.apply_button.clicked.connect(self.start_parameter_edit)
         layout.addWidget(self.apply_button)
         dock.setWidget(panel)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock)
@@ -90,10 +98,11 @@ class MainWindow(QMainWindow):
             bar.addAction(result)
             return result
         self.open_action = action(file_menu, "&Abrir…", self.open_dialog, QKeySequence.StandardKey.Open)
-        self.save_action = action(file_menu, "&Guardar", self.save_document, QKeySequence.StandardKey.Save)
-        self.save_as_action = action(file_menu, "Guardar &como…", self.save_as_dialog, QKeySequence.StandardKey.SaveAs)
-        self.undo_action = action(edit_menu, "&Deshacer", self.undo, QKeySequence.StandardKey.Undo)
-        self.redo_action = action(edit_menu, "&Rehacer", self.redo, QKeySequence.StandardKey.Redo)
+        self.save_action = action(file_menu, "&Guardar", self.request_save, QKeySequence.StandardKey.Save)
+        self.save_as_action = action(file_menu, "Guardar &como…", self.request_save_as, QKeySequence.StandardKey.SaveAs)
+        self.undo_action = action(edit_menu, "&Deshacer", self.start_undo, QKeySequence.StandardKey.Undo)
+        self.redo_action = action(edit_menu, "&Rehacer", self.start_redo, QKeySequence.StandardKey.Redo)
+        self.cancel_action = action(edit_menu, "Cancelar cálculo", self.cancel_task)
         self.fit_action = action(view_menu, "Ajustar vista", self.fit_view)
         self.refresh_action = action(view_menu, "Actualizar vista", self.refresh_view)
 
@@ -109,8 +118,11 @@ class MainWindow(QMainWindow):
             candidate.detach_scene()
             scene.close()
             raise
-        old_session, old_scene = self.session, self.scene
+        old_session, old_scene, old_tasks = self.session, self.scene, self.tasks
         self.session, self.scene = candidate, scene
+        self.tasks = DocumentTasks(candidate)
+        if old_tasks is not None:
+            old_tasks.close()
         if old_scene is not None:
             old_session.detach_scene()
             old_scene.close()
@@ -130,7 +142,7 @@ class MainWindow(QMainWindow):
         self.refresh_view()
 
     def _pick_key(self, interactor, event):
-        if interactor.GetKeySym().lower() != "p" or not self._view_ok:
+        if self.tasks.busy or interactor.GetKeySym().lower() != "p" or not self._view_ok:
             return
         try:
             hit = self.session.select_at(*interactor.GetEventPosition())
@@ -169,6 +181,20 @@ class MainWindow(QMainWindow):
     def _update_actions(self):
         if self.session is None:
             return
+        busy = self.tasks.busy
+        for action in (self.open_action, self.save_action, self.save_as_action, self.refresh_action):
+            action.setEnabled(not busy)
+        self.parameters.setEnabled(not busy)
+        self.bodies.setEnabled(not busy)
+        self.viewport.setEnabled(not busy)
+        self.cancel_action.setEnabled(busy and not self._cancel_requested)
+        if busy:
+            self.undo_action.setEnabled(False)
+            self.redo_action.setEnabled(False)
+            self.fit_action.setEnabled(False)
+            self.apply_button.setEnabled(False)
+            self.setWindowTitle("Calculando… — GooseCAD Professional")
+            return
         undo, redo = self.session.document.history_depths
         self.undo_action.setEnabled(bool(undo) and not self._staged)
         self.redo_action.setEnabled(bool(redo) and not self._staged)
@@ -180,24 +206,94 @@ class MainWindow(QMainWindow):
     def _error(self, exc):
         QMessageBox.warning(self, "GooseCAD Professional", str(exc))
 
+    def _parameter_changes(self):
+        current = self.session.document.parameter_values()
+        changes = {}
+        for row in range(self.parameters.rowCount()):
+            name = self.parameters.item(row, 0).text()
+            raw = self.parameters.item(row, 1).text().strip()
+            if raw == str(current[name]):
+                continue
+            value = float(raw)
+            if not isfinite(value):
+                raise ValueError("Los parámetros deben ser finitos.")
+            if value != current[name]:
+                changes[name] = value
+        return changes
+
+    def _start_task(self, method, *args, after=None, **kwargs):
+        if self.tasks.busy:
+            return False
+        try:
+            method(*args, **kwargs)
+        except Exception as exc:
+            self._error(exc)
+            return False
+        self._after_task = after
+        self._cancel_requested = False
+        self.statusBar().showMessage("Calculando… Puede solicitar cancelación.")
+        self._update_actions()
+        self._task_timer.start()
+        return True
+
+    def start_parameter_edit(self, *, after=None):
+        if self.tasks.busy:
+            return False
+        if not self._staged:
+            return after() if after is not None else True
+        try:
+            changes = self._parameter_changes()
+        except Exception as exc:
+            self._error(exc)
+            return False
+        return self._start_task(self.tasks.edit, changes, after=after,
+                                expected_revision=self._editor_revision)
+
+    def start_undo(self):
+        if self._staged:
+            return False
+        return self._start_task(self.tasks.undo)
+
+    def start_redo(self):
+        if self._staged:
+            return False
+        return self._start_task(self.tasks.redo)
+
+    def cancel_task(self):
+        if self.tasks.request_cancel():
+            self._cancel_requested = True
+            self.statusBar().showMessage("Cancelación solicitada; esperando un punto seguro.")
+            self._update_actions()
+
+    def _poll_task(self):
+        if not self.tasks.ready:
+            return
+        self._task_timer.stop()
+        after, self._after_task = self._after_task, None
+        try:
+            self.tasks.collect()
+        except Cancelled:
+            self._update_actions()
+            self.statusBar().showMessage("Cálculo cancelado sin publicar cambios.")
+            return
+        except Exception as exc:
+            self._update_actions()
+            self._error(exc)
+            return
+        self._populate()
+        if self.refresh_view():
+            self.statusBar().showMessage("Cálculo completado.")
+        if after is not None:
+            after()
+
     def apply_parameters(self):
+        """Synchronous compatibility path for direct calls/modal save-discard flow."""
+        if self.tasks.busy:
+            return False
         if not self._staged:
             return True
         try:
-            current = self.session.document.parameter_values()
-            changes = {}
-            for row in range(self.parameters.rowCount()):
-                name = self.parameters.item(row, 0).text()
-                raw = self.parameters.item(row, 1).text().strip()
-                # Preserve exact integer representation when unchanged.
-                if raw == str(current[name]):
-                    continue
-                value = float(raw)
-                if not isfinite(value):
-                    raise ValueError("Los parámetros deben ser finitos.")
-                if value != current[name]:
-                    changes[name] = value
-            self.session.edit(changes, expected_revision=self._editor_revision)
+            self.session.edit(self._parameter_changes(), expected_revision=self._editor_revision)
         except Exception as exc:
             self._error(exc)
             return False
@@ -206,7 +302,7 @@ class MainWindow(QMainWindow):
         return True
 
     def _history(self, method):
-        if self._staged:
+        if self.tasks.busy or self._staged:
             return False
         try:
             method(expected_revision=self.session.document.revision)
@@ -224,6 +320,8 @@ class MainWindow(QMainWindow):
         return self._history(self.session.redo)
 
     def refresh_view(self):
+        if self.tasks.busy:
+            return False
         try:
             self.session.refresh(terminal_bodies(self.session.document))
             if self._ready:
@@ -242,13 +340,15 @@ class MainWindow(QMainWindow):
         return self._view_ok
 
     def fit_view(self):
-        if not self._view_ok:
+        if self.tasks.busy or not self._view_ok:
             return
         self.scene.fit()
         if self._ready:
             self.scene.render()
 
     def _select_body(self):
+        if self.tasks.busy:
+            return
         items = self.bodies.selectedItems()
         if items:
             try:
@@ -256,6 +356,12 @@ class MainWindow(QMainWindow):
                 self.statusBar().showMessage(f"Cuerpo: {hit.body}")
             except Exception as exc:
                 self._error(exc)
+
+    def request_save(self):
+        return self.start_parameter_edit(after=self.save_document)
+
+    def request_save_as(self):
+        return self.start_parameter_edit(after=self.save_as_dialog)
 
     def save_document(self):
         if not self.apply_parameters():
@@ -292,6 +398,9 @@ class MainWindow(QMainWindow):
         return self.save_as_path(path)
 
     def _can_replace(self):
+        if self.tasks.busy:
+            self.statusBar().showMessage("Espere el cálculo o solicite cancelación.")
+            return False
         if not (self.session.dirty or self._staged):
             return True
         choice = QMessageBox.question(
@@ -314,6 +423,8 @@ class MainWindow(QMainWindow):
         return True
 
     def open_dialog(self):
+        if self.tasks.busy:
+            return False
         path, _ = QFileDialog.getOpenFileName(self, "Abrir documento", "", "GooseCAD (*.gcad *.goosecad);;Todos (*)")
         if path:
             return self.open_path(path)
@@ -323,6 +434,9 @@ class MainWindow(QMainWindow):
         if not self._can_replace():
             event.ignore()
             return
+        self._task_timer.stop()
+        if self.tasks is not None:
+            self.tasks.close()
         if self.scene is not None:
             self.session.detach_scene()
             self.scene.close()
