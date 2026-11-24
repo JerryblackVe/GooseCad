@@ -252,3 +252,38 @@ class DocumentTaskTests(unittest.TestCase):
             tasks.close()
             current.detach_scene()
             scene.close()
+
+    def test_open_prepares_candidate_without_scene_and_preserves_active(self):
+        import tempfile
+        from pathlib import Path
+        from goosecad.view.preparation import DisplayConfig
+        from goosecad.view.scene import Scene
+        current = session()
+        tasks = DocumentTasks(current)
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "candidate.gcad"
+                other = session()
+                other.edit({"x": 17})
+                other.save_as(path)
+                tasks.open(path, display_config=DisplayConfig())
+                result = collect(tasks)
+                self.assertIs(tasks.session, current)
+                self.assertIsNone(result.session.scene)
+                self.assertEqual(result.session.document.value("x"),17)
+                plan = result.prepared.request
+                scene = Scene(result.session.document, offscreen=True, cache=plan.cache)
+                try:
+                    result.session.attach_scene(scene)
+                    self.assertEqual(result.session.publish_refresh(result.prepared),("box",))
+                    self.assertEqual(current.document.value("x"),2)
+                finally:
+                    result.session.detach_scene()
+                    scene.close()
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()

@@ -253,3 +253,39 @@ class QtWorkspaceTests(unittest.TestCase):
             with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
                 window.close()
             self.app.processEvents()
+
+    def test_async_open_mesh_prepared_on_worker_once(self):
+        import time
+        from threading import get_ident
+        from goosecad.geometry.mesh_cache import MeshCache
+        from goosecad.ui.main_window import MainWindow
+        from PySide6.QtWidgets import QMessageBox
+        window = MainWindow()
+        window.show()
+        window.initialize_view()
+        owner = get_ident()
+        calls = []
+        real_get = MeshCache.get
+        def traced(cache, *args, **kwargs):
+            calls.append(get_ident())
+            return real_get(cache, *args, **kwargs)
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "candidate.gcad"
+                self.assertTrue(window.save_as_path(path))
+                with patch.object(MeshCache,"get",new=traced):
+                    self.assertTrue(window.request_open_path(path))
+                    deadline = time.monotonic()+15
+                    while window.tasks.busy:
+                        self.app.processEvents()
+                        if time.monotonic()>deadline:
+                            self.fail("candidate preparation timed out")
+                        time.sleep(.005)
+                self.assertEqual(len(calls),1)
+                self.assertNotEqual(calls[0],owner)
+                self.assertTrue(window._view_ok)
+                self.assertEqual(window.session.visible_bodies,("box",))
+        finally:
+            with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()

@@ -69,6 +69,10 @@ class MeshCache:
         self._entries=OrderedDict(); self._bytes=self._hits=self._misses=self._evictions=0
         self._lock=RLock(); self._epoch=0; self._owner=object()
 
+    @property
+    def document(self):
+        return self._document
+
     def info(self):
         with self._lock: return CacheInfo(len(self._entries),self._bytes,self._hits,self._misses,self._evictions)
 

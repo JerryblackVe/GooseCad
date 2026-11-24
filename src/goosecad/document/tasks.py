@@ -8,13 +8,21 @@ publication, and cannot interrupt an OCCT call already executing.
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event, get_ident
 from pathlib import Path
+from dataclasses import dataclass
 
 from goosecad.document.session import DocumentSession
 from goosecad.parametric import Cancelled
+from goosecad.view.preparation import DisplayConfig, PreparedMeshes
 
 
 class TaskStateError(RuntimeError):
     pass
+
+
+@dataclass(frozen=True, slots=True)
+class LoadedView:
+    session: DocumentSession
+    prepared: PreparedMeshes
 
 
 class DocumentTasks:
@@ -95,10 +103,12 @@ class DocumentTasks:
     def redo(self):
         self._start(self.session.document.redo)
 
-    def open(self, path, *, recovery=False):
+    def open(self, path, *, recovery=False, display_config=None):
         """Load an independent candidate. Never replace the active session here."""
         self._idle()
         source = Path(path)
+        if display_config is not None and type(display_config) is not DisplayConfig:
+            raise TaskStateError('Invalid initial display configuration')
         token = Event()
         def load_candidate():
             if token.is_set():
@@ -107,6 +117,9 @@ class DocumentTasks:
             candidate = loader(source)
             if token.is_set():
                 raise Cancelled("Opening cancelled")
+            if display_config is not None:
+                prepared = display_config.initial_request(candidate.document).prepare(cancelled=token.is_set)
+                return LoadedView(candidate, prepared)
             return candidate
         self._submit("recovery" if recovery else "open", load_candidate, (), token=token)
 

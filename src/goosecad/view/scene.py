@@ -11,7 +11,7 @@ import vtk
 from vtk.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray
 from goosecad.geometry.mesh_cache import MeshCache,MeshSettings
 
-from goosecad.view.preparation import MeshRequest, PreparedMeshes, ViewError
+from goosecad.view.preparation import DisplayConfig, MeshRequest, PreparedMeshes, ViewError
 
 @dataclass(frozen=True,slots=True)
 class Selection:
@@ -29,10 +29,13 @@ def polydata(mesh):
     d=vtk.vtkPolyData();d.SetPoints(p);d.SetPolys(cells);return d
 
 class Scene:
-    def __init__(self,document,*,offscreen=False,size=(800,600),settings=MeshSettings(),max_vertices=1_000_000,max_triangles=2_000_000,render_window=None):
+    def __init__(self,document,*,offscreen=False,size=(800,600),settings=MeshSettings(),max_vertices=1_000_000,max_triangles=2_000_000,render_window=None,cache=None):
         if type(max_vertices) is not int or type(max_triangles) is not int or min(max_vertices,max_triangles)<1:raise ViewError('Invalid scene budget')
         self._max_vertices=max_vertices;self._max_triangles=max_triangles
-        self._thread=get_ident();self._closed=False;self._document=document;self.cache=MeshCache(document);self.settings=settings;self._actors={}
+        DisplayConfig(settings,max_vertices,max_triangles)
+        if cache is not None and (not isinstance(cache,MeshCache) or cache.document is not document):
+            raise ViewError('Mesh cache belongs to another document')
+        self._thread=get_ident();self._closed=False;self._document=document;self.cache=MeshCache(document) if cache is None else cache;self.settings=settings;self._actors={}
         self.renderer=vtk.vtkRenderer();self.renderer.SetBackground(.10,.13,.18)
         self._owns_window=render_window is None
         self.window=vtk.vtkRenderWindow() if self._owns_window else render_window
@@ -43,6 +46,11 @@ class Scene:
     @property
     def document(self):
         return self._document
+
+    @property
+    def display_config(self):
+        self._check()
+        return DisplayConfig(self.settings,self._max_vertices,self._max_triangles)
 
     def is_current_selection(self, selection):
         """Validate a face-local hit against the currently displayed snapshot."""

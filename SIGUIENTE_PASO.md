@@ -1,2 +1,2 @@
-# GC-UI-08 — verificar preparación CPU y reducir bloqueo al abrir
-Consultar CI del HEAD y los de GC-UI-06/07; revisar logs, conflictos y benchmarks. Validar plan/publish y ruta Qt mesh, medir latencia y memoria. Próximo: preparar primera malla de candidato en worker sin VTK; autosave seguro con recuperación independiente y métricas. Windows físico e instalador pendientes.
+# GC-UI-09 — validar apertura con malla preparada y rendimiento
+Consultar CI HEAD, GC-UI-08 45507582036/45507582089, GC-UI-07 45507428350/45507428267. Revisar fallos y logs. Verificar apertura con mesh worker, actor publish, cancelación y CAS. Medir latencia/uso de memoria; siguiente autosave independiente seguro y recuperación. Windows físico/instalador pendientes.

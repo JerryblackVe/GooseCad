@@ -57,3 +57,5 @@ GC-UI-05 job 138844980747 Qt 6.9.3: mismo runner Xvfb, 30+30 muestras. Retorno d
 GC-UI-07: se elimina espera fija del temporizador de 15 ms mediante notificación de finalización Future → Qt queued signal. Medir mismo runner antes/después; mejora total aún no verificada.
 
 GC-UI-08: teselación y arrays inmutables preparados fuera del GUI; solo copia/construcción VTK y render en dueño. Se preservan presupuestos agregados y reutilización de snapshots/actores. Primera carga aún puede bloquear por preparación inicial y publicación; no hay medición de mejora de este cambio.
+
+GC-UI-09: primera teselación de apertura/recuperación normal se realiza en worker, cache se transfiere al dueño sin recálculo. VTK buffer-copy/render todavía GUI. Arranque CLI síncrono. GC-UI-07 job 138846138638: retorno 5.257102/0.138828 ms sync/async y fin 6.425304/17.383986 ms; señal reduce espera fija pero comparación entre runners no concluyente. Medición de GC-UI-08/09 pendiente.

@@ -14,6 +14,30 @@ class ViewError(RuntimeError):
     pass
 
 
+def terminal_bodies(document):
+    consumed = {dep for feature in document.features for dep in feature.dependencies}
+    return tuple(f.id for f in document.features if f.id not in consumed)
+
+
+@dataclass(frozen=True, slots=True)
+class DisplayConfig:
+    settings: MeshSettings = MeshSettings()
+    max_vertices: int = 1_000_000
+    max_triangles: int = 2_000_000
+
+    def __post_init__(self):
+        if (type(self.settings) is not MeshSettings
+                or type(self.max_vertices) is not int
+                or type(self.max_triangles) is not int
+                or min(self.max_vertices,self.max_triangles)<1):
+            raise ViewError("Invalid scene configuration")
+
+    def initial_request(self, document):
+        return MeshRequest(document, MeshCache(document), document.revision,
+                           terminal_bodies(document), self.settings, (),
+                           self.max_vertices, self.max_triangles)
+
+
 @dataclass(frozen=True, slots=True)
 class MeshRequest:
     document: NativeDocument
@@ -24,6 +48,14 @@ class MeshRequest:
     reusable: tuple[MeshSnapshot, ...]
     max_vertices: int
     max_triangles: int
+
+    def __post_init__(self):
+        DisplayConfig(self.settings,self.max_vertices,self.max_triangles)
+        if (self.cache.document is not self.document
+                or type(self.bodies) is not tuple or len(self.bodies)>256
+                or any(type(b) is not str for b in self.bodies)
+                or len(set(self.bodies))!=len(self.bodies)):
+            raise ViewError("Invalid scene request")
 
     def prepare(self, *, cancelled=None):
         def check():

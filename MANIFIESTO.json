@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "78b0c5d7bdf4ab97aad5f7b60af8787001f74c00",
-  "remote_checkpoint": "78b0c5d7bdf4ab97aad5f7b60af8787001f74c00",
+  "remote_base_observed": "dc0fcfd56e01356e0e0066e7116dd30f7357e0d4",
+  "remote_checkpoint": "dc0fcfd56e01356e0e0066e7116dd30f7357e0d4",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,13 +15,13 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-08",
+  "next_task": "GC-UI-09",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
-  "ci_base_run": 45506703643,
+  "ci_base_run": 45507582089,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45507428350,
+  "ci_pending_run": 45507582036,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -63,5 +63,6 @@
   "qt_close_linux_qt693": "4 tests passed job 138844980747; no close exception in inspected log",
   "async_notification": "queued Qt signal implemented; CI pending",
   "mesh_preparation": "CPU-only worker, owner VTK publication, tests pending",
-  "qt_close_verified_run": 45507091254
+  "qt_close_verified_run": 45507091254,
+  "initial_display": "candidate CPU preparation implemented; CI pending"
 }

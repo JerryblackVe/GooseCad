@@ -21,6 +21,7 @@ from goosecad.document.session import DocumentSession
 from goosecad.document.tasks import DocumentTasks
 from goosecad.parametric import Cancelled
 from goosecad.view.scene import Scene
+from goosecad.view.preparation import terminal_bodies
 
 
 def sample_session():
@@ -28,12 +29,6 @@ def sample_session():
         {"width": 20, "depth": 30, "height": 40},
         (Feature("box", "box", ("width", "depth", "height")),),
     ))
-
-
-def terminal_bodies(document):
-    """Avoid drawing intermediate operands over a final Boolean result."""
-    consumed = {dep for feature in document.features for dep in feature.dependencies}
-    return tuple(f.id for f in document.features if f.id not in consumed)
 
 
 class MainWindow(QMainWindow):
@@ -108,13 +103,25 @@ class MainWindow(QMainWindow):
         self.fit_action = action(view_menu, "Ajustar vista", self.fit_view)
         self.refresh_action = action(view_menu, "Actualizar vista", self.request_refresh)
 
-    def _install(self, candidate):
+    def _install(self, candidate, prepared=None):
         # Stage the new scene before discarding the previous document.
         window = self.viewport.GetRenderWindow()
-        scene = self._scene_factory(candidate.document, render_window=window)
+        if prepared is None:
+            scene = self._scene_factory(candidate.document, render_window=window)
+        else:
+            plan = prepared.request
+            if plan.document is not candidate.document:
+                raise ValueError("Prepared display does not match candidate")
+            scene = self._scene_factory(candidate.document, render_window=window,
+                                        cache=plan.cache, settings=plan.settings,
+                                        max_vertices=plan.max_vertices,
+                                        max_triangles=plan.max_triangles)
         try:
             candidate.attach_scene(scene)
-            candidate.refresh(terminal_bodies(candidate.document))
+            if prepared is None:
+                candidate.refresh(terminal_bodies(candidate.document))
+            else:
+                candidate.publish_refresh(prepared)
             scene.fit()
         except Exception:
             candidate.detach_scene()
@@ -131,7 +138,15 @@ class MainWindow(QMainWindow):
         self._view_ok = True
         self._populate()
         if self._ready:
-            self.refresh_view()
+            # Candidate already has valid VTK actors; do not tessellate again.
+            try:
+                self.viewport.show()
+                self.scene.render()
+            except Exception as exc:
+                self._view_ok = False
+                self.viewport.hide()
+                self._update_actions()
+                self._error(exc)
 
     def initialize_view(self):
         if self._ready:
@@ -290,7 +305,7 @@ class MainWindow(QMainWindow):
             return
         if kind in ("open", "recovery"):
             try:
-                self._install(result)
+                self._install(result.session, result.prepared)
             except Exception as exc:
                 self._update_actions()
                 self._error(exc)
@@ -304,9 +319,11 @@ class MainWindow(QMainWindow):
         elif kind == "mesh":
             try:
                 self.session.publish_refresh(result)
+                self.viewport.show()
                 if self._ready:
                     self.scene.render()
             except Exception as exc:
+                self.viewport.hide()
                 self._update_actions()
                 self.statusBar().showMessage("Modelo conservado; vista no actualizada.")
                 self._error(exc)
@@ -461,7 +478,8 @@ class MainWindow(QMainWindow):
 
     def request_open_path(self, path, *, recovery=False):
         return self._confirm_then(
-            lambda: self._start_task(self.tasks.open, path, recovery=recovery))
+            lambda: self._start_task(self.tasks.open, path, recovery=recovery,
+                                     display_config=self.scene.display_config))
 
     def save_document(self):
         if not self.apply_parameters():
