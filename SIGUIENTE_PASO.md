@@ -1,2 +1,2 @@
-# GC-SOLVER-01 — Restricciones geométricas P0
-Investigar solucionadores (licencia, madurez y rendimiento); implementar primer solucionador de restricciones 2D con grados de libertad, detección de contradicción/redundancia y casos degenerados. Probar exactitud residual, escalabilidad y convergencia; no declarar solución general. Después GC-ABI-01. Revisar CI DOC-02 y mantener GC-OCAF-01 aislado.
+# GC-ABI-01 — Interoperabilidad Goose/C++/OCCT P0
+Verificar identidad y madurez del lenguaje Goose, compilador y licencia, disponibilidad de C++ OCCT SDK y toolchain Windows. Experimentar con ABI C versionada, ownership explícito, errores sin excepciones cruzando FFI, handles opacos y coste de llamadas por lote; ejecutar pruebas y benchmark reales, no confundir C++ genérico con OCCT integrado. Si bloqueado por disponibilidad, documentar y continuar con integración bocetos/solver y GC-GEO-02. Revisar CI DOC-02 y SOLVER-01.

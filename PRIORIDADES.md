@@ -8,3 +8,5 @@ GC-DAG-01 parcial verificado. Próximo GC-DOC-01: transacciones de entrada, undo
 GC-DOC-01 parcial verificado localmente. GC-DOC-02 siguiente: formato mínimo versionado, operaciones identificadas por registro permitido, guardado atómico y recuperación; después GC-SOLVER-01, GC-ABI-01. Sin integración OCAF hasta resolver S1.
 
 GC-DOC-02 parcial verificado localmente; siguiente GC-SOLVER-01 (P0); luego GC-ABI-01. Pendiente bloqueo por archivo, aislamiento de cargas, estrés de persistencia y durabilidad Windows.
+
+GC-SOLVER-01 parcial verificado localmente; siguiente GC-ABI-01 (P0), luego integración de bocetos y solucionador, persistencia estructural y GC-GEO-02. Pendientes solver de curvas, convergencia, escalabilidad y diagnóstico.

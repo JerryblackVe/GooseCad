@@ -14,3 +14,5 @@ GC-DAG-PERF-01 (abierto, rendimiento): cadena con todos los nodos afectados es m
 GC-DOC-REENTRY-01 (corregido): durante conversión de Mapping, código de usuario podía reentrar antes de activar guard; ahora se rechaza desde inicio de edición, con prueba de regresión. OCAF y GC-DAG-PERF-01 siguen abiertos.
 
 GC-DOC-02: detectada posible colisión con nombre de recuperación; sufijo .previous reservado y prueba de regresión aprobada. GC-OCAF-01 sigue abierto y aislado.
+
+GC-SOLVER-01: los resultados de NumPy inicialmente eran numpy.float64 y la validación de entrada los rechazaba; corregido a float nativo y regresión de reutilización aprobada. La descomposición con SVD por grupo resultó más lenta, sustituida en igualdades consistentes por algoritmo especializado. GC-OCAF-01 sigue aislado.

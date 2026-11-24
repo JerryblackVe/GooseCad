@@ -10,3 +10,5 @@
 - CadQuery: https://github.com/CadQuery/cadquery (no se usa su API).
 - CI: https://docs.github.com/en/actions/tutorials/build-and-test-code/python ; https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job
 No se completó auditoría documental de cada comando ni se verificaron todas las dependencias potenciales. Referencias genéricas de la matriz son puntos de partida, no pruebas de cada función.
+
+GC-SOLVER-01: SciPy 1.17.0 least_squares (TRF, Jacobiano analítico): https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.optimize.least_squares.html ; licencias SciPy/NumPy/SolveSpace: ver LICENCIAS.md. Consulta 2026-11-24. No se incorpora código de SolveSpace.

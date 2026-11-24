@@ -14,6 +14,10 @@ jobs:
         os: [ubuntu-24.04, windows-2022]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: 1
+      OMP_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,6 +33,7 @@ jobs:
       - run: python benchmarks/dag_bench.py ci-dag-benchmarks.csv --repetitions 10
       - run: python benchmarks/document_bench.py ci-document-benchmarks.csv --repetitions 10
       - run: python benchmarks/native_bench.py ci-native-benchmarks.csv --repetitions 5
+      - run: python benchmarks/solver_bench.py ci-solver-benchmarks.csv --repetitions 10
       - uses: actions/upload-artifact@v4
         with:
           name: kernel-benchmarks-${{ matrix.os }}
@@ -37,3 +42,4 @@ jobs:
             ci-dag-benchmarks.csv
             ci-document-benchmarks.csv
             ci-native-benchmarks.csv
+            ci-solver-benchmarks.csv

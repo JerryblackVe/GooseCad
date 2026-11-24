@@ -70,3 +70,18 @@ GC-DOC-02-15,test_replace_failure_preserves_primary,Linux/OCP 7.9.3.1,Aprobada,r
 GC-DOC-02-16,test_roundtrip,Linux/OCP 7.9.3.1,Aprobada,results/native-tests.log,2026-11-24
 GC-DOC-02-17,test_symlink_rejected,Linux/OCP 7.9.3.1,Aprobada,results/native-tests.log,2026-11-24
 GC-DOC-02-18,test_version,Linux/OCP 7.9.3.1,Aprobada,results/native-tests.log,2026-11-24
+GC-SOLVER-01-01,test_close_anchor_fallback,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-02,test_coincidence,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-03,test_conflict,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-04,test_degenerate,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-05,test_dependent_rows,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-06,test_direct_linear_projection,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-07,test_distance,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-08,test_distance_free,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-09,test_fix_and_axes,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-10,test_free,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-11,test_invalid,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-12,test_nonlinear_failure,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-13,test_partition_equivalence,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-14,test_partition_residual_equivalence,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+GC-SOLVER-01-15,test_solution_can_be_reused,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
