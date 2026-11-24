@@ -19,3 +19,6 @@ GC-VIEW-01 (experimental): `python -m goosecad.view` abre el ejemplo de caja; `p
 
 ## Interfaz Qt experimental (GC-UI-03/04)
 Con Python 3.13 x64 y entorno virtual: `python -m pip install -e ".[ui]"`. Arranque: `python -m goosecad.ui [documento.gcad]`. Pruebas de núcleo: `python -m unittest discover -s tests -v`. Linux con contexto gráfico: `GOOSECAD_TEST_QT=1 python -m unittest discover -s tests -p test_qt_workspace.py -v`; en CI Xvfb se instala el runtime indicado en qt-probe.yml. Mesa es experimento CI, no instalar en el equipo del usuario ni copiar DLL al sistema. Windows GPU real e instalador pendientes.
+
+## GC-PKG-01 — experimento de instalación Windows
+Workflow windows-package.yml ejecuta PyInstaller onedir + NSIS en runner temporal, sin publicar binarios. `python -m goosecad.ui --self-test` comprueba dependencias y persistencia sin GPU. El instalador es por usuario, Windows 10+ x64, no modifica drivers ni pide administrador; se comprueba desinstalación mediante allowlist exacta y preservación de archivo de usuario. Paquete no firmado y no apto para distribución hasta licencia propia/terceros. CI pendiente; no probar como instalación definitiva.

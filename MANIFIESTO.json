@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "2092604689c01607a68a0aaf0ee0103ed3e96f3f",
-  "remote_checkpoint": "2092604689c01607a68a0aaf0ee0103ed3e96f3f",
+  "remote_base_observed": "8d4d317f8e1f6bf808b0fe537dde1b7d94f90495",
+  "remote_checkpoint": "8d4d317f8e1f6bf808b0fe537dde1b7d94f90495",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-PERF-UI-01",
+  "next_task": "GC-PKG-01",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508104275,
@@ -77,8 +77,10 @@
   "qt_close_verified_run": 45507091254,
   "initial_display": "candidate CPU preparation implemented; CI pending",
   "autosave": "kernel and Qt CI verified 45507912287/45507912200",
-  "combined_mutation_display": "Qt 4 jobs passed run 45508104278; kernel pending at earlier check",
+  "combined_mutation_display": "kernel and 4 Qt CI jobs passed 45508104275/45508104278",
   "crash_matrix": "process termination tests implemented; CI pending",
   "recovery_catalog": "explicit archive and recovery dialog implemented; CI pending",
-  "multibody_benchmark": "implemented; CI pending"
+  "multibody_benchmark": "implemented; CI pending",
+  "windows_packaging": "ephemeral PyInstaller+NSIS build/test pipeline; CI pending; no binary publication",
+  "distribution_license": "pending owner decision and third-party review"
 }

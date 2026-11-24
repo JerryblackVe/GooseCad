@@ -1,5 +1,6 @@
 """Launch with python -m goosecad.ui [document.gcad]."""
 import argparse
+import os
 import sys
 from PySide6.QtWidgets import QApplication
 from goosecad.document.session import DocumentSession
@@ -8,7 +9,14 @@ from .main_window import MainWindow
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("document", nargs="?")
+    parser.add_argument("--self-test", action="store_true", help="Run non-graphical package health check")
     args = parser.parse_args()
+    if args.self_test:
+        if args.document:
+            parser.error("--self-test does not take a document")
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+        from .self_test import run
+        return run()
     app = QApplication([sys.argv[0]])
     app.setOrganizationName('GooseCAD')
     app.setApplicationName('GooseCAD Professional')

@@ -1,0 +1,4 @@
+# Windows x86-64 CI build tools only; exact PyPI wheel hashes.
+# Install with --no-deps --require-hashes --only-binary=:all:.
+pyinstaller==6.22.3 --hash=sha256:500bd58c7bf7e584a8435adccbd763a0b918d5c12b08d74ff50fd79b2915458b
+pyinstaller-hooks-contrib==2026.10 --hash=sha256:dfc3cde20a7ce6c92e803016e66eed4b7050467e2c5f886a3745d89b258c6d6d
