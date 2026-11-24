@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "7f5c345113f7a568ca148f348d21f24b8913960a",
-  "remote_checkpoint": "7f5c345113f7a568ca148f348d21f24b8913960a",
+  "remote_base_observed": "4840424ac48425aea4f592391647985ee10cf831",
+  "remote_checkpoint": "4840424ac48425aea4f592391647985ee10cf831",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-STRUCT-03",
+  "next_task": "GC-STRUCT-PERF-01",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508375966,
@@ -58,6 +58,11 @@
       "sha": "b191930df9e066fbdf6b22089dcab3714e13a192",
       "run": 45508375966,
       "conclusion": "success"
+    },
+    "GC-PKG-01": {
+      "sha": "ddca5c347ce082015094a8c0abf598350c873f9c",
+      "run": 45508839661,
+      "conclusion": "success"
     }
   },
   "ui_session": "GC-UI-01 CI success on Windows 2022 and Ubuntu 24.04, run 45502896110; docs checkpoint CI pending",
@@ -86,12 +91,21 @@
   "crash_matrix": "7 scenarios passed both OS run 45508375966",
   "recovery_catalog": "explicit archive and recovery dialog implemented; CI pending",
   "multibody_benchmark": "two Linux jobs passed 138850155671/138850155694",
-  "windows_packaging": "ephemeral PyInstaller+NSIS build/test pipeline; CI pending; no binary publication",
+  "windows_packaging": "GC-PKG-01 ephemeral install/uninstall passed; no GPU or distribution clearance",
   "distribution_license": "pending owner decision and third-party review",
   "render_suspension": "Qt run 45508976437 passed 4/4",
   "primitive_creation": "kernel and 4 Qt variants verified 45509089769/45509089713",
   "package_ci_run": 45508839661,
   "structural_history": "core append/undo/redo implemented; CI pending",
   "structural_native": "append-only native operations and mixed history implemented; CI pending",
-  "structural_ui": "append primitive/Boolean and history integrated; CI pending"
+  "structural_ui": "append primitive/Boolean and history integrated; CI pending",
+  "package_audit": {
+    "run": 45508839661,
+    "job": 138850979308,
+    "artifact": 14974922994,
+    "sha256": "47976fbae9f2c8971769e56dc84ffa1c10dff00ea9fe8e791e26876187a9c18e",
+    "files": 2469,
+    "uncompressed_bytes": 762263751
+  },
+  "structural_benchmark": "implemented; CI pending"
 }

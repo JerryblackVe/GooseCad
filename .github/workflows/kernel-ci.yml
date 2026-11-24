@@ -35,6 +35,7 @@ jobs:
       - run: python benchmarks/kernel_bench.py ci-benchmarks.csv
       - run: python benchmarks/dag_bench.py ci-dag-benchmarks.csv --repetitions 10
       - run: python benchmarks/document_bench.py ci-document-benchmarks.csv --repetitions 10
+      - run: python benchmarks/structural_bench.py ci-structural-benchmarks.csv
       - run: python benchmarks/native_bench.py ci-native-benchmarks.csv --repetitions 5
       - run: python benchmarks/solver_bench.py ci-solver-benchmarks.csv --repetitions 10
       - run: python benchmarks/sweep_bench.py ci-sweep-benchmarks.csv --repetitions 5
@@ -57,6 +58,7 @@ jobs:
             ci-dag-benchmarks.csv
             ci-document-benchmarks.csv
             ci-native-benchmarks.csv
+            ci-structural-benchmarks.csv
             ci-solver-benchmarks.csv
             ci-sweep-benchmarks.csv
             ci-native-sketch-benchmarks.csv

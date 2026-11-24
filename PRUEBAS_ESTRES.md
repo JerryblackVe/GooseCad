@@ -27,3 +27,5 @@ GC-DOC-05: interrupción determinista de proceso independiente con os._exit ante
 GC-PERF-UI-01: edición selectiva y total en 20 cuerpos nativos concéntricos, comprobación actor reuse y volumen, benchmark por fases. No sustituye ensamblaje real ni RSS pico; resultados pendientes.
 
 GC-DOC-05 verificado: 7 escenarios de os._exit, Linux y Windows run 45508375966. No valida corte eléctrico. GC-PERF-UI-01 verifica 20 cuerpos compartidos y selectivos en ambos Linux; datos de latencia por fases en artefactos CI. Prueba GPU física pendiente.
+
+GC-STRUCT-PERF-01: 20 y 100 esferas, append/undo/redo y rebuild, identidad de forma existente y bytes idénticos, CI pendiente. Memoria tracemalloc solo Python.

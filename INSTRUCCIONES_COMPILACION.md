@@ -22,3 +22,5 @@ Con Python 3.13 x64 y entorno virtual: `python -m pip install -e ".[ui]"`. Arran
 
 ## GC-PKG-01 — experimento de instalación Windows
 Workflow windows-package.yml ejecuta PyInstaller onedir + NSIS en runner temporal, sin publicar binarios. `python -m goosecad.ui --self-test` comprueba dependencias y persistencia sin GPU. El instalador es por usuario, Windows 10+ x64, no modifica drivers ni pide administrador; se comprueba desinstalación mediante allowlist exacta y preservación de archivo de usuario. Paquete no firmado y no apto para distribución hasta licencia propia/terceros. CI pendiente; no probar como instalación definitiva.
+
+GC-PKG-01 aprobado en runner Windows Server 2022 (run 45508839661): compilación onedir, instalación NSIS 3.10, self-test instalado y desinstalación con archivo usuario conservado. No artefactos binarios; solo inventario textual. Paquete experimental sin firma ni validación GPU/Win10/11 físico.
