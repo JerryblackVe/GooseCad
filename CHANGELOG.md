@@ -43,3 +43,5 @@ GC-VIEW-01: visor experimental VTK 9.6.2, escena por NativeDocument/MeshCache, b
 - GC-MESH-02 revalidación: prueba de cara grande por bloques, benchmark comparativo de caché; 159 pruebas locales.
 
 - GC-UI-01 (experimental): controlador de documento para futura UI; guardado protegido por revisión, recuperación explícita, edición/deshacer/rehacer, selección y escenas con comprobación de obsolescencia. Pruebas de regresión añadidas; estado CI por verificar.
+
+- GC-UI-01 audit: protección del indicador dirty ante cambios directos y discrepancia documento/disco durante save; regresiones añadidas.

@@ -8,3 +8,5 @@ Revisión GC-MESH-01 1–6 completada sobre VIEW-01; 142 históricos y 158 actua
 Revalidación GC-MESH-02 cerrada, 159/159 pruebas, 9800 muestras acumuladas; leer docs/REVISION_MESH_01.md. Base remota cd87dcd0acf20dfd0dd39d82206071f2e912d506, consultar CI y HEAD. Nuevo paso GC-UI-01. Se aplica apartado 41 del Prompt Maestro actualizado (marcador final exacto, sin botones de continuación).
 
 GC-UI-01: DocumentSession y Scene.is_current_selection incorporados (pendiente CI remoto). Token CAS de disco obligatorio, save_as solo archivo ausente, dirty/undo/redo, recuperación no vinculada a archivo, escena opcional vinculada al mismo documento, selección de cuerpo/cara local con validación y refresh. Nueva batería de pruebas tests/test_session.py; verificar workflow del SHA final. Siguiente GC-UI-02, UI nativa Qt/PySide6 sin simular funcionalidades.
+
+GC-UI-01 refuerzo: detección de mutaciones directas al documento y carreras durante save/save_as; consulta tests/test_session.py. SHA final de este checkpoint debe verificarse externamente, igual que su CI.

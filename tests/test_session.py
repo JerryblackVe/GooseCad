@@ -162,3 +162,35 @@ class SessionTests(unittest.TestCase):
         finally:
             session.detach_scene()
             scene.close()
+
+    def test_direct_document_change_is_not_silently_clean(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "p.goosecad"
+            session = DocumentSession(model())
+            session.save_as(path)
+            session.document.edit({"x": 8})
+            self.assertTrue(session.dirty)
+            with self.assertRaises(UnsavedChanges):
+                session.reopen()
+            session.undo()
+            self.assertFalse(session.dirty)
+
+    def test_change_during_save_rejects_false_clean_state(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "p.goosecad"
+            session = DocumentSession(model())
+            session.save_as(path)
+            original = save
+
+            def intervene(doc, destination, **options):
+                result = original(doc, destination, **options)
+                doc.edit({"x": 8})
+                return result
+
+            with patch("goosecad.document.session.save", side_effect=intervene):
+                with self.assertRaisesRegex(SessionError, "changed during save"):
+                    session.save()
+            self.assertTrue(session.dirty)
+            self.assertEqual(load_with_revision(path)[0].value("x"), 2)
+            self.assertEqual(session.document.value("x"), 8)
+

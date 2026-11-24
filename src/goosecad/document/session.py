@@ -5,6 +5,7 @@ retains the exact disk revision token, and never overwrites a changed file
 silently. The viewer is optional and remains owned by its creating thread.
 """
 from dataclasses import dataclass
+from hashlib import sha256
 from pathlib import Path
 
 from OCP.TopoDS import TopoDS_Shape
@@ -50,6 +51,7 @@ class DocumentSession:
         self.disk_revision = disk_revision
         self._clean_bytes = document.to_bytes()
         self._dirty = False
+        self._observed_revision = document.revision
         self._scene = None
         self._visible = ()
         self._selection = None
@@ -66,6 +68,8 @@ class DocumentSession:
 
     @property
     def dirty(self):
+        if self.document.revision != self._observed_revision:
+            self._mutated()
         return self._dirty
 
     @property
@@ -90,6 +94,7 @@ class DocumentSession:
 
     def _mutated(self):
         self._dirty = self.document.to_bytes() != self._clean_bytes
+        self._observed_revision = self.document.revision
         self._selection = None
 
     def edit(self, changes, *, expected_revision=None):
@@ -114,8 +119,21 @@ class DocumentSession:
                      expected_revision=self.disk_revision,
                      allow_upgrade=allow_upgrade)
         self.disk_revision = token
-        self._clean_bytes = self.document.to_bytes()
+        current = self.document.to_bytes()
+        if sha256(current).hexdigest() != token:
+            # A caller bypassed the session and mutated the document during save.
+            # Re-read only this exceptional path to avoid lying about the saved state.
+            disk_doc, disk_token = load_with_revision(self.path)
+            if disk_token != token:
+                self._dirty = True
+                raise SessionError("Disk changed again during save; reconcile before editing")
+            self._clean_bytes = disk_doc.to_bytes()
+            self._dirty = current != self._clean_bytes
+            self._observed_revision = self.document.revision
+            raise SessionError("Document changed during save; reconcile local edits")
+        self._clean_bytes = current
         self._dirty = False
+        self._observed_revision = self.document.revision
         return token
 
     def save_as(self, path):
@@ -126,8 +144,19 @@ class DocumentSession:
         token = save(self.document, destination, expected_revision=None)
         self.path = destination
         self.disk_revision = token
-        self._clean_bytes = self.document.to_bytes()
+        current = self.document.to_bytes()
+        if sha256(current).hexdigest() != token:
+            disk_doc, disk_token = load_with_revision(destination)
+            if disk_token != token:
+                self._dirty = True
+                raise SessionError("Disk changed again during save-as")
+            self._clean_bytes = disk_doc.to_bytes()
+            self._dirty = current != self._clean_bytes
+            self._observed_revision = self.document.revision
+            raise SessionError("Document changed during save-as; reconcile local edits")
+        self._clean_bytes = current
         self._dirty = False
+        self._observed_revision = self.document.revision
         return token
 
     def reopen(self, *, discard_changes=False):

@@ -38,3 +38,5 @@ Revisión GC-MESH-01: commits 1 09d1c30114647bb742f88322c937971d33ef33b4, 2 1a09
 Commit revisión 6 cd87dcd0acf20dfd0dd39d82206071f2e912d506 y árbol b92990ad67b4090d9ce2ea33fc54ef26b9c7ff7a verificados. Revalidación MESH-02 base ese SHA; sincronización API y verificación árbol; SHA final externo.
 
 GC-UI-01: commit de código y pruebas emitido desde GitHub API a partir de f862000523a92d1eb3fa466bc2ca35912816a1ae en feature/000-clean-start. SHA resultante y CI deben verificarse externamente tras actualizar la referencia; no afirmar éxito de CI anticipadamente.
+
+GC-UI-01 revisión de seguridad sobre 03ec44e: mutaciones externas y detección de desajuste durante save, 2 pruebas. Verificar nuevo SHA remoto y CI por separado.
