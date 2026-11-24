@@ -7,7 +7,7 @@
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
   "remote_base_observed": "e6857e19bbc89ed9b910ea3a900a950b962d9ce7",
-  "remote_checkpoint": "2e270a015814b19e5278ec3885f161e1f66cf9ec",
+  "remote_checkpoint": "efc170c7818a2e6c384c632d0e0d8c71006c6d98",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -47,5 +47,6 @@
   "ui_session": "GC-UI-01 CI success on Windows 2022 and Ubuntu 24.04, run 45502896110; docs checkpoint CI pending",
   "tests_discovered": 173,
   "tests_skipped_default_ci": 4,
-  "tests_graphics_verified": 5
+  "tests_graphics_verified": 5,
+  "qt_workspace": "compatibility probe committed; results pending"
 }
