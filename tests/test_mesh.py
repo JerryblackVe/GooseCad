@@ -74,3 +74,25 @@ class MeshTests(unittest.TestCase):
                     nondegenerate = np.linalg.norm(normals, axis=1) > 1e-12
                     self.assertGreater(np.count_nonzero(nondegenerate), 0)
                     self.assertTrue(np.all(np.einsum('ij,ij->i', normals, radial)[nondegenerate] > 0))
+
+    def test_parallel_equivalence(self):
+        from OCP.BRep import BRep_Builder
+        from OCP.TopoDS import TopoDS_Compound
+        builder = BRep_Builder()
+        shapes = TopoDS_Compound()
+        builder.MakeCompound(shapes)
+        for i in range(20):
+            builder.Add(shapes, sphere(5, (i*15, 0, 0)))
+        for shape in (box(2, 3, 4), sphere(5), shapes):
+            with self.subTest(faces=_faces(shape).Extent()):
+                serial = tessellate(shape, linear=.05, angular=.3)
+                parallel = tessellate(shape, linear=.05, angular=.3, parallel=True)
+                self.assertEqual(serial.vertices.shape, parallel.vertices.shape)
+                self.assertEqual(serial.triangles.shape, parallel.triangles.shape)
+                self.assertEqual(serial.face_offsets, parallel.face_offsets)
+                self.assertGreater(volume(parallel), 0)
+                self.assertAlmostEqual(volume(serial), volume(parallel), delta=properties(shape).volume*1e-10)
+                self.assertAlmostEqual(volume(parallel), properties(shape).volume, delta=properties(shape).volume*.03)
+                def sorted_vertices(m):
+                    return m.vertices[np.lexsort(m.vertices.T[::-1])]
+                np.testing.assert_allclose(sorted_vertices(serial), sorted_vertices(parallel), rtol=0, atol=1e-10)

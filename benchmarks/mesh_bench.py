@@ -17,14 +17,16 @@ def main():
     with open(a.output,'w',newline='') as f:
         w=csv.writer(f);w.writerow(['case','mode','sample','ms','vertices','triangles','relative_volume_error','buffer_bytes'])
         for name,s in [('box',box(2,3,4)),('sphere',sphere(5)),('20_spheres',compound(20))]:
-            exact=properties(s).volume; ref=None
+            exact=properties(s).volume; ref=None; ref_v=None
             for mode,kwargs in [('always_transform',{'_identity_fast':False}),('identity_fast',{}),('parallel',{'parallel':True})]:
                 for i in range(-3,a.repetitions):
                     t=time.perf_counter_ns(); m=tessellate(s,linear=.05,angular=.3,**kwargs); ms=(time.perf_counter_ns()-t)/1e6
                     aa,bb,cc=m.vertices[m.triangles].transpose(1,0,2); v=np.einsum('ij,ij->i',aa,np.cross(bb,cc)).sum()/6
                     err=abs(v-exact)/exact; assert err<.03
-                    if ref is None:ref=m
-                    assert len(ref.triangles)==len(m.triangles)
+                    if ref is None:ref=m;ref_v=v
+                    assert ref.triangles.shape==m.triangles.shape and ref.vertices.shape==m.vertices.shape
+                    assert abs(v-ref_v)<=exact*1e-10
+                    if mode=='parallel': np.testing.assert_allclose(ref.vertices[np.lexsort(ref.vertices.T[::-1])],m.vertices[np.lexsort(m.vertices.T[::-1])],rtol=0,atol=1e-10)
                     if mode!='parallel': np.testing.assert_array_equal(ref.vertices,m.vertices); np.testing.assert_array_equal(ref.triangles,m.triangles)
                     if i>=0:w.writerow([name,mode,i,ms,len(m.vertices),len(m.triangles),err,m.vertices.nbytes+m.triangles.nbytes])
 if __name__=='__main__':main()
