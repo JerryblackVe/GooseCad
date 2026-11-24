@@ -32,3 +32,5 @@ GC-SKETCH-03: tres pruebas antiguas de versión futura adaptadas de v3 a v4; reg
 
 
 GC-MESH-01: no fallos finales de las pruebas locales; no es certificación de toda forma B-Rep. OCAF y bloqueos de Goose/OCCT C++ pendientes.
+
+GC-MESH-02: sin fallos finales; riesgo de memoria interna OCCT, concurrencia y snapshots obsoletos; API exige verificar sello. DISPLAY=:0 no conecta; VTK 9.6.2 EGL fuera de pantalla funciona.

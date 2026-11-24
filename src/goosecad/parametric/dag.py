@@ -100,6 +100,7 @@ class Graph:
         self._lock = RLock()
         self._busy = False
         self._revision = 0
+        self._node_revisions = [0] * len(order)
         self.update({}, full=True)
 
     @property
@@ -110,6 +111,12 @@ class Graph:
     def value(self, name: str) -> Any:
         with self._lock:
             return self._values[self._index[name]]
+
+    def versioned_value(self, name: str) -> tuple[int, Any]:
+        """Atomic per-node revision and borrowed read-only result."""
+        with self._lock:
+            i = self._index[name]
+            return self._node_revisions[i], self._values[i]
 
     def snapshot(self) -> tuple[int, dict[str, Any]]:
         """Consistent revision and shallow, borrowed read-only values."""
@@ -178,5 +185,6 @@ class Graph:
         replaced = [values[i] for i in staged]
         for i, value in staged.items():
             values[i] = value
+            self._node_revisions[i] = report.revision
         self._revision = report.revision
         return report

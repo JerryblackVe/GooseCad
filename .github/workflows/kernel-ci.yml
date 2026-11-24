@@ -42,6 +42,7 @@ jobs:
       - run: python benchmarks/disk_lock_bench.py ci-disk-lock-benchmarks.csv --repetitions 10
       - run: python benchmarks/curve_bench.py ci-curve-benchmarks.csv --repetitions 5
       - run: python benchmarks/mesh_bench.py ci-mesh-benchmarks.csv --repetitions 5
+      - run: python benchmarks/mesh_cache_bench.py ci-mesh-cache-benchmarks.csv --repetitions 5
       - uses: actions/upload-artifact@v4
         with:
           name: kernel-benchmarks-${{ matrix.os }}
@@ -56,3 +57,4 @@ jobs:
             ci-disk-lock-benchmarks.csv
             ci-curve-benchmarks.csv
             ci-mesh-benchmarks.csv
+            ci-mesh-cache-benchmarks.csv

@@ -151,3 +151,12 @@ MESH-01-05,test_hole,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-2
 MESH-01-06,test_original_not_meshed,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
 MESH-01-07,test_quality,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
 MESH-01-08,test_transformed_shape,Linux/OCP 7.9.3.1,Aprobada,results/mesh-tests.log,2026-11-24
+MESH-02-01,test_hits_and_selective_edit,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-02,test_undo_redo_never_reuse_old_stamp,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-03,test_failed_edit_keeps_cache,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-04,test_reload_namespace,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-05,test_settings_and_immutable,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-06,test_lru_and_byte_budget,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-07,test_no_cache_and_failed_build,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-08,test_edit_during_mesh,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+MESH-02-09,test_clear_during_mesh,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24

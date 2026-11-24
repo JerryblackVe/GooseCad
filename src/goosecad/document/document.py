@@ -67,6 +67,9 @@ class Document:
     def value(self, name: str) -> Any:
         with self._lock: return self._graph.value(name)
 
+    def versioned_value(self, name: str) -> tuple[int, Any]:
+        with self._lock: return self._graph.versioned_value(name)
+
     def snapshot(self) -> DocumentSnapshot:
         with self._lock:
             revision, values = self._graph.snapshot()

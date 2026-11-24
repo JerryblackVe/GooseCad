@@ -206,6 +206,7 @@ class NativeDocument:
     @property
     def revision(self): return self._document.revision
     def value(self,name): return self._document.value(name)
+    def versioned_value(self,name): return self._document.versioned_value(name)
     def edit(self,changes,**kwargs):
         if type(changes) is not dict or any(type(k) is not str for k in changes):
             raise NativeError("Native edits require a plain dictionary of string identifiers")

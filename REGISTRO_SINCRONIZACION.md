@@ -28,3 +28,5 @@ GC-SKETCH-03: base remota ad4aa55c11df813b14461da3f4023664e77df523, árbol fabc2
 
 
 GC-MESH-01: base remota dc50636d37c7cd46aef0e143d18035e0bbaf98a8, árbol f66c7efa63343e914a9b124d1e40b83bb358fbbe verificado; CI SKETCH-03 consultar. Transferencia por API con verificación de blobs y árbol, sin force; SHA final externo.
+
+GC-MESH-02: base remota afad1c07f827b899cc9e1fc688a1c0b9f3036632, árbol fe8727ee96bcbc079e023842133079639d1630c9 verificado local. CI MESH-01 Linux aprobado, Windows en curso al consultar. Publicación por API con verificación de blobs/árbol y update_ref sin force; SHA final externo.

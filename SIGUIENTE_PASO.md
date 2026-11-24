@@ -1,2 +1,2 @@
-# GC-MESH-02 — Caché de teselación y preparación de visor (P0)
-Verificar CI SKETCH-03 y MESH-01. Implementar caché acotada por bytes/entradas, claves explícitas de revisión geométrica, deflexiones y cuerpo, invalidación al editar, undo/redo y recuperación; impedir reutilización de malla obsoleta; medir latencia y memoria con modelos repetidos. Luego evaluar visor 3D Qt/VTK o alternativa con pruebas reales y accesibilidad. Mantener malla separada del B-Rep.
+# GC-VIEW-01 — Visor 3D experimental (P1)
+Verificar CI MESH-01/MESH-02; VTK 9.6.2 disponible, Qt no instalado, EGL render fuera de pantalla viable; DISPLAY no conecta. Implementar escena desde NativeDocument y MeshCache, cámara, selección por cara de snapshot, actualizaciones por cuerpo y rechazo de selección obsoleta. Pruebas reales de render y selección, distinguir software/GPU, evitar afirmar interacción de escritorio no probada. Evaluar controles, accesibilidad, empaquetado Windows.
