@@ -287,3 +287,84 @@ class DocumentTaskTests(unittest.TestCase):
                 except Exception:
                     pass
             tasks.close()
+
+    def test_combined_mutation_and_display_one_notification(self):
+        from goosecad.view.scene import Scene
+        current = session()
+        scene = Scene(current.document, offscreen=True)
+        current.attach_scene(scene)
+        notified = Event()
+        notifications = []
+        def notify():
+            notifications.append(1)
+            notified.set()
+        tasks = DocumentTasks(current, notify=notify)
+        try:
+            current.refresh(["box"])
+            old = scene._actors["box"][1]
+            tasks.edit({"x": 8}, display_request=scene.plan_refresh(["box"]))
+            self.assertTrue(notified.wait(5))
+            result = collect(tasks)
+            self.assertIsNone(result.display_error)
+            self.assertEqual(len(notifications), 1)
+            self.assertIs(scene._actors["box"][1], old)
+            self.assertEqual(current.document.value("x"), 8)
+            self.assertEqual(current.publish_refresh(result.prepared), ("box",))
+            self.assertIsNot(scene._actors["box"][1], old)
+            tasks.undo(display_request=scene.plan_refresh(["box"]))
+            result = collect(tasks)
+            self.assertIsNone(result.display_error)
+            current.publish_refresh(result.prepared)
+            self.assertFalse(current.dirty)
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()
+            current.detach_scene()
+            scene.close()
+
+    def test_cancel_during_combined_display_preserves_committed_model(self):
+        from goosecad.view.scene import Scene
+        from goosecad.view.preparation import MeshRequest
+        current = session()
+        scene = Scene(current.document, offscreen=True)
+        current.attach_scene(scene)
+        tasks = DocumentTasks(current)
+        entered, release = Event(), Event()
+        real = MeshRequest.prepare
+        def gated(request, **kwargs):
+            entered.set()
+            if not release.wait(5):
+                raise RuntimeError("test gate timeout")
+            return real(request, **kwargs)
+        try:
+            current.refresh(["box"])
+            old = scene._actors["box"][1]
+            plan = scene.plan_refresh(["box"])
+            with patch.object(MeshRequest, "prepare", new=gated):
+                tasks.edit({"x": 9}, display_request=plan)
+                self.assertTrue(entered.wait(5))
+                self.assertTrue(tasks.request_cancel())
+                release.set()
+                result = collect(tasks)
+            self.assertIsInstance(result.display_error, Cancelled)
+            self.assertIsNone(result.prepared)
+            self.assertEqual(current.document.value("x"), 9)
+            self.assertTrue(current.dirty)
+            self.assertEqual(current.document.history_depths, (1, 0))
+            self.assertIs(scene._actors["box"][1], old)
+            current.refresh(["box"])
+            self.assertIsNot(scene._actors["box"][1], old)
+        finally:
+            release.set()
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()
+            current.detach_scene()
+            scene.close()

@@ -8,11 +8,11 @@ publication, and cannot interrupt an OCCT call already executing.
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event, get_ident
 from pathlib import Path
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from goosecad.document.session import DocumentSession
 from goosecad.parametric import Cancelled
-from goosecad.view.preparation import DisplayConfig, PreparedMeshes
+from goosecad.view.preparation import DisplayConfig, MeshRequest, PreparedMeshes
 from goosecad.document.autosave import AutosaveSlot
 
 
@@ -24,6 +24,13 @@ class TaskStateError(RuntimeError):
 class LoadedView:
     session: DocumentSession
     prepared: PreparedMeshes
+
+
+@dataclass(frozen=True, slots=True)
+class MutationDisplay:
+    report: object
+    prepared: PreparedMeshes | None
+    display_error: Exception | None = None
 
 
 class DocumentTasks:
@@ -84,25 +91,45 @@ class DocumentTasks:
         # Callback must only enqueue a notification; it must not collect.
         self._notify()
 
-    def _start(self, method, *args, expected_revision=None):
+    def _start(self, method, *args, expected_revision=None, display_request=None):
         self._idle()
         revision = self.session.document.revision if expected_revision is None else expected_revision
         token = Event()
-        self._submit("mutation", method, args, token=token,
-                     kwargs={"expected_revision": revision, "cancelled": token.is_set})
+        kwargs = {"expected_revision": revision, "cancelled": token.is_set}
+        if display_request is None:
+            self._submit("mutation", method, args, token=token, kwargs=kwargs)
+            return
+        if (type(display_request) is not MeshRequest
+                or display_request.document is not self.session.document
+                or display_request.revision != self.session.document.revision):
+            raise TaskStateError("Invalid or stale display request")
 
-    def edit(self, changes, *, expected_revision=None):
+        def mutate_and_prepare():
+            # Failure before commit is propagated normally. Display failure
+            # after commit is a distinct outcome; never promise a rollback.
+            report = method(*args, **kwargs)
+            try:
+                plan = replace(display_request, revision=report.revision)
+                prepared = plan.prepare(cancelled=token.is_set)
+            except Exception as exc:
+                return MutationDisplay(report, None, exc.with_traceback(None))
+            return MutationDisplay(report, prepared)
+
+        self._submit("mutation_display", mutate_and_prepare, (), token=token)
+
+    def edit(self, changes, *, expected_revision=None, display_request=None):
         self._check()
         if type(changes) is not dict or any(type(k) is not str or
                 type(v) not in (int, float) for k, v in changes.items()):
             raise TaskStateError("Expected a numeric parameter dictionary")
-        self._start(self.session.document.edit, dict(changes), expected_revision=expected_revision)
+        self._start(self.session.document.edit, dict(changes),
+                    expected_revision=expected_revision, display_request=display_request)
 
-    def undo(self):
-        self._start(self.session.document.undo)
+    def undo(self, *, display_request=None):
+        self._start(self.session.document.undo, display_request=display_request)
 
-    def redo(self):
-        self._start(self.session.document.redo)
+    def redo(self, *, display_request=None):
+        self._start(self.session.document.redo, display_request=display_request)
 
     def open(self, path, *, recovery=False, recovery_copy=False, display_config=None):
         """Load an independent candidate. Never replace the active session here."""

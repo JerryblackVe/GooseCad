@@ -273,6 +273,8 @@ class MainWindow(QMainWindow):
         self._cancel_requested = False
         self.statusBar().showMessage(
             "Guardando… No interrumpa el guardado." if self.tasks.kind in ("save", "autosave")
+            else "Calculando… Vista anterior; selección deshabilitada."
+            if self.tasks.kind in ("mutation_display", "mesh")
             else "Operación en curso… Puede solicitar cancelación.")
         self._update_actions()
         return True
@@ -284,21 +286,29 @@ class MainWindow(QMainWindow):
             return after() if after is not None else True
         try:
             changes = self._parameter_changes()
+            request = self.scene.plan_refresh(terminal_bodies(self.session.document))
         except Exception as exc:
             self._error(exc)
             return False
         return self._start_task(self.tasks.edit, changes, after=after,
-                                expected_revision=self._editor_revision)
+                                expected_revision=self._editor_revision,
+                                display_request=request)
+
+    def _start_history_task(self, method):
+        if self.tasks.busy or self._staged:
+            return False
+        try:
+            request = self.scene.plan_refresh(terminal_bodies(self.session.document))
+        except Exception as exc:
+            self._error(exc)
+            return False
+        return self._start_task(method, display_request=request)
 
     def start_undo(self):
-        if self._staged:
-            return False
-        return self._start_task(self.tasks.undo)
+        return self._start_history_task(self.tasks.undo)
 
     def start_redo(self):
-        if self._staged:
-            return False
-        return self._start_task(self.tasks.redo)
+        return self._start_history_task(self.tasks.redo)
 
     def cancel_task(self):
         if self.tasks.request_cancel():
@@ -314,16 +324,16 @@ class MainWindow(QMainWindow):
         try:
             result = self.tasks.collect()
         except Cancelled:
-            self._update_actions()
             if kind == "mesh":
-                self.statusBar().showMessage("Vista cancelada; el modelo conserva sus cambios.")
+                self._invalidate_display("Vista cancelada; el modelo conserva sus cambios.")
             else:
+                self._update_actions()
                 self.statusBar().showMessage("Operación cancelada sin publicar cambios.")
             return
         except Exception as exc:
             self._update_actions()
             if kind == "mesh":
-                self.statusBar().showMessage("Modelo conservado; vista no actualizada.")
+                self._invalidate_display("Modelo conservado; vista no actualizada.")
             if kind == "autosave":
                 self._autosave_timer.stop()
                 self.statusBar().showMessage("Guardado automático detenido; revise la carpeta de recuperación.")
@@ -347,27 +357,48 @@ class MainWindow(QMainWindow):
             if result is not None:
                 self.statusBar().showMessage("Copia de recuperación actualizada; documento aún sin guardar.")
         elif kind == "mesh":
-            try:
-                self.session.publish_refresh(result)
-                self.viewport.show()
-                if self._ready:
-                    self.scene.render()
-            except Exception as exc:
-                self.viewport.hide()
-                self._update_actions()
-                self.statusBar().showMessage("Modelo conservado; vista no actualizada.")
-                self._error(exc)
+            if not self._publish_display(result):
                 return
-            self._view_ok = True
-            self.viewport.show()
-            self._update_actions()
-            self.statusBar().showMessage("Vista actualizada.")
+        elif kind == "mutation_display":
+            self._populate()
+            if result.display_error is not None:
+                cancelled = isinstance(result.display_error, Cancelled)
+                self._invalidate_display(
+                    "Vista cancelada; cambios del modelo conservados." if cancelled
+                    else "Modelo conservado; vista no actualizada.")
+                if not cancelled:
+                    self._error(result.display_error)
+                return
+            if not self._publish_display(result.prepared):
+                return
         else:
             self._populate()
             self.request_refresh(after=after)
             return
         if after is not None:
             after()
+
+    def _invalidate_display(self, message):
+        self._view_ok = False
+        self.viewport.hide()
+        self._update_actions()
+        self.statusBar().showMessage(message)
+
+    def _publish_display(self, prepared):
+        try:
+            self.session.publish_refresh(prepared)
+            if self.viewport.isHidden():
+                self.viewport.show()
+            if self._ready:
+                self.scene.render()
+        except Exception as exc:
+            self._invalidate_display("Modelo conservado; vista no actualizada.")
+            self._error(exc)
+            return False
+        self._view_ok = True
+        self._update_actions()
+        self.statusBar().showMessage("Vista actualizada.")
+        return True
 
     def apply_parameters(self):
         """Synchronous compatibility path for direct calls/modal save-discard flow."""
@@ -405,9 +436,8 @@ class MainWindow(QMainWindow):
     def request_refresh(self, *, after=None):
         if self.tasks.busy:
             return False
-        # Never present obsolete geometry as the new document revision.
-        self._view_ok = False
-        self.viewport.hide()
+        # Keep the previous display visible but non-interactive while busy;
+        # only hide it if publishing the new revision fails or is cancelled.
         try:
             request = self.scene.plan_refresh(terminal_bodies(self.session.document))
         except Exception as exc:
@@ -424,6 +454,8 @@ class MainWindow(QMainWindow):
             return False
         try:
             self.session.refresh(terminal_bodies(self.session.document))
+            if self.viewport.isHidden():
+                self.viewport.show()
             if self._ready:
                 self.scene.render()
             self._view_ok = True

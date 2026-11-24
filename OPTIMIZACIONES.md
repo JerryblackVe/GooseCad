@@ -43,3 +43,5 @@ GC-MESH-01 revisión: cronómetro por etapas 20 esferas, ~69.13 ms nativo y 40.5
 GC-UI-04: separación de cálculo documental y control GUI, cancelación cooperativa, una tarea activa, sin duplicar B-Rep para historia. No hay medición comparativa nueva aún. Se preservan las dos líneas base brutas CI de GC-UI-03; no atribuir diferencias entre runners a la versión de Qt.
 
 GC-UI-07: polling fijo sustituido por evento de finalización; no añade hilos ni cambia cálculos. Medición pendiente.
+
+GC-UI-11: un Future para edición y preparación de malla; se elimina doble dispatch/relayout, sin cambiar tolerancias ni propiedad VTK. Cancelación post-commit distingue fallo de vista de fallo de modelo; mediciones pendientes.

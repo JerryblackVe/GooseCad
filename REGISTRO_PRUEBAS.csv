@@ -205,3 +205,6 @@ GC-UI-08,Mesh prepare en worker y publish dueño stale foreign presupuesto,GitHu
 GC-UI-07,Archivos async y señal Qt 6.9.3 Linux,GitHub Actions Ubuntu,Aprobado,job 138846138638 5 tests,2026-11-24
 GC-UI-09,Primera malla de candidato fuera de GUI una sola preparación,GitHub Actions,Pendiente,tests/test_document_tasks.py y test_qt_workspace.py,2026-11-24
 GC-DOC-04,Autosave independiente CAS y recuperación dirty,GitHub Actions,Pendiente,tests/test_autosave.py y test_qt_workspace.py,2026-11-24
+GC-UI-07,Archivos async y señal Qt 4 variantes,GitHub Actions,Aprobado,run 45507428350 5 tests por job y kernel 45507428267,2026-11-24
+GC-UI-09,Apertura con una teselación worker Qt 6.11.3,GitHub Actions Ubuntu,Aprobado,job 138847103248 6 tests,2026-11-24
+GC-UI-11,Mutación y malla en un Future cancelación post commit,GitHub Actions,Pendiente,tests/test_document_tasks.py,2026-11-24

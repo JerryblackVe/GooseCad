@@ -1,2 +1,2 @@
-# GC-DOC-04 / GC-UI-10 — validar autosave y cadena gráfica
-Consultar CI de HEAD y resultados GC-UI-08/09; revisar logs completos, pruebas de recuperación/autosave y CAS. Medir sync/async y latencias por fase de carga/teselación/render. Siguiente P0: gestionar copias antiguas explícitamente (sin borrado automático), pruebas interrupción de proceso y durabilidad Windows; mejorar primera apertura CLI y selección. Windows físico/instalador pendientes.
+# GC-UI-11 / GC-DOC-04 — verificar cadena combinada y autosave
+Consultar CI de HEAD, GC-UI-08/09 y GC-DOC-04. Inspeccionar logs y benchmarks por runner; comprobar que cancelación post-commit no pierde geometría y que las copias autosave son independientes. Medir latencia final de edición + mesh combinados, preservar artefactos. P0 siguiente: interrupción de proceso y recuperación durable; gestionar copias antiguas de forma explícita; validar hardware Windows y preparación instalador.

@@ -1,7 +1,7 @@
 """Synchronous baseline and asynchronous command latency on the same runner.
 
 The command-return metric measures dispatch/control updates, not photon latency.
-The end-to-end metric includes event-loop polling and scene refresh. The actual
+The end-to-end metric includes event-loop dispatch and scene refresh. The actual
 document edit time excludes Qt refresh. No GPU performance claims from Xvfb.
 """
 import csv
@@ -21,7 +21,7 @@ from vtk import vtkVersion
 
 def main(path):
     app = QApplication([])
-    window = MainWindow()
+    window = MainWindow(autosave_interval=0)
     window.show()
     window.initialize_view()
     app.processEvents()
@@ -67,7 +67,8 @@ def main(path):
                     app.processEvents()
                     if time.monotonic() >= deadline:
                         raise RuntimeError("asynchronous benchmark timed out")
-                    time.sleep(.001)
+                    if window.tasks.busy:
+                        time.sleep(.001)
                 app.processEvents()
                 finished = perf_counter_ns()
                 assert window.session.document.value("width") == expected
