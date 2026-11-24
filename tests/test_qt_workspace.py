@@ -188,3 +188,68 @@ class QtWorkspaceTests(unittest.TestCase):
                 gc.collect()
                 self.app.processEvents()
         self.assertEqual(errors, [], "unexpected exception in Qt callback")
+
+    def test_async_file_actions_save_then_open_and_conflict(self):
+        import time
+        from threading import Event
+        from PySide6.QtWidgets import QMessageBox
+        from goosecad.ui.main_window import MainWindow
+        from goosecad.document.session import DocumentSession
+        window = MainWindow()
+        window.show()
+        window.initialize_view()
+        entered, release = Event(), Event()
+        def finish():
+            deadline = time.monotonic() + 15
+            while window.tasks.busy:
+                self.app.processEvents()
+                if time.monotonic() > deadline:
+                    self.fail("file task timed out")
+                time.sleep(.005)
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                primary = Path(directory) / "primary.gcad"
+                target = Path(directory) / "target.gcad"
+                self.assertTrue(window.save_as_path(primary))
+                independent = DocumentSession.open(primary)
+                independent.edit({"width": 41})
+                independent.save_as(target)
+                window.session.edit({"width": 29})
+                original = window.session
+                real_save = original.save
+                def gated():
+                    entered.set()
+                    if not release.wait(10):
+                        raise RuntimeError("gate timeout")
+                    return real_save()
+                with patch.object(original, "save", side_effect=gated):
+                    with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Save):
+                        self.assertTrue(window.request_open_path(target))
+                    self.assertTrue(entered.wait(5))
+                    self.assertIs(window.session, original)
+                    self.assertFalse(window.cancel_action.isEnabled())
+                    self.assertFalse(window.close())
+                    release.set()
+                    finish()
+                self.assertEqual(DocumentSession.open(primary).document.value("width"), 29)
+                self.assertEqual(window.session.document.value("width"), 41)
+                self.assertEqual(window.session.path, target)
+                other = DocumentSession.open(target)
+                other.edit({"width": 43})
+                other.save()
+                window.session.edit({"width": 45})
+                active = window.session
+                with patch.object(window, "_error") as error:
+                    with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Save):
+                        self.assertTrue(window.request_open_path(primary))
+                    finish()
+                    error.assert_called_once()
+                self.assertIs(window.session, active)
+                self.assertTrue(active.dirty)
+                self.assertEqual(DocumentSession.open(target).document.value("width"), 43)
+        finally:
+            release.set()
+            finish()
+            with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()

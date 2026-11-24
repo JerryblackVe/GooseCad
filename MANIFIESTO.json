@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "27ca2208b1bcc752e5f53e3a11924ba00dce99df",
-  "remote_checkpoint": "27ca2208b1bcc752e5f53e3a11924ba00dce99df",
+  "remote_base_observed": "a1fd0c4fdefc2990541bef7101342cecd2dae03e",
+  "remote_checkpoint": "a1fd0c4fdefc2990541bef7101342cecd2dae03e",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -59,5 +59,6 @@
   ],
   "qt_mesa_verified_run": 45506457843,
   "qt_close_regression_job": 138843657070,
-  "async_file_tasks": "worker implemented, tests and GUI integration pending"
+  "async_file_tasks": "GUI actions integrated; tests pending",
+  "qt_close_linux_qt693": "4 tests passed job 138844980747; no close exception in inspected log"
 }

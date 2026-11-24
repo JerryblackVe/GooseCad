@@ -197,3 +197,5 @@ GC-UI-02,Qt/VTK Windows software LLVMpipe e integración 2 pruebas por versión,
 GC-UI-04,Qt async integration Linux Qt 6.11.3,GitHub Actions Ubuntu 24.04,Requiere corrección,job 138843657070 3 tests OK pero RecursionError en callback closeEvent,2026-11-24
 GC-UI-05,Cierre idempotente Qt y recuperación dirty/CAS,GitHub Actions,Pendiente,tests/test_qt_workspace.py y tests/test_session.py,2026-11-24
 GC-UI-06,Worker apertura guardado CAS recuperación y cancelación,GitHub Actions,Pendiente,tests/test_document_tasks.py,2026-11-24
+GC-UI-05,Cierre idempotente y recuperación Qt 6.9.3,GitHub Actions Ubuntu 24.04,Aprobado,job 138844980747 4 tests OK sin RecursionError,2026-11-24
+GC-UI-06,Acciones archivo async save then open y CAS,GitHub Actions,Pendiente,tests/test_qt_workspace.py,2026-11-24

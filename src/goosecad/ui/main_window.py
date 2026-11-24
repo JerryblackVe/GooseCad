@@ -1,7 +1,7 @@
 """Qt desktop workspace for native parameter documents (experimental).
 
 Parameter commands use a single document worker; Qt/VTK refresh stays on
-its owning thread. Loading, disk saving and meshing remain synchronous.
+its owning thread. File commands also use the worker; meshing remains synchronous.
 """
 from pathlib import Path
 from math import isfinite
@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
         self.save_as_action = action(file_menu, "Guardar &como…", self.request_save_as, QKeySequence.StandardKey.SaveAs)
         self.undo_action = action(edit_menu, "&Deshacer", self.start_undo, QKeySequence.StandardKey.Undo)
         self.redo_action = action(edit_menu, "&Rehacer", self.start_redo, QKeySequence.StandardKey.Redo)
-        self.cancel_action = action(edit_menu, "Cancelar cálculo", self.cancel_task)
+        self.cancel_action = action(edit_menu, "Cancelar operación", self.cancel_task)
         self.fit_action = action(view_menu, "Ajustar vista", self.fit_view)
         self.refresh_action = action(view_menu, "Actualizar vista", self.refresh_view)
 
@@ -189,13 +189,13 @@ class MainWindow(QMainWindow):
         self.parameters.setEnabled(not busy)
         self.bodies.setEnabled(not busy)
         self.viewport.setEnabled(not busy)
-        self.cancel_action.setEnabled(busy and not self._cancel_requested)
+        self.cancel_action.setEnabled(self.tasks.can_cancel and not self._cancel_requested)
         if busy:
             self.undo_action.setEnabled(False)
             self.redo_action.setEnabled(False)
             self.fit_action.setEnabled(False)
             self.apply_button.setEnabled(False)
-            self.setWindowTitle("Calculando… — GooseCAD Professional")
+            self.setWindowTitle("Operación en curso… — GooseCAD Professional")
             return
         undo, redo = self.session.document.history_depths
         self.undo_action.setEnabled(bool(undo) and not self._staged)
@@ -233,7 +233,9 @@ class MainWindow(QMainWindow):
             return False
         self._after_task = after
         self._cancel_requested = False
-        self.statusBar().showMessage("Calculando… Puede solicitar cancelación.")
+        self.statusBar().showMessage(
+            "Guardando… No interrumpa el guardado." if self.tasks.kind == "save"
+            else "Operación en curso… Puede solicitar cancelación.")
         self._update_actions()
         self._task_timer.start()
         return True
@@ -272,19 +274,34 @@ class MainWindow(QMainWindow):
             return
         self._task_timer.stop()
         after, self._after_task = self._after_task, None
+        kind = self.tasks.kind
         try:
-            self.tasks.collect()
+            result = self.tasks.collect()
         except Cancelled:
             self._update_actions()
-            self.statusBar().showMessage("Cálculo cancelado sin publicar cambios.")
+            self.statusBar().showMessage("Operación cancelada sin publicar cambios.")
             return
         except Exception as exc:
             self._update_actions()
             self._error(exc)
             return
-        self._populate()
-        if self.refresh_view():
-            self.statusBar().showMessage("Cálculo completado.")
+        if kind in ("open", "recovery"):
+            try:
+                self._install(result)
+            except Exception as exc:
+                self._update_actions()
+                self._error(exc)
+                return
+            self.statusBar().showMessage(
+                "Versión recuperada; guarde como documento nuevo."
+                if kind == "recovery" else "Documento abierto.")
+        elif kind == "save":
+            self._update_actions()
+            self.statusBar().showMessage("Documento guardado.")
+        else:
+            self._populate()
+            if self.refresh_view():
+                self.statusBar().showMessage("Cálculo completado.")
         if after is not None:
             after()
 
@@ -359,11 +376,58 @@ class MainWindow(QMainWindow):
             except Exception as exc:
                 self._error(exc)
 
-    def request_save(self):
-        return self.start_parameter_edit(after=self.save_document)
+    def _choose_save_path(self):
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Guardar documento nuevo", "", "GooseCAD (*.gcad)",
+            options=QFileDialog.Option.DontConfirmOverwrite)
+        if not path:
+            return None
+        if not Path(path).suffix:
+            path += ".gcad"
+        return Path(path)
+
+    def _start_save(self, *, destination=None, after=None):
+        if self.tasks.busy:
+            return False
+        if destination is None and self.session.path is None:
+            destination = self._choose_save_path()
+            if destination is None:
+                return False
+        if destination is None:
+            return self._start_task(self.tasks.save, after=after)
+        return self._start_task(self.tasks.save_as, destination, after=after)
+
+    def request_save(self, *, after=None):
+        return self.start_parameter_edit(after=lambda: self._start_save(after=after))
 
     def request_save_as(self):
-        return self.start_parameter_edit(after=self.save_as_dialog)
+        if self.tasks.busy:
+            return False
+        destination = self._choose_save_path()
+        if destination is None:
+            return False
+        return self.start_parameter_edit(
+            after=lambda: self._start_save(destination=destination))
+
+    def _confirm_then(self, action):
+        """Continue only after successful asynchronous save, or explicit discard."""
+        if self.tasks.busy:
+            return False
+        if not (self.session.dirty or self._staged):
+            return action()
+        choice = QMessageBox.question(
+            self, "Cambios sin guardar", "¿Guardar los cambios antes de continuar?",
+            QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard |
+            QMessageBox.StandardButton.Cancel, QMessageBox.StandardButton.Cancel)
+        if choice == QMessageBox.StandardButton.Save:
+            return self.request_save(after=action)
+        if choice == QMessageBox.StandardButton.Discard:
+            return action()
+        return False
+
+    def request_open_path(self, path, *, recovery=False):
+        return self._confirm_then(
+            lambda: self._start_task(self.tasks.open, path, recovery=recovery))
 
     def save_document(self):
         if not self.apply_parameters():
@@ -429,7 +493,7 @@ class MainWindow(QMainWindow):
             return False
         path, _ = QFileDialog.getOpenFileName(self, "Abrir documento", "", "GooseCAD (*.gcad *.goosecad);;Todos (*)")
         if path:
-            return self.open_path(path)
+            return self.request_open_path(path)
         return False
 
     def recover_path(self, path):
@@ -449,15 +513,28 @@ class MainWindow(QMainWindow):
             return False
         path, _ = QFileDialog.getOpenFileName(
             self, "Seleccione el documento principal", "", "GooseCAD (*.gcad *.goosecad);;Todos (*)")
-        return self.recover_path(path) if path else False
+        return self.request_open_path(path, recovery=True) if path else False
 
     def closeEvent(self, event):
         if self.scene is None:
             event.accept()
             return
-        if not self._can_replace():
+        if self.tasks.busy:
+            self.statusBar().showMessage("Espere a que termine la operación.")
             event.ignore()
             return
+        if self.session.dirty or self._staged:
+            choice = QMessageBox.question(
+                self, "Cambios sin guardar", "¿Guardar los cambios antes de cerrar?",
+                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard |
+                QMessageBox.StandardButton.Cancel, QMessageBox.StandardButton.Cancel)
+            if choice == QMessageBox.StandardButton.Save:
+                event.ignore()
+                self.request_save(after=self.close)
+                return
+            if choice != QMessageBox.StandardButton.Discard:
+                event.ignore()
+                return
         self._task_timer.stop()
         if self.tasks is not None:
             self.tasks.close()
