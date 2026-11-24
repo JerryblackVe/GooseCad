@@ -7,19 +7,36 @@
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
   "remote_base_observed": "e6857e19bbc89ed9b910ea3a900a950b962d9ce7",
-  "remote_checkpoint": "e0cbc8ef5958e7538ae5b2ff86f4eeba54fb138b",
+  "remote_checkpoint": "23e553d8a1c19883b1a0e8a2ca686330d4cbafe6",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
-  "tests_passed": 156,
+  "tests_passed": 158,
   "tests_failed": 0,
-  "benchmark_samples": 8910,
+  "benchmark_samples": 9560,
   "backup": "B0001",
-  "next_task": "GC-UI-01",
+  "next_task": "GC-UI-01 (tras cerrar revisión GC-MESH-01)",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
-  "ci_base_run": 45496074967,
+  "ci_base_run": 45497549014,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": null
+  "ci_pending_run": null,
+  "ci_verified_checkpoints": {
+    "GC-MESH-01": {
+      "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
+      "run": 45496074967,
+      "conclusion": "success"
+    },
+    "GC-MESH-02": {
+      "sha": "e0cbc8ef5958e7538ae5b2ff86f4eeba54fb138b",
+      "run": 45496847193,
+      "conclusion": "success"
+    },
+    "GC-VIEW-01": {
+      "sha": "b2276a072322a68a9e49ec8833b7a9dbb21b1509",
+      "run": 45497549014,
+      "conclusion": "success"
+    }
+  }
 }

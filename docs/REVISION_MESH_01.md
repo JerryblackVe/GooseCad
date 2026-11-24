@@ -42,3 +42,6 @@ Ver DECISIONES_TECNICAS.md. 158/158 pruebas locales, 200 muestras, geometría eq
 | 10_spheres | 10 | False | 49.1986 | 52.0969 |
 | 20_spheres | 20 | True | 50.7654 | 54.5067 |
 | 20_spheres | 20 | False | 97.4642 | 103.0706 |
+
+## 4. Manifiesto y CI
+GC-MESH-01 run 45496074967, SHA afad1c0, verificado exitoso en Windows Server 2022 y Ubuntu 24.04. El manifiesto histórico de ese SHA tenía 45493354650; el manifiesto posterior ya llevaba el run MESH-01 como base, ahora se conserva un registro explícito SHA/run/conclusión por checkpoint de MESH-01, MESH-02 y VIEW-01; ci_base_run apunta al último de esos tres CI aprobados. CI de la revisión se consulta por HEAD, no se anticipa su resultado.
