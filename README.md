@@ -11,3 +11,5 @@ python benchmarks/kernel_bench.py benchmark-local.csv
 python experiments/topology_history.py
 ```
 Ver ESTADO_PROYECTO.md, CONTINUIDAD.md, SIGUIENTE_PASO.md y PROMPT_MAESTRO.md. No se incorporó código anterior.
+
+GC-SKETCH-02: documentos v1/v2, bocetos poligonales declarativos y barridos B-Rep; consultar docs/FORMATO_NATIVO.md. CI previo Windows/Linux aprobado; nuevo CI pendiente. No es aplicación de escritorio.

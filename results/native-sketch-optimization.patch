@@ -1,0 +1,24 @@
+--- a/src/goosecad/document/sketch_spec.py
++++ b/src/goosecad/document/sketch_spec.py
+@@ -29,12 +29,16 @@
+                                    [v for c in self.constraints for v in c.targets]))
+ 
+     def operation(self):
+-        deps=self.dependencies()
++        deps=self.dependencies(); index={v:i for i,v in enumerate(deps)}
++        # Compile positional indices once, not on each parameter change.
++        points=tuple((p.id,index[p.x],index[p.y]) for p in self.points)
++        constraints=tuple((c.kind,c.a,c.b,tuple(index[t] for t in c.targets)) for c in self.constraints)
++        order=tuple(p.id for p in self.points)
+         def compute(*values):
+-            bindings=dict(zip(deps,values))
+-            coords={p.id:(bindings[p.x],bindings[p.y]) for p in self.points}
+-            cs=tuple(Constraint(c.kind,c.a,c.b,tuple(bindings[t] for t in c.targets) if c.kind=='fix' else bindings[c.targets[0]] if c.kind=='distance' else None) for c in self.constraints)
+-            return solve_profile(coords,cs,tuple(p.id for p in self.points))
++            coords={n:(values[x],values[y]) for n,x,y in points}
++            cs=tuple(Constraint(k,a,b,tuple(values[i] for i in t) if k=='fix' else values[t[0]] if k=='distance' else None)
++                     for k,a,b,t in constraints)
++            return solve_profile(coords,cs,order)
+         return Operation(self.id,deps,compute)
+ 
+ 

@@ -18,3 +18,5 @@ GC-SOLVER-01: base remota 06bc3ba9f2ef6e6180e8e23312e1cdbd0f9a3416 y árbol 4cf8
 GC-ABI-01 base remota 4bd459e9ec7908fe7acba984710c2e831f702ee2; publicación vía API sin force; SHA final externo; verificar CI.
 
 GC-GEO-02 base remota 67165c5ce4c5248be3b083b976b22ee7a290bb5f; publicación API sin force, SHA final externo; verificar CI.
+
+GC-SKETCH-02: base remota 0b801397d7e420236669811041d25c835ed7e628, árbol 5b3a8e95684d3afc79a88a4bdb04e1edb7654539 verificado. CI GEO-02 y ABI-01 aprobados. Publicación vía API sin force; SHA final externo, verificar CI nuevo.

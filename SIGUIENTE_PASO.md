@@ -1,2 +1,2 @@
-# GC-SKETCH-02 — Persistencia e integración declarativa de bocetos y barridos
-P0: diseñar registros versionados para puntos, restricciones y perfil, extrusión y revolución. Mantener lectura del esquema v1; validar tipos, límites, ciclos y referencias antes de evaluar; no sobrescribir v1 sin migración explícita y recuperación. Probar guardado, carga, cambios dimensionales, undo/redo, corrupción, fallo de escritura y benchmark. Verificar CI ABI y GEO. Investigar Goose/OCCT C++ en entorno autorizado con SDK; no presentar prototipo escalar como integración real.
+# GC-DOC-03 — Coordinación de escritores y conflicto de revisión de disco (P0)
+Bloqueo cooperativo por archivo, detección de guardados desde revisiones obsoletas, rutas reservadas y recuperación; probar concurrencia entre procesos, errores y latencia. No romper v1/v2. CI SKETCH-02 pendiente de verificación. Después GC-SKETCH-03: perfiles exactos con curvas y agujeros. Goose/OCCT C++ sigue bloqueado.

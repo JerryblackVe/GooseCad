@@ -98,3 +98,17 @@ GEO-02-08,solved_profile,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026
 GEO-02-09,bad_sketch,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
 GEO-02-10,parametric_rebuild_and_rollback,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
 GEO-02-11,distance_drives_profile,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+SKETCH-02-01,test_aggregate_limit,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-02,test_atomic_multi_edit_failure,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-03,test_bad_checksum_and_future_version,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-04,test_bounds_and_v1_rejects_sketch_records,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-05,test_failed_constraint_rollback,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-06,test_incremental_width_undo_redo,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-07,test_reference_sharing_and_canonical_order,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-08,test_replace_failure,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-09,test_roundtrip_both_sweeps,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-10,test_roundtrip_edited_recovery,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-11,test_schema_before_evaluation,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-12,test_sweep_parameter_skips_solver,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-13,test_upgrade_failure_preserves_v1,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+SKETCH-02-14,test_v1_bytes_and_explicit_upgrade,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
