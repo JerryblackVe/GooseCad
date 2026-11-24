@@ -58,6 +58,13 @@ class DocumentSession:
         self._selection = None
 
     @classmethod
+    def new(cls, document):
+        """New user-authored data must be explicitly saved or discarded."""
+        session = cls(document)
+        session._requires_save = True
+        return session
+
+    @classmethod
     def open(cls, path):
         document, token = load_with_revision(path)
         return cls(document, path=path, disk_revision=token)

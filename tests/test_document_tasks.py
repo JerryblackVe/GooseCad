@@ -368,3 +368,25 @@ class DocumentTaskTests(unittest.TestCase):
             tasks.close()
             current.detach_scene()
             scene.close()
+
+    def test_new_primitive_candidate_is_unsaved_and_independent(self):
+        from goosecad.document.primitives import PrimitiveSpec
+        from goosecad.view.preparation import DisplayConfig
+        current=session()
+        tasks=DocumentTasks(current)
+        try:
+            tasks.create_primitive(PrimitiveSpec("sphere",(7,)),display_config=DisplayConfig())
+            result=collect(tasks)
+            self.assertIs(tasks.session,current)
+            self.assertTrue(result.session.dirty)
+            self.assertIsNone(result.session.path)
+            self.assertEqual(result.session.document.value("radius"),7)
+            self.assertEqual(result.prepared.request.bodies,("sphere",))
+            self.assertEqual(current.document.value("x"),2)
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()

@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 import vtk
 from .viewport import OwnedViewport
 from .recovery_dialog import RecoveryDialog
+from .primitive_dialog import PrimitiveDialog
 
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
@@ -110,6 +111,7 @@ class MainWindow(QMainWindow):
             menu.addAction(result)
             bar.addAction(result)
             return result
+        self.new_action = action(file_menu, "&Nuevo sólido…", self.new_dialog, QKeySequence.StandardKey.New)
         self.open_action = action(file_menu, "&Abrir…", self.open_dialog, QKeySequence.StandardKey.Open)
         self.recover_action = action(file_menu, "Recuperar versión anterior…", self.recover_dialog)
         self.autosave_recover_action = action(file_menu, "Recuperar guardado automático…", self.autosave_recover_dialog)
@@ -222,7 +224,7 @@ class MainWindow(QMainWindow):
         if self.session is None:
             return
         busy = self.tasks.busy
-        for action in (self.open_action, self.recover_action, self.autosave_recover_action,
+        for action in (self.new_action, self.open_action, self.recover_action, self.autosave_recover_action,
                        self.autosave_settings_action, self.save_action, self.save_as_action, self.refresh_action):
             action.setEnabled(not busy)
         self.parameters.setEnabled(not busy)
@@ -343,7 +345,7 @@ class MainWindow(QMainWindow):
                 self.statusBar().showMessage("Guardado automático detenido; revise la carpeta de recuperación.")
             self._error(exc)
             return
-        if kind in ("open", "recovery"):
+        if kind in ("new", "open", "recovery"):
             try:
                 self._install(result.session, result.prepared)
             except Exception as exc:
@@ -352,7 +354,8 @@ class MainWindow(QMainWindow):
                 return
             self.statusBar().showMessage(
                 "Versión recuperada; guarde como documento nuevo."
-                if kind == "recovery" else "Documento abierto.")
+                if kind == "recovery" else "Nuevo documento sin guardar."
+                if kind == "new" else "Documento abierto.")
         elif kind == "save":
             self._update_actions()
             self.statusBar().showMessage("Documento guardado.")
@@ -540,6 +543,19 @@ class MainWindow(QMainWindow):
             return self.request_save(after=action)
         if choice == QMessageBox.StandardButton.Discard:
             return action()
+        return False
+
+    def request_new_primitive(self, spec):
+        return self._confirm_then(
+            lambda: self._start_task(self.tasks.create_primitive,spec,
+                                     display_config=self.scene.display_config))
+
+    def new_dialog(self):
+        if self.tasks.busy:
+            return False
+        dialog = PrimitiveDialog(self)
+        if dialog.exec():
+            return self.request_new_primitive(dialog.specification())
         return False
 
     def request_open_path(self, path, *, recovery=False, recovery_copy=False):

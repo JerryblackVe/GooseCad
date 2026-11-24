@@ -218,3 +218,4 @@ GC-PKG-01,Freeze install self-test uninstall preserva usuario,GitHub Actions Win
 GC-DOC-05,7 escenarios crash matrix en Linux y Windows,GitHub Actions,Aprobado,run 45508375966 jobs 138849380863 y 138849381308,2026-11-24
 GC-PERF-UI-01,Multibody y catálogo Qt Linux ambas versiones,GitHub Actions,Aprobado,jobs 138850155671 y 138850155694,2026-11-24
 GC-PERF-UI-02,Render suspendido durante worker y restauración cancel,GitHub Actions,Pendiente,tests/test_qt_workspace.py,2026-11-24
+GC-UI-12,Nuevo sólido paramétrico volumen y Qt dirty save,GitHub Actions,Pendiente,tests/test_primitives.py y tests/test_document_tasks.py y tests/test_qt_workspace.py,2026-11-24

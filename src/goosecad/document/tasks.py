@@ -14,6 +14,7 @@ from goosecad.document.session import DocumentSession
 from goosecad.parametric import Cancelled
 from goosecad.view.preparation import DisplayConfig, MeshRequest, PreparedMeshes
 from goosecad.document.autosave import AutosaveSlot
+from goosecad.document.primitives import PrimitiveSpec
 
 
 class TaskStateError(RuntimeError):
@@ -153,6 +154,21 @@ class DocumentTasks:
                 return LoadedView(candidate, prepared)
             return candidate
         self._submit("recovery" if recovery or recovery_copy else "open", load_candidate, (), token=token)
+
+    def create_primitive(self, spec, *, display_config):
+        self._idle()
+        if type(spec) is not PrimitiveSpec or type(display_config) is not DisplayConfig:
+            raise TaskStateError("Invalid new primitive request")
+        token = Event()
+        def create_candidate():
+            if token.is_set():
+                raise Cancelled("Creation cancelled")
+            candidate = DocumentSession.new(spec.build())
+            if token.is_set():
+                raise Cancelled("Creation cancelled")
+            prepared = display_config.initial_request(candidate.document).prepare(cancelled=token.is_set)
+            return LoadedView(candidate,prepared)
+        self._submit("new",create_candidate,(),token=token)
 
     def prepare_meshes(self, request):
         self._idle()

@@ -431,3 +431,56 @@ class QtWorkspaceTests(unittest.TestCase):
                 with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
                     window.close()
                 self.app.processEvents()
+
+    def test_new_primitive_protects_unsaved_and_can_edit_save(self):
+        import time
+        from PySide6.QtWidgets import QMessageBox
+        from goosecad.ui.main_window import MainWindow
+        from goosecad.ui.primitive_dialog import PrimitiveDialog
+        from goosecad.document.primitives import PrimitiveSpec
+        from goosecad.document.session import DocumentSession
+        window=MainWindow(autosave_interval=0)
+        window.show()
+        window.initialize_view()
+        def finish():
+            deadline=time.monotonic()+15
+            while window.tasks.busy:
+                self.app.processEvents()
+                if time.monotonic()>deadline:
+                    self.fail("worker timeout")
+                time.sleep(.005)
+        try:
+            dialog=PrimitiveDialog(window)
+            dialog.kind.setCurrentIndex(1)
+            dialog.inputs["radius"].setValue(5)
+            dialog.inputs["height"].setValue(8)
+            self.assertEqual(dialog.specification(),PrimitiveSpec("cylinder",(5,8)))
+            dialog.deleteLater()
+            self.assertTrue(window.request_new_primitive(PrimitiveSpec("cylinder",(5,8))))
+            finish()
+            self.assertTrue(window.session.dirty)
+            self.assertEqual(window.session.visible_bodies,("cylinder",))
+            old=window.session
+            with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Cancel):
+                self.assertFalse(window.request_new_primitive(PrimitiveSpec("sphere",(4,))))
+            self.assertIs(window.session,old)
+            row=next(i for i in range(window.parameters.rowCount())
+                     if window.parameters.item(i,0).text()=="radius")
+            window.parameters.item(row,1).setText("6")
+            window.apply_button.click()
+            finish()
+            self.assertEqual(window.session.document.value("radius"),6)
+            with tempfile.TemporaryDirectory() as directory:
+                path=Path(directory)/"cylinder.gcad"
+                self.assertTrue(window.save_as_path(path))
+                self.assertFalse(window.session.dirty)
+                self.assertEqual(DocumentSession.open(path).document.value("radius"),6)
+                self.assertTrue(window.request_new_primitive(PrimitiveSpec("sphere",(4,))))
+                finish()
+                self.assertTrue(window.session.dirty)
+                self.assertEqual(window.session.visible_bodies,("sphere",))
+        finally:
+            finish()
+            with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
+                window.close()
+            self.app.processEvents()
