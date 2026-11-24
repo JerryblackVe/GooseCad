@@ -8,11 +8,14 @@ from PySide6 import __version__ as qt_version
 from PySide6.QtWidgets import QApplication, QWidget
 import numpy
 import scipy
-from vtk import vtkVersion
+from vtkmodules.vtkCommonCore import vtkVersion
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow, vtkRenderWindowInteractor
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
 from goosecad.geometry.kernel import properties
+from goosecad.document.primitives import PrimitiveSpec, BooleanSpec
 from goosecad.geometry.mesh import tessellate
 from goosecad.view.scene import polydata
 
@@ -32,6 +35,18 @@ def run():
     mesh = tessellate(session.document.value("box"))
     poly = polydata(mesh)
     assert poly.GetNumberOfCells() == 12
+    # Confirm registered VTK factories and camera style without calling Render.
+    assert vtkRenderer().GetClassName() == 'vtkOpenGLRenderer'
+    interactor = vtkRenderWindowInteractor()
+    interactor.SetInteractorStyle(vtkInteractorStyleTrackballCamera())
+    assert interactor.GetInteractorStyle().GetClassName() == 'vtkInteractorStyleTrackballCamera'
+    # Exercise structural history and OCCT Boolean bindings in the frozen image.
+    PrimitiveSpec('sphere',(1,)).append_to(session.document)
+    BooleanSpec('union','box','sphere').append_to(session.document)
+    assert properties(session.document.value('union')).volume > 60
+    session.document.undo()
+    session.document.undo()
+    assert tuple(f.id for f in session.document.features) == ('box',)
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory)/"package-test.gcad"
         session.save_as(path)

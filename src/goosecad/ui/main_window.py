@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QTableWidgetItem, QPushButton, QLabel, QFileDialog, QMessageBox,
     QListWidget, QAbstractItemView, QApplication, QInputDialog,
 )
-import vtk
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 from .viewport import OwnedViewport
 from .recovery_dialog import RecoveryDialog
 from .primitive_dialog import PrimitiveDialog
@@ -181,7 +181,7 @@ class MainWindow(QMainWindow):
             return
         self.viewport.Initialize()
         interactor = self.viewport.GetRenderWindow().GetInteractor()
-        interactor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
+        interactor.SetInteractorStyle(vtkInteractorStyleTrackballCamera())
         self._pick_observer = interactor.AddObserver("KeyPressEvent", self._pick_key)
         self._ready = True
         self.refresh_view()

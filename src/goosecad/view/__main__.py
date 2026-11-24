@@ -2,7 +2,8 @@
 Mouse trackball orbit/pan/zoom; R fit, P select at cursor, Q quit.
 """
 import argparse
-import vtk
+from vtkmodules.vtkRenderingCore import vtkRenderWindowInteractor
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 from goosecad.document.native import NativeDocument,Feature,load
 from .scene import Scene
 
@@ -14,7 +15,7 @@ def main():
     else:
         d=NativeDocument({'x':10,'y':8,'z':5},(Feature('box','box',('x','y','z')),));bodies=['box']
     s=Scene(d);s.refresh(bodies);s.fit();s.orbit(30,20)
-    i=vtk.vtkRenderWindowInteractor();i.SetRenderWindow(s.window);style=vtk.vtkInteractorStyleTrackballCamera();i.SetInteractorStyle(style)
+    i=vtkRenderWindowInteractor();i.SetRenderWindow(s.window);style=vtkInteractorStyleTrackballCamera();i.SetInteractorStyle(style)
     def key(obj,event):
         if obj.GetKeySym().lower()=='p':
             hit=s.select(*obj.GetEventPosition());print(hit,flush=True);s.render()

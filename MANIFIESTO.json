@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "4840424ac48425aea4f592391647985ee10cf831",
-  "remote_checkpoint": "4840424ac48425aea4f592391647985ee10cf831",
+  "remote_base_observed": "bf2a524da3671c99448ecb13de0b34125e9f1d65",
+  "remote_checkpoint": "bf2a524da3671c99448ecb13de0b34125e9f1d65",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-STRUCT-PERF-01",
+  "next_task": "GC-PKG-02",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508375966,
@@ -107,5 +107,6 @@
     "files": 2469,
     "uncompressed_bytes": 762263751
   },
-  "structural_benchmark": "implemented; CI pending"
+  "structural_benchmark": "implemented; CI pending",
+  "package_optimization": "targeted VTK imports and narrowed freeze; CI pending"
 }

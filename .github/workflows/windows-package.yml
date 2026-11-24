@@ -40,3 +40,4 @@ jobs:
           path: |
             packaging-dependency-inventory.json
             packaging-bundle-inventory.json
+            packaging-freeze-warnings.txt

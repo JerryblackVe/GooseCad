@@ -7,8 +7,15 @@ from bisect import bisect_right
 from dataclasses import dataclass
 from threading import get_ident
 import numpy as np
-import vtk
-from vtk.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray
+# Register rendering factories explicitly; avoid importing every VTK module.
+import vtkmodules.vtkRenderingOpenGL2
+import vtkmodules.vtkRenderingFreeType
+import vtkmodules.vtkInteractionStyle
+from vtkmodules.vtkCommonCore import vtkPoints, vtkIdTypeArray
+from vtkmodules.vtkCommonDataModel import vtkCellArray, vtkPolyData
+from vtkmodules.vtkRenderingCore import (vtkRenderer, vtkRenderWindow, vtkCellPicker,
+                                        vtkPolyDataMapper, vtkActor)
+from vtkmodules.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray
 from goosecad.geometry.mesh_cache import MeshCache,MeshSettings
 
 from goosecad.view.preparation import DisplayConfig, MeshRequest, PreparedMeshes, ViewError
@@ -22,11 +29,11 @@ class Selection:
 
 
 def polydata(mesh):
-    p=vtk.vtkPoints();p.SetData(numpy_to_vtk(mesh.vertices,deep=True))
-    cells=vtk.vtkCellArray();ids=mesh.triangles.astype(np.int64 if vtk.vtkIdTypeArray().GetDataTypeSize()==8 else np.int32,copy=False).ravel()
+    p=vtkPoints();p.SetData(numpy_to_vtk(mesh.vertices,deep=True))
+    cells=vtkCellArray();ids=mesh.triangles.astype(np.int64 if vtkIdTypeArray().GetDataTypeSize()==8 else np.int32,copy=False).ravel()
     offsets=np.arange(0,len(ids)+1,3,dtype=ids.dtype)
     cells.SetData(numpy_to_vtkIdTypeArray(offsets,deep=True),numpy_to_vtkIdTypeArray(ids,deep=True))
-    d=vtk.vtkPolyData();d.SetPoints(p);d.SetPolys(cells);return d
+    d=vtkPolyData();d.SetPoints(p);d.SetPolys(cells);return d
 
 class Scene:
     def __init__(self,document,*,offscreen=False,size=(800,600),settings=MeshSettings(),max_vertices=1_000_000,max_triangles=2_000_000,render_window=None,cache=None):
@@ -36,13 +43,13 @@ class Scene:
         if cache is not None and (not isinstance(cache,MeshCache) or cache.document is not document):
             raise ViewError('Mesh cache belongs to another document')
         self._thread=get_ident();self._closed=False;self._document=document;self.cache=MeshCache(document) if cache is None else cache;self.settings=settings;self._actors={}
-        self.renderer=vtk.vtkRenderer();self.renderer.SetBackground(.10,.13,.18)
+        self.renderer=vtkRenderer();self.renderer.SetBackground(.10,.13,.18)
         self._owns_window=render_window is None
-        self.window=vtk.vtkRenderWindow() if self._owns_window else render_window
+        self.window=vtkRenderWindow() if self._owns_window else render_window
         if self._owns_window:
             self.window.SetOffScreenRendering(int(offscreen));self.window.SetSize(*size);self.window.SetWindowName('GooseCAD Professional — experimental viewer')
         self.window.SetMultiSamples(0);self.window.AddRenderer(self.renderer)
-        self.picker=vtk.vtkCellPicker();self.picker.SetTolerance(.0005)
+        self.picker=vtkCellPicker();self.picker.SetTolerance(.0005)
     @property
     def document(self):
         return self._document
@@ -101,8 +108,8 @@ class Scene:
             old=self._actors.get(body)
             if old is not None and old[0] is snapshot:
                 staged[body]=old;continue
-            mapper=vtk.vtkPolyDataMapper();mapper.SetInputData(polydata(snapshot.mesh));mapper.ScalarVisibilityOff()
-            actor=vtk.vtkActor();actor.SetMapper(mapper);actor.GetProperty().SetColor(.44,.68,.89);actor.GetProperty().SetInterpolationToFlat()
+            mapper=vtkPolyDataMapper();mapper.SetInputData(polydata(snapshot.mesh));mapper.ScalarVisibilityOff()
+            actor=vtkActor();actor.SetMapper(mapper);actor.GetProperty().SetColor(.44,.68,.89);actor.GetProperty().SetInterpolationToFlat()
             staged[body]=(snapshot,actor);changed.append(body)
         prepared.validate()
         for body,(snapshot,actor) in self._actors.items():

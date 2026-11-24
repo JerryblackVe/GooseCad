@@ -73,3 +73,5 @@ GC-PERF-UI-01 job 138850155671 (Qt 6.9.3): mediana total sync/async 1 esfera 7.9
 GC-PERF-UI-02: Qt 6.11.3 job 138851468603, mediana total sync/async 20 independientes 21.467417/21.801541 ms, 20 compartidas 83.921676/85.937222 ms; regresión de suspensión de render pasó cuatro variantes. GC-STRUCT-01 reutiliza nodos retenidos sin reconstruir B-Rep y no almacena grafos antiguos en historial; benchmark estructural pendiente.
 
 GC-STRUCT-PERF-01 benchmark compara append nativo y undo/redo con reconstrucción completa de mismo estado declarativo, 20 y 100 cuerpos, 10 muestras/caso y 3 warmups. Verifica identidad de B-Rep retenido, sellos, bytes y volumen. tracemalloc en prueba separada, no mide OCCT/RSS. Resultados pendientes. GC-PKG-01 bundle 762263751 bytes/2469 archivos; mayores OCP pyd 94209024 bytes, vtkCommonCore 48741376, vtkFiltersCore 22253056, Qt opengl32sw 20640480. Optimizar imports VTK antes de reempaquetar.
+
+GC-PKG-02: imports VTK específicos y eliminación collect-all, baseline bundle 762263751 bytes, nueva medición pendiente; no reducir precisión ni eliminar pruebas. Importación local de clases y factory comprobada, no GPU.
