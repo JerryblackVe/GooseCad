@@ -165,3 +165,7 @@ VIEW-01-02,test_render_pick_and_revision,Linux/VTK 9.6.2 Xvfb,Aprobada,results/v
 VIEW-01-03,test_actor_reuse_and_remove,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
 VIEW-01-04,test_window_trackball_events,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
 VIEW-01-05,test_scene_budget_preserves_previous,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
+MESH-REVIEW-01,test_mirrored_box_and_sphere,Linux/OCP 7.9.3.1,Aprobada,results/mesh-review-final-tests.log,2026-11-24
+MESH-REVIEW-03,test_parallel_equivalence,Linux/OCP 7.9.3.1,Aprobada,results/mesh-review-final-tests.log,2026-11-24
+MESH-REVIEW-06,original_142,Linux/OCP 7.9.3.1,Aprobada 142/142,results/mesh-review-original-142.log,2026-11-24
+MESH-REVIEW-06A,full_suite,Linux Xvfb/OCP/VTK,Aprobada 158/158,results/mesh-review-final-tests.log,2026-11-24

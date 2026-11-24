@@ -32,3 +32,5 @@ GC-MESH-01: base remota dc50636d37c7cd46aef0e143d18035e0bbaf98a8, árbol f66c7ef
 GC-MESH-02: base remota afad1c07f827b899cc9e1fc688a1c0b9f3036632, árbol fe8727ee96bcbc079e023842133079639d1630c9 verificado local. CI MESH-01 Linux aprobado, Windows en curso al consultar. Publicación por API con verificación de blobs/árbol y update_ref sin force; SHA final externo.
 
 GC-VIEW-01: base remota e0cbc8ef5958e7538ae5b2ff86f4eeba54fb138b, árbol a65e7781ba1ecf653307bf289477afbf47134c5d verificado. CI MESH-01 aprobado; consultar MESH-02. Publicación por API con verificación de blobs/árbol y update_ref sin force; SHA final externo.
+
+Revisión GC-MESH-01: commits 1 09d1c30114647bb742f88322c937971d33ef33b4, 2 1a097df1dacc8d0f1cd417b03cf05e85f68d9da1, 3 23e553d8a1c19883b1a0e8a2ca686330d4cbafe6, 4 39553b03a0c01c57a330f39cee02ff64fd89301d, 5 ea39d9e9d3183ffe6c7c7860ef39f2edf58211f2 verificados por API, árboles iguales y update_ref no forzado. Commit 6 SHA externo.
