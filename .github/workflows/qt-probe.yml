@@ -1,0 +1,29 @@
+name: Qt VTK compatibility probe
+on:
+  push:
+    branches: ['feature/**']
+    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+        qt: ['6.9.3', '6.11.3']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.5'
+          architecture: x64
+      - run: python -m pip install -r dependencies/requirements-core.txt "PySide6==${{ matrix.qt }}"
+      - run: python -m pip install --no-deps .
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a python experiments/qt_probe.py
+      - if: runner.os == 'Windows'
+        run: python experiments/qt_probe.py
