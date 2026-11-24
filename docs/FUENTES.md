@@ -14,3 +14,5 @@ No se completó auditoría documental de cada comando ni se verificaron todas la
 GC-SOLVER-01: SciPy 1.17.0 least_squares (TRF, Jacobiano analítico): https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.optimize.least_squares.html ; licencias SciPy/NumPy/SolveSpace: ver LICENCIAS.md. Consulta 2026-11-24. No se incorpora código de SolveSpace.
 
 GC-ABI-01: https://aardappel.github.io/goose/ y https://github.com/aardappel/goose (C/extern fn, Apache-2.0, candidato sin instalación); https://www.occt3d.com/dev/doc/overview/html/occt_user_guides__modeling_algos.html (referencia modelado).
+
+GC-VIEW-01: VTK 9.6 runtime https://docs.vtk.org/en/v9.6.0/advanced/runtime_settings.html ; interactor https://vtk.org/doc/nightly/release/9.6/html/classvtkInteractorStyle.html ; framebuffer https://vtk.org/doc/nightly/release/9.6/html/classvtkOpenGLRenderWindow.html . Consulta 2026-11-24.

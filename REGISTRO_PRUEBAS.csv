@@ -160,3 +160,8 @@ MESH-02-06,test_lru_and_byte_budget,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cach
 MESH-02-07,test_no_cache_and_failed_build,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
 MESH-02-08,test_edit_during_mesh,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
 MESH-02-09,test_clear_during_mesh,Linux/OCP 7.9.3.1,Aprobada,results/mesh-cache-tests.log,2026-11-24
+VIEW-01-01,test_buffers,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
+VIEW-01-02,test_render_pick_and_revision,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
+VIEW-01-03,test_actor_reuse_and_remove,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
+VIEW-01-04,test_window_trackball_events,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
+VIEW-01-05,test_scene_budget_preserves_previous,Linux/VTK 9.6.2 Xvfb,Aprobada,results/view-tests.log,2026-11-24
