@@ -85,3 +85,5 @@ GC-SOLVER-01-12,test_nonlinear_failure,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,r
 GC-SOLVER-01-13,test_partition_equivalence,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
 GC-SOLVER-01-14,test_partition_residual_equivalence,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
 GC-SOLVER-01-15,test_solution_can_be_reused,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
+ABI-C-01,C consumer; 10000 cycles,Linux GCC Release,Aprobada,results/abi-c-test.log,2026-11-24
+ABI-SAN-01,C ABI ASan/UBSan,Linux GCC Debug,Aprobada,results/abi-sanitizer.log,2026-11-24

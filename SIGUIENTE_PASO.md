@@ -1,2 +1,2 @@
-# GC-ABI-01 — Interoperabilidad Goose/C++/OCCT P0
-Verificar identidad y madurez del lenguaje Goose, compilador y licencia, disponibilidad de C++ OCCT SDK y toolchain Windows. Experimentar con ABI C versionada, ownership explícito, errores sin excepciones cruzando FFI, handles opacos y coste de llamadas por lote; ejecutar pruebas y benchmark reales, no confundir C++ genérico con OCCT integrado. Si bloqueado por disponibilidad, documentar y continuar con integración bocetos/solver y GC-GEO-02. Revisar CI DOC-02 y SOLVER-01.
+# GC-GEO-02 — Boceto poligonal, extrusión y revolución
+Integrar solver de puntos con perfiles planos cerrados y OCCT; verificar geometría, volúmenes analíticos, rechazo de perfiles inválidos, benchmarks y CI. No marcar ABI Goose/OCCT como integrada.

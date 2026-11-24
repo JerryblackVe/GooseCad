@@ -12,3 +12,5 @@
 No se completó auditoría documental de cada comando ni se verificaron todas las dependencias potenciales. Referencias genéricas de la matriz son puntos de partida, no pruebas de cada función.
 
 GC-SOLVER-01: SciPy 1.17.0 least_squares (TRF, Jacobiano analítico): https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.optimize.least_squares.html ; licencias SciPy/NumPy/SolveSpace: ver LICENCIAS.md. Consulta 2026-11-24. No se incorpora código de SolveSpace.
+
+GC-ABI-01: https://aardappel.github.io/goose/ y https://github.com/aardappel/goose (C/extern fn, Apache-2.0, candidato sin instalación); https://www.occt3d.com/dev/doc/overview/html/occt_user_guides__modeling_algos.html (referencia modelado).

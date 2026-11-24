@@ -16,3 +16,6 @@ GC-DOC-REENTRY-01 (corregido): durante conversión de Mapping, código de usuari
 GC-DOC-02: detectada posible colisión con nombre de recuperación; sufijo .previous reservado y prueba de regresión aprobada. GC-OCAF-01 sigue abierto y aislado.
 
 GC-SOLVER-01: los resultados de NumPy inicialmente eran numpy.float64 y la validación de entrada los rechazaba; corregido a float nativo y regresión de reutilización aprobada. La descomposición con SVD por grupo resultó más lenta, sustituida en igualdades consistentes por algoritmo especializado. GC-OCAF-01 sigue aislado.
+
+
+GC-ABI-01: prueba C/C++ escalar independiente, ABI v1, IDs monotónicos, registro acotado, propiedad explícita create/release, errores enteros y noexcept, consulta por lote validada antes de escribir. GCC/CMake Release y ASan/UBSan con CTest aprobados; 10.000 ciclos de vida; 78 pruebas Python aprobadas. 200 muestras ctypes (256 consultas, mediana escalar 0.1373635 ms, lote 0.002274 ms). No incluye Goose ni OCCT; no es benchmark del kernel. Goose no instalado, SDK C++ OCCT ausente, DNS bloqueado. Buffers válidos/no solapados a cargo del llamador, IDs locales al proceso/biblioteca, mutex global, no se ha probado concurrencia ni FFI Goose. CI CMake Windows/Linux preparado, aún no ejecutado para este commit. Siguiente GC-GEO-02: perfiles de boceto resueltos, extrusión/revolución B-Rep.

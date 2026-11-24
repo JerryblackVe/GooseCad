@@ -26,6 +26,9 @@ jobs:
           architecture: x64
       - run: python -m pip install -r dependencies/requirements-core.txt
       - run: python -m pip install --no-deps .
+      - run: cmake -S experiments/abi -B build/abi -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build/abi --config Release
+      - run: ctest --test-dir build/abi -C Release --output-on-failure
       - run: python -m compileall -q src
       - run: python -m unittest discover -s tests -v
       - run: python experiments/topology_history.py

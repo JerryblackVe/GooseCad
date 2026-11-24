@@ -1,0 +1,8 @@
+Internal ctest changing into directory: /tmp/gc-abi-san
+Test project /tmp/gc-abi-san
+    Start 1: c_abi_contract
+1/1 Test #1: c_abi_contract ...................   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.02 sec
