@@ -194,3 +194,25 @@ class SessionTests(unittest.TestCase):
             self.assertEqual(load_with_revision(path)[0].value("x"), 2)
             self.assertEqual(session.document.value("x"), 8)
 
+
+    def test_recovery_remains_unsaved_until_new_primary_is_written(self):
+        with tempfile.TemporaryDirectory() as root:
+            primary = Path(root) / "primary.gcad"
+            destination = Path(root) / "recovered.gcad"
+            session = DocumentSession(model())
+            session.save_as(primary)
+            session.edit({"x": 7})
+            session.save()
+            recovered = DocumentSession.open_recovery(primary)
+            self.assertTrue(recovered.dirty)
+            recovered.edit({"x": 9})
+            recovered.undo()
+            self.assertTrue(recovered.dirty)
+            with self.assertRaises(DiskRevisionConflict):
+                recovered.save_as(primary)
+            self.assertTrue(recovered.dirty)
+            self.assertIsNone(recovered.path)
+            recovered.save_as(destination)
+            self.assertFalse(recovered.dirty)
+            self.assertEqual(DocumentSession.open(destination).document.value("x"), 2)
+            self.assertEqual(DocumentSession.open(primary).document.value("x"), 7)

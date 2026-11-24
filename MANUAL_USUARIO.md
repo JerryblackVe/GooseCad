@@ -19,3 +19,5 @@ GC-VIEW-01 (experimental): `python -m goosecad.view` abre el ejemplo de caja; `p
 
 ## Ventana de documentos experimental
 Abrir un documento nativo .gcad/.goosecad o iniciar la caja de ejemplo; modificar celdas de valor y pulsar Aplicar cambios. Deshacer/Rehacer operan sobre los parámetros; no hay cambios estructurales ni historial persistido. Guardar conserva la revisión de disco; conflicto externo rechaza guardado. Guardar como solo crea archivo nuevo. Vista: trackball, ajustar vista y tecla P sobre el cuerpo para seleccionar cara local. Cancelar cálculo solicita cancelación en punto seguro; no interrumpe una llamada OCCT en curso. El cierre ocupado se rechaza. Esta edición aún no es estable y no está validada en Windows físico.
+
+Recuperar versión anterior: menú Archivo → Recuperar versión anterior, seleccionar el archivo principal. Se abre su .previous como documento sin nombre con cambios sin guardar. Guardar como requiere una ruta nueva y nunca reemplaza el original. Si la versión anterior no existe o está dañada, se conserva el documento actual.

@@ -51,6 +51,7 @@ class DocumentSession:
         self.disk_revision = disk_revision
         self._clean_bytes = document.to_bytes()
         self._dirty = False
+        self._requires_save = False
         self._observed_revision = document.revision
         self._scene = None
         self._visible = ()
@@ -64,13 +65,17 @@ class DocumentSession:
     @classmethod
     def open_recovery(cls, path):
         """Open the .previous file as an unsaved document, never as primary."""
-        return cls(recover(path))
+        session = cls(recover(path))
+        # Recovered data must be explicitly saved or discarded even if its
+        # parameters were never edited after opening.
+        session._requires_save = True
+        return session
 
     @property
     def dirty(self):
         if self.document.revision != self._observed_revision:
             self._mutated()
-        return self._dirty
+        return self._dirty or self._requires_save
 
     @property
     def scene(self):
@@ -144,6 +149,7 @@ class DocumentSession:
         token = save(self.document, destination, expected_revision=None)
         self.path = destination
         self.disk_revision = token
+        self._requires_save = False
         current = self.document.to_bytes()
         if sha256(current).hexdigest() != token:
             disk_doc, disk_token = load_with_revision(destination)

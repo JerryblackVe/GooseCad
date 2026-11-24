@@ -40,3 +40,5 @@ GC-VIEW-01: prueba inicial de píxeles exigía >4 colores únicos, incorrecto pa
 GC-UI-02: run 45503983930, Ubuntu Qt 6.9.3: ImportError libEGL.so.1 ausente. Corregir dependencias X11/EGL/GL del runner antes de concluir compatibilidad. Se instala libegl1, libgl1, libgl1-mesa-dri, libxcb-cursor0, libxkbcommon-x11-0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, libxcb-render-util0, libxcb-xinerama0, xvfb y xauth. Reejecución pendiente; no hay benchmark validado.
 
 GC-UI-02 / S2: Windows hosted runner WGL failed both Qt versions in 45505510615. Corrective experiment pinned Mesa WGL software, requires renderer and image verification. Open until CI and real hardware validation; Linux probes pass both versions.
+
+GC-UI-02: corrección software Windows confirmada run 45506457843, cuatro jobs SUCCESS; no cerrar validación hardware. GC-UI-05 / S2: RecursionError de QVTK en GC durante closeEvent, aunque unittest devuelve OK (job 138843657070). Se incorpora OwnedViewport idempotente y regresión de destrucción; confirmar ausencia del error en logs. Protección S0: recuperación .previous ahora dirty hasta guardar nueva ruta; prueba pendiente.

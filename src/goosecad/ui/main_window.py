@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QListWidget, QAbstractItemView,
 )
 import vtk
-from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+from .viewport import OwnedViewport
 
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
@@ -37,7 +37,7 @@ def terminal_bodies(document):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, session=None, *, viewport_factory=QVTKRenderWindowInteractor,
+    def __init__(self, session=None, *, viewport_factory=OwnedViewport,
                  scene_factory=Scene):
         super().__init__()
         self.resize(1100, 720)
@@ -51,6 +51,7 @@ class MainWindow(QMainWindow):
         self._task_timer.setInterval(15)
         self._task_timer.timeout.connect(self._poll_task)
         self._ready = False
+        self._pick_observer = None
         self._staged = False
         self._view_ok = False
         self.viewport = viewport_factory(self)
@@ -98,6 +99,7 @@ class MainWindow(QMainWindow):
             bar.addAction(result)
             return result
         self.open_action = action(file_menu, "&Abrir…", self.open_dialog, QKeySequence.StandardKey.Open)
+        self.recover_action = action(file_menu, "Recuperar versión anterior…", self.recover_dialog)
         self.save_action = action(file_menu, "&Guardar", self.request_save, QKeySequence.StandardKey.Save)
         self.save_as_action = action(file_menu, "Guardar &como…", self.request_save_as, QKeySequence.StandardKey.SaveAs)
         self.undo_action = action(edit_menu, "&Deshacer", self.start_undo, QKeySequence.StandardKey.Undo)
@@ -137,7 +139,7 @@ class MainWindow(QMainWindow):
         self.viewport.Initialize()
         interactor = self.viewport.GetRenderWindow().GetInteractor()
         interactor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
-        interactor.AddObserver("KeyPressEvent", self._pick_key)
+        self._pick_observer = interactor.AddObserver("KeyPressEvent", self._pick_key)
         self._ready = True
         self.refresh_view()
 
@@ -182,7 +184,7 @@ class MainWindow(QMainWindow):
         if self.session is None:
             return
         busy = self.tasks.busy
-        for action in (self.open_action, self.save_action, self.save_as_action, self.refresh_action):
+        for action in (self.open_action, self.recover_action, self.save_action, self.save_as_action, self.refresh_action):
             action.setEnabled(not busy)
         self.parameters.setEnabled(not busy)
         self.bodies.setEnabled(not busy)
@@ -430,7 +432,29 @@ class MainWindow(QMainWindow):
             return self.open_path(path)
         return False
 
+    def recover_path(self, path):
+        if not self._can_replace():
+            return False
+        try:
+            candidate = DocumentSession.open_recovery(path)
+            self._install(candidate)
+        except Exception as exc:
+            self._error(exc)
+            return False
+        self.statusBar().showMessage("Versión recuperada; guarde como documento nuevo.")
+        return True
+
+    def recover_dialog(self):
+        if self.tasks.busy:
+            return False
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Seleccione el documento principal", "", "GooseCAD (*.gcad *.goosecad);;Todos (*)")
+        return self.recover_path(path) if path else False
+
     def closeEvent(self, event):
+        if self.scene is None:
+            event.accept()
+            return
         if not self._can_replace():
             event.ignore()
             return
@@ -438,6 +462,9 @@ class MainWindow(QMainWindow):
         if self.tasks is not None:
             self.tasks.close()
         if self.scene is not None:
+            if self._pick_observer is not None:
+                self.viewport.GetRenderWindow().GetInteractor().RemoveObserver(self._pick_observer)
+                self._pick_observer = None
             self.session.detach_scene()
             self.scene.close()
             self.scene = None

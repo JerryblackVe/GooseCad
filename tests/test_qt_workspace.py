@@ -150,3 +150,41 @@ class QtWorkspaceTests(unittest.TestCase):
             with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Discard):
                 window.close()
             self.app.processEvents()
+
+    def test_recovery_and_idempotent_widget_destruction(self):
+        import gc
+        import sys
+        from PySide6.QtCore import QCoreApplication, QEvent
+        from PySide6.QtWidgets import QMessageBox
+        from goosecad.ui.main_window import MainWindow
+        from goosecad.document.session import DocumentSession
+        errors = []
+        with patch.object(sys, "excepthook", side_effect=lambda *args: errors.append(args)):
+            # The previous QVTK base could recurse during parent destruction.
+            for _ in range(2):
+                window = MainWindow()
+                window.show()
+                window.initialize_view()
+                with tempfile.TemporaryDirectory() as directory:
+                    primary = Path(directory) / "primary.gcad"
+                    recovered = Path(directory) / "recovered.gcad"
+                    self.assertTrue(window.save_as_path(primary))
+                    window.session.edit({"width": 30})
+                    self.assertTrue(window.save_document())
+                    self.assertTrue(window.recover_path(primary))
+                    self.assertTrue(window.session.dirty)
+                    self.assertIsNone(window.session.path)
+                    self.assertEqual(window.session.document.value("width"), 20)
+                    with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Cancel):
+                        self.assertFalse(window.close())
+                    self.assertTrue(window.save_as_path(recovered))
+                    self.assertFalse(window.session.dirty)
+                    self.assertEqual(DocumentSession.open(primary).document.value("width"), 30)
+                    self.assertTrue(window.close())
+                    self.assertTrue(window.close())
+                window.deleteLater()
+                QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+                del window
+                gc.collect()
+                self.app.processEvents()
+        self.assertEqual(errors, [], "unexpected exception in Qt callback")
