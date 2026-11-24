@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "bd7ebec8ab180175a46815f7a92b66bfc4617d82",
-  "remote_checkpoint": "bd7ebec8ab180175a46815f7a92b66bfc4617d82",
+  "remote_base_observed": "9d66efe5516c70d15949fa85130bcc10209d2864",
+  "remote_checkpoint": "9d66efe5516c70d15949fa85130bcc10209d2864",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,13 +15,13 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-11",
+  "next_task": "GC-DOC-05",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
-  "ci_base_run": 45507428267,
+  "ci_base_run": 45508104275,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45507710395,
+  "ci_pending_run": 45508104278,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -48,6 +48,11 @@
       "run": 45507428350,
       "conclusion": "success",
       "kernel_run": 45507428267
+    },
+    "GC-DOC-04": {
+      "sha": "bd7ebec8ab180175a46815f7a92b66bfc4617d82",
+      "run": 45507912200,
+      "conclusion": "success"
     }
   },
   "ui_session": "GC-UI-01 CI success on Windows 2022 and Ubuntu 24.04, run 45502896110; docs checkpoint CI pending",
@@ -71,6 +76,7 @@
   "mesh_preparation": "CPU-only worker, owner VTK publication, tests pending",
   "qt_close_verified_run": 45507091254,
   "initial_display": "candidate CPU preparation implemented; CI pending",
-  "autosave": "independent recovery slots and Qt timer implemented; CI pending",
-  "combined_mutation_display": "single Future and notification; CI pending"
+  "autosave": "Qt 4 jobs verified run 45507912200; kernel Linux passed",
+  "combined_mutation_display": "single Future and notification; CI pending",
+  "crash_matrix": "process termination tests implemented; CI pending"
 }

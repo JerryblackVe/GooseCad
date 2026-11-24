@@ -1,2 +1,2 @@
-# GC-UI-11 / GC-DOC-04 — verificar cadena combinada y autosave
-Consultar CI de HEAD, GC-UI-08/09 y GC-DOC-04. Inspeccionar logs y benchmarks por runner; comprobar que cancelación post-commit no pierde geometría y que las copias autosave son independientes. Medir latencia final de edición + mesh combinados, preservar artefactos. P0 siguiente: interrupción de proceso y recuperación durable; gestionar copias antiguas de forma explícita; validar hardware Windows y preparación instalador.
+# GC-DOC-05 — pruebas de interrupción y gestión de recuperación
+Consultar CI de HEAD y GC-UI-11 45508104275/45508104278; inspeccionar logs y benchmark. Validar crash matrix Linux/Windows. Implementar catálogo de recuperación y gestión explícita sin pérdida de copias, límites y pruebas. Continuar preparación instalador Windows y validación hardware.
