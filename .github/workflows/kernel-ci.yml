@@ -39,6 +39,7 @@ jobs:
       - run: python benchmarks/solver_bench.py ci-solver-benchmarks.csv --repetitions 10
       - run: python benchmarks/sweep_bench.py ci-sweep-benchmarks.csv --repetitions 5
       - run: python benchmarks/native_sketch_bench.py ci-native-sketch-benchmarks.csv --repetitions 3
+      - run: python benchmarks/disk_lock_bench.py ci-disk-lock-benchmarks.csv --repetitions 10
       - uses: actions/upload-artifact@v4
         with:
           name: kernel-benchmarks-${{ matrix.os }}
@@ -50,3 +51,4 @@ jobs:
             ci-solver-benchmarks.csv
             ci-sweep-benchmarks.csv
             ci-native-sketch-benchmarks.csv
+            ci-disk-lock-benchmarks.csv

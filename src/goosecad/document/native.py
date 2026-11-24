@@ -1,6 +1,6 @@
 """Experimental native formats v1/v2: declarative, checksummed, bounded JSON.
 
-Single writer per path (external coordination required). No untrusted callbacks,
+Cooperative writer locking per path; disk revision check is opt-in. No untrusted callbacks,
 no pickle, no arbitrary B-Rep payloads. Native evaluation is not sandboxed.
 """
 from dataclasses import dataclass
@@ -19,6 +19,7 @@ from goosecad.geometry.kernel import box, cylinder, sphere, boolean
 
 from goosecad.document.sketch_spec import SketchSpec, PointSpec, ConstraintSpec, sketch_payload, parse_sketch
 from goosecad.geometry.sweep import extrude, revolve
+from goosecad.document.disk_lock import writer_lock, lock_path, LOCK_SUFFIX, WriterBusyError
 
 MAX_BYTES = 2 * 1024 * 1024
 MAX_NODES = 2048
@@ -47,6 +48,8 @@ def _registry(version):
 
 class NativeError(DocumentError): pass
 class UnsupportedVersion(NativeError): pass
+class DiskRevisionConflict(NativeError): pass
+_UNCHECKED = object()
 
 @dataclass(frozen=True, slots=True)
 class Feature:
@@ -245,23 +248,42 @@ def recovery_path(path):
     path=Path(path); return path.with_name(path.name+'.previous')
 
 
-def save(document,path,*,allow_upgrade=False):
-    """Atomic replacement; preserve previous validated bytes before replacing.
+def save(document,path,*,allow_upgrade=False,expected_revision=_UNCHECKED):
+    """Atomic replacement with cooperative lock and optional byte revision check.
 
-    A directory-fsync error after replace is reported; commit may have happened.
-    Existing structurally invalid or unsupported-version primary is never overwritten.
+    expected_revision=None requires absence; a SHA-256 hex token requires the
+    exact bytes read via load_with_revision (or returned by save). Omitting
+    it preserves the old API's unconditional replacement of a valid primary.
+    A directory-fsync or lock-cleanup error may follow successful replacement.
     Migration v1 to v2 requires allow_upgrade=True; downgrade is rejected.
     """
     path=Path(path)
-    if path.name.lower().endswith('.previous'):
-        raise NativeError("Reserved recovery filename; choose a new primary path")
-    data=document.to_bytes(); previous=recovery_path(path)
-    if _check_path(path):
-        old=_read(path); old_version,*_=_decode(old)
-        if old_version!=document.format_version and not (old_version==1 and document.format_version==2 and allow_upgrade is True):
-            raise NativeError('Format replacement requires explicit v1 to v2 upgrade; downgrade forbidden')
-        _atomic(previous,old); _sync_dir(path.parent)
-    _atomic(path,data); _sync_dir(path.parent)
+    if path.name.lower().endswith(('.previous',LOCK_SUFFIX)):
+        raise NativeError("Reserved recovery or lock filename; choose a new primary path")
+    if expected_revision is not _UNCHECKED and expected_revision is not None:
+        if type(expected_revision) is not str or len(expected_revision)!=64 or any(c not in '0123456789abcdef' for c in expected_revision):
+            raise NativeError('Expected lowercase SHA-256 disk revision or None')
+    data=document.to_bytes(); new_revision=sha256(data).hexdigest(); previous=recovery_path(path)
+    with writer_lock(path):
+        exists=_check_path(path)
+        if exists:
+            old=_read(path)
+            if expected_revision is not _UNCHECKED and (expected_revision is None or sha256(old).hexdigest()!=expected_revision):
+                raise DiskRevisionConflict('Primary changed since it was read')
+            old_version,*_=_decode(old)
+            if old_version!=document.format_version and not (old_version==1 and document.format_version==2 and allow_upgrade is True):
+                raise NativeError('Format replacement requires explicit v1 to v2 upgrade; downgrade forbidden')
+            _atomic(previous,old); _sync_dir(path.parent)
+        elif expected_revision is not _UNCHECKED and expected_revision is not None:
+            raise DiskRevisionConflict('Primary no longer exists')
+        _atomic(path,data); _sync_dir(path.parent)
+    return new_revision
+
+
+def load_with_revision(path):
+    """Read exactly once so the token belongs to the reconstructed bytes."""
+    data=_read(Path(path))
+    return NativeDocument.from_bytes(data),sha256(data).hexdigest()
 
 
 def load(path):

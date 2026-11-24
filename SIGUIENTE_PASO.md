@@ -1,2 +1,2 @@
-# GC-DOC-03 — Coordinación de escritores y conflicto de revisión de disco (P0)
-Bloqueo cooperativo por archivo, detección de guardados desde revisiones obsoletas, rutas reservadas y recuperación; probar concurrencia entre procesos, errores y latencia. No romper v1/v2. CI SKETCH-02 pendiente de verificación. Después GC-SKETCH-03: perfiles exactos con curvas y agujeros. Goose/OCCT C++ sigue bloqueado.
+# GC-SKETCH-03 — Perfiles curvos exactos y agujeros (P0/P1)
+Verificar CI SKETCH-02 y DOC-03. Diseñar representación de segmentos y arcos/círculos exactos, contornos interiores, validación y construcción de caras OCCT; preservar compatibilidad v1/v2 y rechazar geometrías ambiguas. Integrar con barridos cuando las pruebas de volumen/área, validez y escalabilidad lo permitan; no migrar destructivamente. Continuar por bloques. Investigar SDK Goose/OCCT C++ cuando entorno lo permita.

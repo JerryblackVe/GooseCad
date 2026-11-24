@@ -112,3 +112,15 @@ SKETCH-02-11,test_schema_before_evaluation,Linux/OCP 7.9.3.1,Aprobada,results/na
 SKETCH-02-12,test_sweep_parameter_skips_solver,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
 SKETCH-02-13,test_upgrade_failure_preserves_v1,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
 SKETCH-02-14,test_v1_bytes_and_explicit_upgrade,Linux/OCP 7.9.3.1,Aprobada,results/native-sketch-tests.log,2026-11-24
+DOC-03-01,test_crashed_writer_fails_closed,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-02,test_existing_lock_symlink_not_followed,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-03,test_external_byte_change_conflicts_even_same_semantics,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-04,test_invalid_revision_token,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-05,test_lock_reserved_and_preserved,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-06,test_new_or_deleted_conflict,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-07,test_release_after_write_failure,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-08,test_replaced_lock_not_removed,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-09,test_revision_matches_exact_bytes,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-10,test_spawned_writer_excludes_second_process,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-11,test_stale_writer_does_not_touch_primary_or_previous,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
+DOC-03-12,test_v2_revision_and_migration,Linux/OCP 7.9.3.1,Aprobada,results/disk-lock-tests.log,2026-11-24
