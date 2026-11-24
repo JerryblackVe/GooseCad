@@ -21,3 +21,10 @@ GC-TOPO-01-4,parameter_edit,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.lo
 GC-TOPO-01-5,roles_coordinates,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
 GC-TOPO-01-6,split_is_ambiguous,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
 GC-TOPO-01-7,unchanged,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-02-1,merge and reverse order,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.log,2026-11-24
+GC-TOPO-02-2,generated edges,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.log,2026-11-24
+GC-TOPO-02-3,serialized role rebuild,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.log,2026-11-24
+GC-TOPO-02-4,missing role,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.log,2026-11-24
+GC-TOPO-02-5,invalid records,Linux/OCP 7.9.3.1,Aprobada,results/topology-02-tests.log,2026-11-24
+GC-OCAF-01,OCAF lifecycle probe,Linux/OCP 7.9.3.1,Fallida,results/ocaf-probe.log exit 134,2026-11-24
+GC-CI-02,GC-TOPO-01 CI,Windows 2022 / Ubuntu 24.04,Aprobada,https://github.com/JerryblackVe/GooseCad/actions/runs/45485337287,2026-11-24

@@ -4,3 +4,5 @@
 2026-11-24: publicación expresamente autorizada con exclusión de medios y datos privados. Git terminal sigue bloqueado por DNS. Transferencia por API en rama nueva basada en main; SHA final se verifica externamente.
 
 GC-BOOT: API GitHub, rama feature/000-clean-start, SHA 8225a910d044aa2b3c9bb0bf460230b9641063ff; 55/55 hashes verificados. main/develop preservadas.
+
+GC-TOPO-01: 0bb0b9b55993e4f69ee4797f7ecfac491f6e47d0; 60/60 hashes verificados, CI Windows/Linux aprobado run 45485337287. GC-TOPO-02 se publica mediante API no forzada; SHA final externo.

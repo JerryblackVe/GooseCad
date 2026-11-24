@@ -4,3 +4,5 @@ Cero código anterior importado. Se analizaron nueve capturas, no se copiaron re
 Auditoría de formato: se normalizaron finales CRLF de CSV a LF; el contexto del patch conserva sus espacios por formato diff.
 
 GC-TOPO-01: 17 pruebas aprobadas tras corrección de roles; fusión N:1, identidad tras recarga, orden alterado y OCAF no validados.
+
+GC-TOPO-02: 22 pruebas locales aprobadas, 200 muestras. OCAF aislado 2 reproducciones exit 134; riesgo S1 experimental, no incluido en runtime/CI. Persistencia multietapa no verificada.

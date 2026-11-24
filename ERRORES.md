@@ -6,3 +6,5 @@ O-002: se corrigieron avisos de whitespace por finales CRLF de CSV; sin alteraci
 B-001 privacidad resuelto por autorización expresa. Reproducción: importación fallida sin instalar paquete; PYTHONPATH=src resolvió, 10/10 OK.
 
 GC-TOPO-01: primera prueba de eliminación falló por nombres OCCT Left/Front no coincidentes con ejes; corregido mapeo, prueba de centroides añadida. 17/17 OK.
+
+GC-OCAF-01 (S1 experimental): TDF_Data/TNaming devuelve cara correcta pero proceso aborta en destrucción con Standard_NullObject, exit 134. Repro: experiments/ocaf_probe.py en proceso aislado; no ejecutarlo en CI normal. Investigar propiedad/orden de destrucción y documento TDocStd antes de integrar.
