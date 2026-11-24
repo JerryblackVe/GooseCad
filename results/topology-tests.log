@@ -1,0 +1,22 @@
+test_boolean_overlap (test_kernel.KernelTests.test_boolean_overlap) ... ok
+test_box (test_kernel.KernelTests.test_box) ... ok
+test_cylinder (test_kernel.KernelTests.test_cylinder) ... ok
+test_disjoint (test_kernel.KernelTests.test_disjoint) ... ok
+test_identical_cut (test_kernel.KernelTests.test_identical_cut) ... ok
+test_invalid_dimensions (test_kernel.KernelTests.test_invalid_dimensions) ... ok
+test_invalid_origin (test_kernel.KernelTests.test_invalid_origin) ... ok
+test_sphere (test_kernel.KernelTests.test_sphere) ... ok
+test_touching (test_kernel.KernelTests.test_touching) ... ok
+test_unknown_operation (test_kernel.KernelTests.test_unknown_operation) ... ok
+test_deleted (test_topology.TopologyTests.test_deleted) ... ok
+test_modified (test_topology.TopologyTests.test_modified) ... ok
+test_null (test_topology.TopologyTests.test_null) ... ok
+test_parameter_edit (test_topology.TopologyTests.test_parameter_edit) ... ok
+test_roles_coordinates (test_topology.TopologyTests.test_roles_coordinates) ... ok
+test_split_is_ambiguous (test_topology.TopologyTests.test_split_is_ambiguous) ... ok
+test_unchanged (test_topology.TopologyTests.test_unchanged) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.104s
+
+OK

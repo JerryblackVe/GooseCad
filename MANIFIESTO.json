@@ -7,14 +7,14 @@
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
   "remote_base_observed": "e6857e19bbc89ed9b910ea3a900a950b962d9ce7",
-  "remote_checkpoint": null,
+  "remote_checkpoint": "8225a910d044aa2b3c9bb0bf460230b9641063ff",
   "local_commit": "see bundle and git log",
   "status": "experimental",
   "matrix_initial_count": 301,
-  "tests_passed": 10,
+  "tests_passed": 17,
   "tests_failed": 0,
-  "benchmark_samples": 900,
+  "benchmark_samples": 1000,
   "backup": "B0001",
-  "next_task": "GC-TOPO-01",
+  "next_task": "GC-TOPO-02 / GC-DAG-01",
   "publication": "authorized code/documentation only; no user media/private data"
 }

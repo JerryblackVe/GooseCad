@@ -14,3 +14,10 @@ T-012,Historia de caras,Linux o pendiente,Experimento ejecutado; naming no resue
 T-013,Python compileall,Linux o pendiente,Aprobada,"Comando local, exit 0",2026-11-24
 T-014,Windows CI,Linux o pendiente,No ejecutada,.github/workflows/kernel-ci.yml,2026-11-24
 T-015,UI y persistencia,Linux o pendiente,No ejecutada,No implementadas,2026-11-24
+GC-TOPO-01-1,deleted,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-01-2,modified,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-01-3,null,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-01-4,parameter_edit,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-01-5,roles_coordinates,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-01-6,split_is_ambiguous,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24
+GC-TOPO-01-7,unchanged,Linux/OCP 7.9.3.1,Aprobada,results/topology-tests.log,2026-11-24

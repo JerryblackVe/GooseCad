@@ -4,3 +4,5 @@ B-001 P0 repo público sin confirmación de publicación. B-002 P0 DNS desde ter
 O-002: se corrigieron avisos de whitespace por finales CRLF de CSV; sin alteración de valores.
 
 B-001 privacidad resuelto por autorización expresa. Reproducción: importación fallida sin instalar paquete; PYTHONPATH=src resolvió, 10/10 OK.
+
+GC-TOPO-01: primera prueba de eliminación falló por nombres OCCT Left/Front no coincidentes con ejes; corregido mapeo, prueba de centroides añadida. 17/17 OK.
