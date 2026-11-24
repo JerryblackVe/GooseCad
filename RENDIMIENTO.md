@@ -59,3 +59,5 @@ GC-UI-07: se elimina espera fija del temporizador de 15 ms mediante notificació
 GC-UI-08: teselación y arrays inmutables preparados fuera del GUI; solo copia/construcción VTK y render en dueño. Se preservan presupuestos agregados y reutilización de snapshots/actores. Primera carga aún puede bloquear por preparación inicial y publicación; no hay medición de mejora de este cambio.
 
 GC-UI-09: primera teselación de apertura/recuperación normal se realiza en worker, cache se transfiere al dueño sin recálculo. VTK buffer-copy/render todavía GUI. Arranque CLI síncrono. GC-UI-07 job 138846138638: retorno 5.257102/0.138828 ms sync/async y fin 6.425304/17.383986 ms; señal reduce espera fija pero comparación entre runners no concluyente. Medición de GC-UI-08/09 pendiente.
+
+GC-DOC-04: autosave usa worker exclusivo y omite revisiones repetidas/ventanas modales; no serializa B-Rep adicional ni sobrescribe original. GUI se mantiene receptiva pero acciones se bloquean durante operación corta por exclusividad documental. Medición de I/O y presión de memoria pendiente.

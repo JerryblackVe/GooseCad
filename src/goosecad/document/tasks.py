@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from goosecad.document.session import DocumentSession
 from goosecad.parametric import Cancelled
 from goosecad.view.preparation import DisplayConfig, PreparedMeshes
+from goosecad.document.autosave import AutosaveSlot
 
 
 class TaskStateError(RuntimeError):
@@ -103,17 +104,20 @@ class DocumentTasks:
     def redo(self):
         self._start(self.session.document.redo)
 
-    def open(self, path, *, recovery=False, display_config=None):
+    def open(self, path, *, recovery=False, recovery_copy=False, display_config=None):
         """Load an independent candidate. Never replace the active session here."""
         self._idle()
         source = Path(path)
+        if recovery and recovery_copy:
+            raise TaskStateError('Ambiguous recovery source')
         if display_config is not None and type(display_config) is not DisplayConfig:
             raise TaskStateError('Invalid initial display configuration')
         token = Event()
         def load_candidate():
             if token.is_set():
                 raise Cancelled("Opening cancelled")
-            loader = DocumentSession.open_recovery if recovery else DocumentSession.open
+            loader = (DocumentSession.open_recovery if recovery else
+                      DocumentSession.open_copy if recovery_copy else DocumentSession.open)
             candidate = loader(source)
             if token.is_set():
                 raise Cancelled("Opening cancelled")
@@ -121,7 +125,7 @@ class DocumentTasks:
                 prepared = display_config.initial_request(candidate.document).prepare(cancelled=token.is_set)
                 return LoadedView(candidate, prepared)
             return candidate
-        self._submit("recovery" if recovery else "open", load_candidate, (), token=token)
+        self._submit("recovery" if recovery or recovery_copy else "open", load_candidate, (), token=token)
 
     def prepare_meshes(self, request):
         self._idle()
@@ -142,6 +146,12 @@ class DocumentTasks:
     def save_as(self, path):
         self._idle()
         self._submit("save", self.session.save_as, (Path(path),))
+
+    def autosave(self, slot):
+        self._idle()
+        if not isinstance(slot, AutosaveSlot) or slot.document is not self.session.document:
+            raise TaskStateError("Invalid autosave slot")
+        self._submit("autosave", slot.capture, (self.session,))
 
     def request_cancel(self):
         self._check()

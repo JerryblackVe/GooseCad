@@ -52,3 +52,5 @@ GC-UI-03: QVTKRenderWindowInteractor posee la ventana VTK; Scene admite render_w
 GC-UI-04: se separa ejecución documental asíncrona de Qt; ThreadPoolExecutor de un hilo, Event de cancelación, revisión esperada y recogida por dueño. Session y Scene se conservan en GUI; el worker solo muta NativeDocument. Mientras busy no hay acceso concurrente a documento/escena; no se impone paralelismo inseguro en OCCT.
 
 GC-UI-08: separación preparación CPU / publicación VTK con revisión de documento, identidad cache, settings y presupuestos, snapshots inmutables. Cancelación de visualización no revierte una mutación ya publicada. No se paraleliza acceso a OCCT de una sesión.
+
+GC-DOC-04: autosave independiente UUID, CAS atómico, sin vincular recuperación al original ni marcar sesión limpia. Retención conservadora sin eliminación silenciosa; límite de slots provisional, directorio local confiable; no promete recuperación de parámetros sin confirmar ni durabilidad ante corte eléctrico. Timer y configuración Qt, trabajo físico en worker exclusivo.

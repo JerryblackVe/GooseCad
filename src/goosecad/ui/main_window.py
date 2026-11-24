@@ -6,12 +6,12 @@ its owning thread. File commands and display preparation also use the worker.
 from pathlib import Path
 from math import isfinite
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer, QSettings, QStandardPaths
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QDockWidget, QTableWidget,
     QTableWidgetItem, QPushButton, QLabel, QFileDialog, QMessageBox,
-    QListWidget, QAbstractItemView,
+    QListWidget, QAbstractItemView, QApplication, QInputDialog,
 )
 import vtk
 from .viewport import OwnedViewport
@@ -19,6 +19,7 @@ from .viewport import OwnedViewport
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
 from goosecad.document.tasks import DocumentTasks
+from goosecad.document.autosave import AutosaveSlot
 from goosecad.parametric import Cancelled
 from goosecad.view.scene import Scene
 from goosecad.view.preparation import terminal_bodies
@@ -35,7 +36,7 @@ class MainWindow(QMainWindow):
     task_finished = Signal()
 
     def __init__(self, session=None, *, viewport_factory=OwnedViewport,
-                 scene_factory=Scene):
+                 scene_factory=Scene, autosave_root=None, autosave_interval=None):
         super().__init__()
         self.resize(1100, 720)
         self._scene_factory = scene_factory
@@ -49,12 +50,27 @@ class MainWindow(QMainWindow):
         self._pick_observer = None
         self._staged = False
         self._view_ok = False
+        local_data = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation)
+        self._autosave_root = (Path(autosave_root) if autosave_root is not None else
+                               Path(local_data) / "recovery" if local_data else None)
+        self._settings = QSettings("GooseCAD", "GooseCAD Professional")
+        self._persist_autosave = autosave_interval is None
+        try:
+            interval = int(self._settings.value("autosave/seconds", 120)
+                           if autosave_interval is None else autosave_interval)
+        except (TypeError, ValueError):
+            interval = 120
+        self._autosave_interval = min(3600, max(0, interval))
+        self._autosave_slot = None
+        self._autosave_timer = QTimer(self)
+        self._autosave_timer.timeout.connect(self._autosave_tick)
         self.viewport = viewport_factory(self)
         self.viewport.setAccessibleName("Vista tridimensional")
         self.setCentralWidget(self.viewport)
         self._make_panels()
         self._make_actions()
         self._install(session if session is not None else sample_session())
+        self._configure_autosave_timer()
         self.statusBar().showMessage("Documento paramétrico experimental")
 
     def _make_panels(self):
@@ -95,6 +111,10 @@ class MainWindow(QMainWindow):
             return result
         self.open_action = action(file_menu, "&Abrir…", self.open_dialog, QKeySequence.StandardKey.Open)
         self.recover_action = action(file_menu, "Recuperar versión anterior…", self.recover_dialog)
+        self.autosave_recover_action = action(file_menu, "Recuperar guardado automático…", self.autosave_recover_dialog)
+        self.autosave_settings_action = QAction("Configurar guardado automático…", self)
+        self.autosave_settings_action.triggered.connect(self.configure_autosave)
+        file_menu.addAction(self.autosave_settings_action)
         self.save_action = action(file_menu, "&Guardar", self.request_save, QKeySequence.StandardKey.Save)
         self.save_as_action = action(file_menu, "Guardar &como…", self.request_save_as, QKeySequence.StandardKey.SaveAs)
         self.undo_action = action(edit_menu, "&Deshacer", self.start_undo, QKeySequence.StandardKey.Undo)
@@ -130,6 +150,8 @@ class MainWindow(QMainWindow):
         old_session, old_scene, old_tasks = self.session, self.scene, self.tasks
         self.session, self.scene = candidate, scene
         self.tasks = DocumentTasks(candidate, notify=self.task_finished.emit)
+        self._autosave_slot = (AutosaveSlot(self._autosave_root, candidate.document)
+                               if self._autosave_root is not None else None)
         if old_tasks is not None:
             old_tasks.close()
         if old_scene is not None:
@@ -199,7 +221,8 @@ class MainWindow(QMainWindow):
         if self.session is None:
             return
         busy = self.tasks.busy
-        for action in (self.open_action, self.recover_action, self.save_action, self.save_as_action, self.refresh_action):
+        for action in (self.open_action, self.recover_action, self.autosave_recover_action,
+                       self.autosave_settings_action, self.save_action, self.save_as_action, self.refresh_action):
             action.setEnabled(not busy)
         self.parameters.setEnabled(not busy)
         self.bodies.setEnabled(not busy)
@@ -249,7 +272,7 @@ class MainWindow(QMainWindow):
         self._after_task = after
         self._cancel_requested = False
         self.statusBar().showMessage(
-            "Guardando… No interrumpa el guardado." if self.tasks.kind == "save"
+            "Guardando… No interrumpa el guardado." if self.tasks.kind in ("save", "autosave")
             else "Operación en curso… Puede solicitar cancelación.")
         self._update_actions()
         return True
@@ -301,6 +324,9 @@ class MainWindow(QMainWindow):
             self._update_actions()
             if kind == "mesh":
                 self.statusBar().showMessage("Modelo conservado; vista no actualizada.")
+            if kind == "autosave":
+                self._autosave_timer.stop()
+                self.statusBar().showMessage("Guardado automático detenido; revise la carpeta de recuperación.")
             self._error(exc)
             return
         if kind in ("open", "recovery"):
@@ -316,6 +342,10 @@ class MainWindow(QMainWindow):
         elif kind == "save":
             self._update_actions()
             self.statusBar().showMessage("Documento guardado.")
+        elif kind == "autosave":
+            self._update_actions()
+            if result is not None:
+                self.statusBar().showMessage("Copia de recuperación actualizada; documento aún sin guardar.")
         elif kind == "mesh":
             try:
                 self.session.publish_refresh(result)
@@ -476,9 +506,10 @@ class MainWindow(QMainWindow):
             return action()
         return False
 
-    def request_open_path(self, path, *, recovery=False):
+    def request_open_path(self, path, *, recovery=False, recovery_copy=False):
         return self._confirm_then(
             lambda: self._start_task(self.tasks.open, path, recovery=recovery,
+                                     recovery_copy=recovery_copy,
                                      display_config=self.scene.display_config))
 
     def save_document(self):
@@ -567,6 +598,43 @@ class MainWindow(QMainWindow):
             self, "Seleccione el documento principal", "", "GooseCAD (*.gcad *.goosecad);;Todos (*)")
         return self.request_open_path(path, recovery=True) if path else False
 
+    def _configure_autosave_timer(self):
+        self._autosave_timer.stop()
+        if self._autosave_root is not None and self._autosave_interval:
+            self._autosave_timer.start(self._autosave_interval * 1000)
+
+    def configure_autosave(self):
+        if self.tasks.busy:
+            return
+        interval, accepted = QInputDialog.getInt(
+            self, "Guardado automático", "Intervalo en segundos (0 = desactivado):",
+            self._autosave_interval, 0, 3600, 15)
+        if accepted:
+            self._autosave_interval = interval
+            if self._persist_autosave:
+                self._settings.setValue("autosave/seconds", interval)
+            self._configure_autosave_timer()
+
+    def _autosave_tick(self):
+        if (self.scene is None or self.tasks.busy or self._autosave_slot is None
+                or not self._autosave_interval or QApplication.activeModalWidget() is not None):
+            return False
+        if not self.session.dirty or self._autosave_slot.last_revision == self.session.document.revision:
+            return False
+        return self._start_task(self.tasks.autosave, self._autosave_slot)
+
+    def autosave_recover_dialog(self):
+        if self.tasks.busy:
+            return False
+        root = self._autosave_root
+        if root is None or not root.is_dir():
+            self.statusBar().showMessage("No hay copias automáticas disponibles.")
+            return False
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Abrir copia de recuperación como documento nuevo", str(root),
+            "Copias GooseCAD (recovery-*.gcad);;GooseCAD (*.gcad)")
+        return self.request_open_path(path, recovery_copy=True) if path else False
+
     def closeEvent(self, event):
         if self.scene is None:
             event.accept()
@@ -587,6 +655,7 @@ class MainWindow(QMainWindow):
             if choice != QMessageBox.StandardButton.Discard:
                 event.ignore()
                 return
+        self._autosave_timer.stop()
         if self.tasks is not None:
             self.tasks.close()
         if self.scene is not None:

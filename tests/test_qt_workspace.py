@@ -289,3 +289,44 @@ class QtWorkspaceTests(unittest.TestCase):
             with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
                 window.close()
             self.app.processEvents()
+
+    def test_autosave_worker_and_recovery_copy(self):
+        import time
+        from goosecad.document.session import DocumentSession
+        from goosecad.document.autosave import list_recoveries
+        from goosecad.ui.main_window import MainWindow
+        from PySide6.QtWidgets import QMessageBox
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            window = MainWindow(autosave_root=root / "recovery", autosave_interval=120)
+            window.show()
+            window.initialize_view()
+            def finish():
+                deadline = time.monotonic()+15
+                while window.tasks.busy:
+                    self.app.processEvents()
+                    if time.monotonic()>deadline:
+                        self.fail("autosave timed out")
+                    time.sleep(.005)
+            try:
+                primary = root / "part.gcad"
+                self.assertTrue(window.save_as_path(primary))
+                window.session.edit({"width": 36})
+                self.assertTrue(window._autosave_tick())
+                finish()
+                self.assertTrue(window.session.dirty)
+                self.assertEqual(DocumentSession.open(primary).document.value("width"),20)
+                copies = list_recoveries(root / "recovery")
+                self.assertEqual(len(copies),1)
+                self.assertFalse(window._autosave_tick())
+                with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
+                    self.assertTrue(window.request_open_path(copies[0].path,recovery_copy=True))
+                finish()
+                self.assertTrue(window.session.dirty)
+                self.assertIsNone(window.session.path)
+                self.assertEqual(window.session.document.value("width"),36)
+            finally:
+                finish()
+                with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Discard):
+                    window.close()
+                self.app.processEvents()

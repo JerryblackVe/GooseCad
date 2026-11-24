@@ -71,6 +71,14 @@ class DocumentSession:
         session._requires_save = True
         return session
 
+    @classmethod
+    def open_copy(cls, path):
+        """Read a native snapshot as an untitled, unsaved recovery document."""
+        document, _ = load_with_revision(path)
+        session = cls(document)
+        session._requires_save = True
+        return session
+
     @property
     def dirty(self):
         if self.document.revision != self._observed_revision:

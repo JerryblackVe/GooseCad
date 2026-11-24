@@ -10,6 +10,8 @@ def main():
     parser.add_argument("document", nargs="?")
     args = parser.parse_args()
     app = QApplication([sys.argv[0]])
+    app.setOrganizationName('GooseCAD')
+    app.setApplicationName('GooseCAD Professional')
     session = DocumentSession.open(args.document) if args.document else None
     window = MainWindow(session)
     window.show()

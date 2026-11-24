@@ -1,2 +1,2 @@
-# GC-UI-09 — validar apertura con malla preparada y rendimiento
-Consultar CI HEAD, GC-UI-08 45507582036/45507582089, GC-UI-07 45507428350/45507428267. Revisar fallos y logs. Verificar apertura con mesh worker, actor publish, cancelación y CAS. Medir latencia/uso de memoria; siguiente autosave independiente seguro y recuperación. Windows físico/instalador pendientes.
+# GC-DOC-04 / GC-UI-10 — validar autosave y cadena gráfica
+Consultar CI de HEAD y resultados GC-UI-08/09; revisar logs completos, pruebas de recuperación/autosave y CAS. Medir sync/async y latencias por fase de carga/teselación/render. Siguiente P0: gestionar copias antiguas explícitamente (sin borrado automático), pruebas interrupción de proceso y durabilidad Windows; mejorar primera apertura CLI y selección. Windows físico/instalador pendientes.
