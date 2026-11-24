@@ -51,3 +51,23 @@ API del repositorio oficial: private=false; permisos de lectura/escritura dispon
 
 ## 6. Legibilidad
 Se eliminaron instrucciones encadenadas por punto y coma y el with en línea de tests/test_mesh.py; AST anterior y posterior idénticos (ast.dump sin atributos), sin tokens OP punto y coma. Se ejecutó el conjunto histórico de 142 tests extraído de 516e9b1 (árbol afad1c0) contra src actual, 142/142; luego 158/158 actuales con Xvfb y GC_RENDER_TESTS=1 GC_INTERACT_TESTS=1. Evidencias results/mesh-review-original-142.log y results/mesh-review-final-tests.log.
+
+## Continuación GC-MESH-02
+Caché ya publicada (e0cbc8e, CI 45496847193). Revalidación emparejada de malla histórica y optimizada usando la caché actual, 20 muestras por caso y modo, 3 warmups, 240 muestras; igualdad exacta entre versiones y entre directo/caché, revisión válida y warm hit por identidad.
+
+| Cuerpos | Implementación | Modo | Mediana ms | P95 ms |
+|---|---|---|---:|---:|
+| 1 | baseline | rebuild | 6.29737 | 9.02102 |
+| 1 | baseline | selective | 6.50452 | 7.49670 |
+| 1 | baseline | warm | 0.00401 | 0.00485 |
+| 1 | optimized | rebuild | 5.53729 | 6.06279 |
+| 1 | optimized | selective | 5.62764 | 6.96634 |
+| 1 | optimized | warm | 0.00399 | 0.00455 |
+| 20 | baseline | rebuild | 138.71449 | 241.81410 |
+| 20 | baseline | selective | 8.34009 | 15.47872 |
+| 20 | baseline | warm | 0.02941 | 0.03356 |
+| 20 | optimized | rebuild | 129.76656 | 218.05296 |
+| 20 | optimized | selective | 6.73369 | 11.69897 |
+| 20 | optimized | warm | 0.02894 | 0.03651 |
+
+Variabilidad relevante del rebuild de 20 esferas, no declarar mejora concluyente de ese caso (<10%); sin regresión mediana reproducida. Prueba adicional de cara grande (>8192 nodos y triángulos), revisión de esfera y reutilización de caja; 159/159 suite actual con Xvfb. Comparación manual de esfera r20 mm (10049 vértices, 19952 triángulos) frente a afad1c0: arrays exactos y offsets iguales. Reproducir `PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python benchmarks/mesh_cache_review_bench.py cache-review.csv --baseline afad1c07f827b899cc9e1fc688a1c0b9f3036632 --repetitions 20`. CI de revisión consultar. Siguiente GC-UI-01, sin revertir.

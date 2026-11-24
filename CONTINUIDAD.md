@@ -4,3 +4,5 @@ GC-VIEW-01: visor experimental VTK 9.6.2, escena por NativeDocument/MeshCache, b
 Siguiente GC-UI-01: interfaz real de documentos, selección, editor paramétrico, menús y accesibilidad. Evaluar Qt y entorno; no sustituir kernel por simulación. CI MESH-01 aprobado; MESH-02 consultar. SHA final externo. OCAF y Goose/SDK C++ pendientes.
 
 Revisión GC-MESH-01 1–6 completada sobre VIEW-01; 142 históricos y 158 actuales aprobados. Resultados y decisiones en docs/REVISION_MESH_01.md. Verificar CI de revisión; revalidar caché GC-MESH-02 y luego GC-UI-01. Base remota verificada ea39d9e9d3183ffe6c7c7860ef39f2edf58211f2; SHA de este commit externo.
+
+Revalidación GC-MESH-02 cerrada, 159/159 pruebas, 9800 muestras acumuladas; leer docs/REVISION_MESH_01.md. Base remota cd87dcd0acf20dfd0dd39d82206071f2e912d506, consultar CI y HEAD. Nuevo paso GC-UI-01. Se aplica apartado 41 del Prompt Maestro actualizado (marcador final exacto, sin botones de continuación).

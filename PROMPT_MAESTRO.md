@@ -1842,4 +1842,21 @@ Integra pruebas de rendimiento en CI cuando sea posible; si los ejecutores compa
 
 Cada función debe ser correcta, verificable, rápida y eficiente. La precisión geométrica y la integridad del documento son condiciones innegociables. La mejora continua del rendimiento es obligatoria desde la primera operación del kernel hasta cada versión posterior de GooseCAD Professional.
 
+# 41. MODO AUTOMATIZADO — UN SCRIPT RESPONDE POR EL USUARIO
+
+Un script del navegador envía CONTINUAR cada vez que termina una respuesta. Por eso:
+
+1. **Cada respuesta termina con UNA línea final exacta**, sola, sin formato y sin texto después:
+
+   - `[[ESTADO: CONTINUAR]]` — hay más trabajo viable y no falta nada del usuario.
+   - `[[ESTADO: MIGRAR]]` — conviene cambiar de conversación (va junto con el AVISO DE CONTINUIDAD del apartado 26 y el mensaje de continuación del apartado 27).
+   - `[[ESTADO: BLOQUEADO]]` — falta algo que solo el usuario puede dar (permiso, credencial, decisión, coste). Decir qué falta en UNA línea antes de la marca.
+   - `[[ESTADO: TERMINADO]]` — el alcance previsto está completo.
+
+2. Nunca escribas una marca dentro de una explicación, ejemplo o cita. Solo como última línea.
+3. No preguntes "¿continúo?" ni ofrezcas opciones: decide y sigue. Pregunta únicamente con `[[ESTADO: BLOQUEADO]]`.
+4. Tras CONTINUAR, retoma SIGUIENTE_PASO.md sin repetir el informe anterior.
+5. El panel del apartado 35 se reduce, en modo automatizado, a: tarea, pruebas aprobadas/falladas, rama, SHA remoto verificado y próxima tarea.
+6. No escribas frases del tipo "No es necesario cambiar de conversación": si no hace falta migrar, no lo menciones.
+
 # FIN DEL PROTOCOLO MAESTRO
