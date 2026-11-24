@@ -53,7 +53,7 @@ class Graph:
     Structural edits require building a new graph. Cancellation is cooperative
     between operations; callbacks cannot be interrupted mid-computation.
     """
-    def __init__(self, nodes: Iterable[Input | Operation]):
+    def __init__(self, nodes: Iterable[Input | Operation], *, _prior=None, cancelled=None):
         specs = {}
         for node in nodes:
             if not isinstance(node, (Input, Operation)) or not isinstance(node.id, str) or not node.id:
@@ -86,6 +86,7 @@ class Graph:
                     ready.append(child)
         if len(order) != len(specs):
             raise GraphError("Circular dependency")
+        self._specs = specs
         self._names = tuple(order)
         self._index = {name: i for i, name in enumerate(order)}
         self._successors = tuple(tuple(self._index[c] for c in successors[n]) for n in order)
@@ -101,7 +102,49 @@ class Graph:
         self._busy = False
         self._revision = 0
         self._node_revisions = [0] * len(order)
-        self.update({}, full=True)
+        if _prior is None:
+            self.update({}, full=True, cancelled=cancelled)
+        else:
+            self._initialize_structure(_prior, cancelled)
+
+    def _initialize_structure(self, prior, cancelled):
+        # Called under the prior graph lock. Retained definitions must be the
+        # identical immutable objects; only append/remove is supported.
+        def check():
+            if cancelled is not None and cancelled():
+                raise Cancelled("Structural calculation cancelled")
+        check()
+        revision = prior._revision + 1
+        for name, spec in self._specs.items():
+            if name in prior._specs and prior._specs[name] is not spec:
+                raise GraphError("Retained definitions cannot be replaced")
+        for i, name in enumerate(self._names):
+            check()
+            old = prior._index.get(name)
+            if old is not None:
+                self._values[i] = prior._values[old]
+                self._node_revisions[i] = prior._node_revisions[old]
+            else:
+                if i in self._ops:
+                    deps, compute = self._ops[i]
+                    try:
+                        self._values[i] = compute(*(self._values[j] for j in deps))
+                    except Exception as exc:
+                        raise EvaluationError(name) from exc
+                self._node_revisions[i] = revision
+        check()
+        self._revision = revision
+
+    def _reconfigure(self, nodes, *, cancelled=None):
+        """Return a staged graph; unchanged nodes retain their stamps/values."""
+        with self._lock:
+            if self._busy:
+                raise GraphError("Reentrant structure change")
+            self._busy = True
+            try:
+                return Graph(nodes, _prior=self, cancelled=cancelled)
+            finally:
+                self._busy = False
 
     @property
     def revision(self) -> int:

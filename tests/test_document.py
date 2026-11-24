@@ -89,3 +89,62 @@ class DocumentTests(unittest.TestCase):
         d.redo(); self.assertAlmostEqual(d.value('vol'),30)
 
 if __name__=='__main__': unittest.main()
+
+
+class StructuralHistoryTests(unittest.TestCase):
+    def test_mixed_history_preserves_unaffected_values_and_stamps(self):
+        from goosecad.document.document import Document
+        from goosecad.parametric import Input, Operation
+        a=Input("x",2)
+        calls=[]
+        op=Operation("a",("x",),lambda x: calls.append(x) or object())
+        doc=Document((a,op))
+        doc.edit({"x":3})
+        old_stamp,old_value=doc.versioned_value("a")
+        old_revision=doc.revision
+        doc.append((Input("y",4),Operation("b",("y",),lambda y:y*2)))
+        self.assertGreater(doc.revision,old_revision)
+        self.assertEqual(doc.versioned_value("a"),(old_stamp,old_value))
+        self.assertEqual(calls,[2,3])
+        stamp=doc.versioned_value("b")[0]
+        doc.edit({"y":5})
+        self.assertEqual(doc.value("b"),10)
+        doc.undo()
+        self.assertEqual(doc.value("b"),8)
+        doc.undo()
+        with self.assertRaises(KeyError):
+            doc.value("b")
+        doc.undo()
+        self.assertEqual(doc.value("x"),2)
+        doc.redo()
+        doc.redo()
+        self.assertEqual(doc.value("b"),8)
+        self.assertGreater(doc.versioned_value("b")[0],stamp)
+        doc.redo()
+        self.assertEqual(doc.value("b"),10)
+
+    def test_structure_failure_and_cancel_are_atomic(self):
+        from goosecad.document.document import Document, RevisionConflict
+        from goosecad.parametric import Input, Operation, Cancelled, GraphError
+        doc=Document((Input("x",2),))
+        before=doc.snapshot()
+        for extra in ((Input("x",3),),
+                      (Operation("bad",("missing",),lambda x:x),),
+                      (Operation("bad",("x",),lambda x:1/0),)):
+            with self.assertRaises(GraphError):
+                doc.append(extra)
+            self.assertEqual(doc.snapshot(),before)
+        with self.assertRaises(Cancelled):
+            doc.append((Input("y",5),),cancelled=lambda:True)
+        self.assertEqual(doc.snapshot(),before)
+        with self.assertRaises(RevisionConflict):
+            doc.append((Input("y",5),),expected_revision=99)
+        self.assertEqual(doc.snapshot(),before)
+        doc.append((Input("y",5),))
+        with self.assertRaises(Cancelled):
+            doc.undo(cancelled=lambda:True)
+        self.assertEqual(doc.value("y"),5)
+        self.assertEqual(doc.history_depths,(1,0))
+        doc.undo()
+        doc.append((Input("z",7),))
+        self.assertEqual(doc.history_depths,(1,0))

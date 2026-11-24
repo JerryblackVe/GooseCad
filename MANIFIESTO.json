@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "00c3c11a2bf61ea41af86188cdb7d27efd081d08",
-  "remote_checkpoint": "00c3c11a2bf61ea41af86188cdb7d27efd081d08",
+  "remote_base_observed": "9f26224edd90a4e9a9e034b901dd3654db0fd440",
+  "remote_checkpoint": "9f26224edd90a4e9a9e034b901dd3654db0fd440",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-12",
+  "next_task": "GC-STRUCT-02",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508375966,
@@ -88,7 +88,8 @@
   "multibody_benchmark": "two Linux jobs passed 138850155671/138850155694",
   "windows_packaging": "ephemeral PyInstaller+NSIS build/test pipeline; CI pending; no binary publication",
   "distribution_license": "pending owner decision and third-party review",
-  "render_suspension": "implemented; CI pending",
+  "render_suspension": "Qt run 45508976437 passed 4/4",
   "primitive_creation": "new parametric document templates implemented; CI pending",
-  "package_ci_run": 45508839661
+  "package_ci_run": 45508839661,
+  "structural_history": "core append/undo/redo implemented; CI pending"
 }
