@@ -4,3 +4,5 @@ P0 publicación autorizada; verificar escritura y remoto; CI Windows; resolver i
 GC-BOOT/GC-TOPO-01 sincronizados y CI aprobado. GC-TOPO-02 parcial; pendiente persistencia multietapa, OCAF, DAG.
 
 GC-DAG-01 fijo verificado localmente; pendientes edición estructural, caché limitada y concurrencia, snapshots de UI, cancelación interna de OCCT, GC-DOC-01, GC-SOLVER-01 y OCAF.
+
+GC-DOC-01 parámetros/undo/redo verificado localmente; faltan persistencia, transacciones estructurales, historial de memoria limitada por bytes, UI asíncrona y seguridad de importación.

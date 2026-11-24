@@ -4,3 +4,5 @@ P0 GC-BOOT: privacidad y sincronización; GC-TOPO-01 naming persistente (experim
 GC-TOPO-02 parcial verificado; GC-DAG-01 siguiente. GC-OCAF-01 bloquea persistencia general, no grafo independiente.
 
 GC-DAG-01 parcial verificado. Próximo GC-DOC-01: transacciones de entrada, undo/redo con límites y revisión; formato persistente y guardado atómico después. GC-SOLVER-01 y GC-ABI-01 siguen P0.
+
+GC-DOC-01 parcial verificado localmente. GC-DOC-02 siguiente: formato mínimo versionado, operaciones identificadas por registro permitido, guardado atómico y recuperación; después GC-SOLVER-01, GC-ABI-01. Sin integración OCAF hasta resolver S1.

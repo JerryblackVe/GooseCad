@@ -6,3 +6,5 @@ GC-TOPO-01: 100 repeticiones calientes, resolución seis caras sin construcción
 GC-TOPO-02 (Linux, cálculos sin construir operación): merge 2 caras mediana 0.4601925 ms p95 0.686164; restaurar referencia JSON mediana 0.002879 ms p95 0.005732. 100 muestras por caso, calentamiento 10. Sin comparación directa con seis caras ni garantía Windows.
 
 GC-DAG-01: 5 calentamientos, 50 muestras por modo y caso, dos órdenes alternados, perf_counter_ns, construcción excluida. 3 rondas (baseline, optimizada, repetición), 1500 muestras; 100/1000/10000 ramas, cadena 10000, 20 cajas OCCT. Optimizada/repetición: OCCT incremental 1.198/1.332 ms, full 23.241/26.144 ms; solo 2 de 40 operaciones ejecutadas. No comparar con Fusion. P95 en BENCHMARKS.csv, datos brutos results/dag-*.csv; no memoria ni latencia UI medida.
+
+GC-DOC-01: 10 calentamientos y 100 muestras por modo/límite; límites 10/100/1000, modos graph/edit/undo/redo, 2 rondas, 2400 muestras. Modelo escalar de una operación, no geometría ni UI. Límite 100 final: edit 4.627 µs, undo 3.228 µs, redo 3.345 µs; graph 2.852 µs. CSV bruto y P95 en BENCHMARKS.csv. Memoria pico no medida.

@@ -6,3 +6,5 @@ GC-TOPO-01: no resolver automáticamente divisiones 1:N; roles semánticos de pr
 ADR-004: no resolver automáticamente fusiones N:1, ni usar Generated como reemplazo. Mantener identificadores semánticos de feature y roles; JSON schema 1 solo para referencias, no formato CAD final. OCAF no aprobado por fallo de ciclo de vida.
 
 ADR-GC-DAG-01: estructura fija y callbacks puros con valores prestados; cambios estructurales se harán por reconstrucción transaccional. No copiar geometría ni snapshot completo por edición. Se prioriza atomicidad y exactitud sobre paralelismo no validado.
+
+ADR-GC-DOC-01: solo escalares JSON finitos como entradas; funciones de cálculo puras y registro privado de parches. Revisiones monotónicas, incluso undo/redo; no guardar código ejecutable en documentos. Historial limitado por entradas, no por memoria.

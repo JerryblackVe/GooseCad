@@ -27,9 +27,11 @@ jobs:
       - run: python experiments/topology_history.py
       - run: python benchmarks/kernel_bench.py ci-benchmarks.csv
       - run: python benchmarks/dag_bench.py ci-dag-benchmarks.csv --repetitions 10
+      - run: python benchmarks/document_bench.py ci-document-benchmarks.csv --repetitions 10
       - uses: actions/upload-artifact@v4
         with:
           name: kernel-benchmarks-${{ matrix.os }}
           path: |
             ci-benchmarks.csv
             ci-dag-benchmarks.csv
+            ci-document-benchmarks.csv

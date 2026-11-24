@@ -41,3 +41,14 @@ GC-DAG-01-09,test_random_dag_against_full,Linux/OCP 7.9.3.1,Aprobada,results/dag
 GC-DAG-01-10,test_reader_observes_complete_revision,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
 GC-DAG-01-11,test_real_occt_model_and_failure,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
 GC-DAG-01-12,test_reentrant_update,Linux/OCP 7.9.3.1,Aprobada,results/dag-tests.log,2026-11-24
+GC-DOC-01-01,test_batch_undo_redo,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-02,test_cancelled_undo_keeps_history,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-03,test_change_mapping_copied,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-04,test_failure_keeps_redo_and_revision,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-05,test_history_bound,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-06,test_history_order_and_new_edit,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-07,test_invalid_and_empty,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-08,test_real_geometry_undo_redo,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-09,test_reentrant_mapping_rejected,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-10,test_stale_revision_rejected,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
+GC-DOC-01-11,test_two_writers_one_revision,Linux/OCP 7.9.3.1,Aprobada,results/document-tests.log,2026-11-24
