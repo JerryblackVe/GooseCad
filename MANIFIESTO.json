@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "20a977f207be7d88722dc66ee25a3a8aae310f6e",
-  "remote_checkpoint": "20a977f207be7d88722dc66ee25a3a8aae310f6e",
+  "remote_base_observed": "27ca2208b1bcc752e5f53e3a11924ba00dce99df",
+  "remote_checkpoint": "27ca2208b1bcc752e5f53e3a11924ba00dce99df",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,13 +15,13 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-UI-05",
+  "next_task": "GC-UI-06",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45506703643,
   "abi_c_tests": 1,
   "abi_sanitizer_tests": 1,
-  "ci_pending_run": 45506930080,
+  "ci_pending_run": 45507091254,
   "ci_verified_checkpoints": {
     "GC-MESH-01": {
       "sha": "afad1c07f827b899cc9e1fc688a1c0b9f3036632",
@@ -58,5 +58,6 @@
     14972334587
   ],
   "qt_mesa_verified_run": 45506457843,
-  "qt_close_regression_job": 138843657070
+  "qt_close_regression_job": 138843657070,
+  "async_file_tasks": "worker implemented, tests and GUI integration pending"
 }

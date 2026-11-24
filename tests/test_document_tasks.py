@@ -124,3 +124,76 @@ class DocumentTaskTests(unittest.TestCase):
         tasks.close()
         with self.assertRaises(TaskStateError):
             tasks.edit({"x": 9})
+
+    def test_async_disk_roundtrip_conflict_and_independent_open(self):
+        import tempfile
+        from pathlib import Path
+        from goosecad.document.native import DiskRevisionConflict
+        current = session()
+        tasks = DocumentTasks(current)
+        try:
+            with tempfile.TemporaryDirectory() as root:
+                path = Path(root) / "part.gcad"
+                tasks.save_as(path)
+                self.assertEqual(tasks.kind, "save")
+                self.assertFalse(tasks.request_cancel())
+                collect(tasks)
+                self.assertFalse(current.dirty)
+                tasks.edit({"x": 7})
+                collect(tasks)
+                tasks.save()
+                collect(tasks)
+                tasks.open(path)
+                candidate = collect(tasks)
+                self.assertIsNot(candidate, current)
+                self.assertEqual(candidate.document.value("x"), 7)
+                candidate.edit({"x": 8})
+                candidate.save()
+                current.edit({"x": 9})
+                tasks.save()
+                with self.assertRaises(DiskRevisionConflict):
+                    collect(tasks)
+                self.assertTrue(current.dirty)
+                self.assertEqual(DocumentSession.open(path).document.value("x"), 8)
+                tasks.open(path, recovery=True)
+                recovery = collect(tasks)
+                self.assertTrue(recovery.dirty)
+                self.assertIsNone(recovery.path)
+                self.assertEqual(recovery.document.value("x"), 7)
+        finally:
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()
+
+    def test_cancel_open_without_changing_active_session(self):
+        from pathlib import Path
+        current = session()
+        tasks = DocumentTasks(current)
+        entered, release = Event(), Event()
+        def gated(path):
+            entered.set()
+            if not release.wait(5):
+                raise RuntimeError("test gate timeout")
+            return session()
+        try:
+            with patch.object(DocumentSession, "open", side_effect=gated):
+                tasks.open(Path("unused.gcad"))
+                self.assertTrue(entered.wait(5))
+                self.assertTrue(tasks.request_cancel())
+                self.assertIsNone(tasks.collect())
+                release.set()
+                with self.assertRaises(Cancelled):
+                    collect(tasks)
+            self.assertIs(tasks.session, current)
+            self.assertFalse(current.dirty)
+        finally:
+            release.set()
+            if tasks.busy:
+                try:
+                    collect(tasks)
+                except Exception:
+                    pass
+            tasks.close()

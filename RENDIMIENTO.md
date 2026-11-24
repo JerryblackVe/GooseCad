@@ -49,3 +49,5 @@ GC-UI-04 P0: trabajador único reutilizable, ningún VTK en worker, CAS de revis
 GC-UI-04: control normal de edición e historial devuelve el hilo GUI inmediatamente tras iniciar worker; QTimer 15ms, cancelación cooperativa. No hay medición de latencia de esta ruta todavía. Carga, persistencia, teselación/refresh y flujo modal permanecen síncronos; requieren experimentos separados.
 
 GC-UI-03 línea base CI Linux software, 30 muestras tras 5 calentamientos por versión: Qt 6.9.3 mediana 6.812491 ms/p95 6.99575045; Qt 6.11.3 mediana 4.5062715 ms/p95 4.71952275. Runners no equivalentes, no inferir mejora. Medición de acción síncrona + render; no input-to-photon, CPU/GPU sin especificación. Datos verificados mediante artefactos CI; comparar nueva ruta en un mismo job y registrar por separado retorno, cálculo y fin de render.
+
+GC-UI-06: worker reutilizado para carga y persistencia, evitando reconstrucción OCCT y fsync en GUI en futura integración. Sin cancelación de guardado durable; apertura descarta candidato si cancelación observada. No se ha medido latencia de estas rutas.

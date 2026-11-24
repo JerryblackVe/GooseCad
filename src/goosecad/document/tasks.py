@@ -7,6 +7,10 @@ publication, and cannot interrupt an OCCT call already executing.
 """
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event, get_ident
+from pathlib import Path
+
+from goosecad.document.session import DocumentSession
+from goosecad.parametric import Cancelled
 
 
 class TaskStateError(RuntimeError):
@@ -23,6 +27,7 @@ class DocumentTasks:
                                             thread_name_prefix="goosecad-document")
         self._future = None
         self._cancel = None
+        self._kind = None
         self._closed = False
 
     def _check(self):
@@ -41,16 +46,33 @@ class DocumentTasks:
         self._check()
         return self._future is not None and self._future.done()
 
-    def _start(self, method, *args, expected_revision=None):
+    @property
+    def kind(self):
+        self._check()
+        return self._kind
+
+    @property
+    def can_cancel(self):
+        self._check()
+        return self._cancel is not None and self._future is not None and not self._future.done()
+
+    def _idle(self):
         self._check()
         if self._future is not None:
             raise TaskStateError("Collect the previous document operation first")
+
+    def _submit(self, kind, method, args, *, token=None, kwargs=None):
+        self._idle()
+        self._future = self._executor.submit(method, *args, **(kwargs or {}))
+        self._cancel = token
+        self._kind = kind
+
+    def _start(self, method, *args, expected_revision=None):
+        self._idle()
         revision = self.session.document.revision if expected_revision is None else expected_revision
         token = Event()
-        future = self._executor.submit(method, *args, expected_revision=revision,
-                                       cancelled=token.is_set)
-        self._cancel = token
-        self._future = future
+        self._submit("mutation", method, args, token=token,
+                     kwargs={"expected_revision": revision, "cancelled": token.is_set})
 
     def edit(self, changes, *, expected_revision=None):
         self._check()
@@ -65,9 +87,36 @@ class DocumentTasks:
     def redo(self):
         self._start(self.session.document.redo)
 
+    def open(self, path, *, recovery=False):
+        """Load an independent candidate. Never replace the active session here."""
+        self._idle()
+        source = Path(path)
+        token = Event()
+        def load_candidate():
+            if token.is_set():
+                raise Cancelled("Opening cancelled")
+            loader = DocumentSession.open_recovery if recovery else DocumentSession.open
+            candidate = loader(source)
+            if token.is_set():
+                raise Cancelled("Opening cancelled")
+            return candidate
+        self._submit("recovery" if recovery else "open", load_candidate, (), token=token)
+
+    def save(self):
+        """Exclusive session access; retain the existing disk CAS semantics.
+
+        No cancellation of a disk transaction: a durable replace may already
+        have happened when cancellation is requested.
+        """
+        self._submit("save", self.session.save, ())
+
+    def save_as(self, path):
+        self._idle()
+        self._submit("save", self.session.save_as, (Path(path),))
+
     def request_cancel(self):
         self._check()
-        if self._future is None or self._future.done():
+        if not self.can_cancel:
             return False
         self._cancel.set()
         return True
@@ -83,6 +132,7 @@ class DocumentTasks:
             return None
         future = self._future
         self._future = self._cancel = None
+        self._kind = None
         try:
             return future.result()
         finally:

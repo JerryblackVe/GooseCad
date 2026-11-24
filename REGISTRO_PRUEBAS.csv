@@ -196,3 +196,4 @@ GC-UI-04,Qt async edit cancel close guard undo redo,GitHub Actions,Pendiente,tes
 GC-UI-02,Qt/VTK Windows software LLVMpipe e integración 2 pruebas por versión,GitHub Actions Windows 2022,Aprobado,run 45506457843 jobs 138842813462 y 138842813811,2026-11-24
 GC-UI-04,Qt async integration Linux Qt 6.11.3,GitHub Actions Ubuntu 24.04,Requiere corrección,job 138843657070 3 tests OK pero RecursionError en callback closeEvent,2026-11-24
 GC-UI-05,Cierre idempotente Qt y recuperación dirty/CAS,GitHub Actions,Pendiente,tests/test_qt_workspace.py y tests/test_session.py,2026-11-24
+GC-UI-06,Worker apertura guardado CAS recuperación y cancelación,GitHub Actions,Pendiente,tests/test_document_tasks.py,2026-11-24
