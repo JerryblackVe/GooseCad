@@ -36,3 +36,5 @@ GC-MESH-01: no fallos finales de las pruebas locales; no es certificación de to
 GC-MESH-02: sin fallos finales; riesgo de memoria interna OCCT, concurrencia y snapshots obsoletos; API exige verificar sello. DISPLAY=:0 no conecta; VTK 9.6.2 EGL fuera de pantalla funciona.
 
 GC-VIEW-01: prueba inicial de píxeles exigía >4 colores únicos, incorrecto para caja de tres caras visibles + fondo; corregida a área de primer plano >1% y picking verificado. DISPLAY=:0 no conecta; EGL y Xvfb funcionan. No es error de geometría. Sin GPU física ni escritorio Windows probado.
+
+GC-UI-02: run 45503983930, Ubuntu Qt 6.9.3: ImportError libEGL.so.1 ausente. Corregir dependencias X11/EGL/GL del runner antes de concluir compatibilidad. Se instala libegl1, libgl1, libgl1-mesa-dri, libxcb-cursor0, libxkbcommon-x11-0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, libxcb-render-util0, libxcb-xinerama0, xvfb y xauth. Reejecución pendiente; no hay benchmark validado.
