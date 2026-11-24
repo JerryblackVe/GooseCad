@@ -40,3 +40,5 @@ Commit revisión 6 cd87dcd0acf20dfd0dd39d82206071f2e912d506 y árbol b92990ad67b
 GC-UI-01: commit de código y pruebas emitido desde GitHub API a partir de f862000523a92d1eb3fa466bc2ca35912816a1ae en feature/000-clean-start. SHA resultante y CI deben verificarse externamente tras actualizar la referencia; no afirmar éxito de CI anticipadamente.
 
 GC-UI-01 revisión de seguridad sobre 03ec44e: mutaciones externas y detección de desajuste durante save, 2 pruebas. Verificar nuevo SHA remoto y CI por separado.
+
+GC-UI-02 investigación y manifiesto: basado en cdf69c0ca2a82e0908c3142da17310b6adba3afa, sin alterar código; SHA final del commit documental se verifica externamente. CI del código GC-UI-01: 45502896110 en curso al registrar.

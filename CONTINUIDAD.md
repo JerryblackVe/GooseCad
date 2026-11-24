@@ -10,3 +10,5 @@ Revalidación GC-MESH-02 cerrada, 159/159 pruebas, 9800 muestras acumuladas; lee
 GC-UI-01: DocumentSession y Scene.is_current_selection incorporados (pendiente CI remoto). Token CAS de disco obligatorio, save_as solo archivo ausente, dirty/undo/redo, recuperación no vinculada a archivo, escena opcional vinculada al mismo documento, selección de cuerpo/cara local con validación y refresh. Nueva batería de pruebas tests/test_session.py; verificar workflow del SHA final. Siguiente GC-UI-02, UI nativa Qt/PySide6 sin simular funcionalidades.
 
 GC-UI-01 refuerzo: detección de mutaciones directas al documento y carreras durante save/save_as; consulta tests/test_session.py. SHA final de este checkpoint debe verificarse externamente, igual que su CI.
+
+GC-UI-02 evaluación previa: PySide6 6.11.3 como candidato Windows x64 Python 3.13, licencia LGPL/GPL/comercial; VTK QVTKRenderWindowInteractor soporta PySide6 pero existen informes de incompatibilidad con Qt 6.10+ en macOS/Linux. No instalado ni validado localmente. Ver DECISIONES_TECNICAS.md. GC-UI-01 run 45502896110 pendiente al documentar; SHA final del checkpoint consultar en GitHub.
