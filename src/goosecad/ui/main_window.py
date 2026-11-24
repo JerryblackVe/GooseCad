@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 import vtk
 from .viewport import OwnedViewport
+from .recovery_dialog import RecoveryDialog
 
 from goosecad.document.native import NativeDocument, Feature
 from goosecad.document.session import DocumentSession
@@ -662,10 +663,11 @@ class MainWindow(QMainWindow):
         if root is None or not root.is_dir():
             self.statusBar().showMessage("No hay copias automáticas disponibles.")
             return False
-        path, _ = QFileDialog.getOpenFileName(
-            self, "Abrir copia de recuperación como documento nuevo", str(root),
-            "Copias GooseCAD (recovery-*.gcad);;GooseCAD (*.gcad)")
-        return self.request_open_path(path, recovery_copy=True) if path else False
+        active = self._autosave_slot.path if self._autosave_slot is not None else None
+        dialog = RecoveryDialog(root, active_path=active, parent=self)
+        if dialog.exec() and dialog.selected_path is not None:
+            return self.request_open_path(dialog.selected_path, recovery_copy=True)
+        return False
 
     def closeEvent(self, event):
         if self.scene is None:

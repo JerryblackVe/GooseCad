@@ -73,3 +73,51 @@ class AutosaveTests(unittest.TestCase):
                     slot.capture(session)
             self.assertFalse(slot.path.exists())
             self.assertTrue(session.dirty)
+
+    def test_catalog_previous_and_explicit_archive(self):
+        from goosecad.document.autosave import recovery_catalog, archive_recovery
+        from goosecad.document.native import recovery_path
+        with tempfile.TemporaryDirectory() as directory:
+            session = sample()
+            slot = AutosaveSlot(directory,session.document)
+            session.edit({"x":6})
+            slot.capture(session)
+            session.edit({"x":8})
+            slot.capture(session)
+            entries = recovery_catalog(directory)
+            self.assertEqual(len(entries),2)
+            current = next(e for e in entries if not e.previous)
+            previous = next(e for e in entries if e.previous)
+            with self.assertRaises(AutosaveError):
+                archive_recovery(directory,current,active_path=slot.path)
+            before = slot.path.read_bytes()
+            archived = archive_recovery(directory,previous)
+            self.assertTrue(archived.is_file())
+            self.assertFalse(recovery_path(slot.path).exists())
+            self.assertEqual(DocumentSession.open_copy(archived).document.value("x"),6)
+            self.assertEqual(slot.path.read_bytes(),before)
+            archived_current = archive_recovery(directory,current)
+            self.assertEqual(DocumentSession.open_copy(archived_current).document.value("x"),8)
+            self.assertEqual(recovery_catalog(directory),())
+            session.edit({"x":9})
+            with self.assertRaises(DiskRevisionConflict):
+                slot.capture(session)
+
+    def test_archive_refuses_lock_and_changed_entry(self):
+        from goosecad.document.autosave import recovery_catalog, archive_recovery
+        from goosecad.document.disk_lock import writer_lock, WriterBusyError
+        with tempfile.TemporaryDirectory() as directory:
+            session = sample()
+            slot = AutosaveSlot(directory,session.document)
+            session.edit({"x":6})
+            slot.capture(session)
+            entry = recovery_catalog(directory)[0]
+            with writer_lock(slot.path):
+                self.assertTrue(recovery_catalog(directory)[0].locked)
+                with self.assertRaises(WriterBusyError):
+                    archive_recovery(directory,entry)
+            session.edit({"x":8})
+            slot.capture(session)
+            with self.assertRaises(AutosaveError):
+                archive_recovery(directory,entry)
+            self.assertEqual(DocumentSession.open_copy(slot.path).document.value("x"),8)

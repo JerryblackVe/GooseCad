@@ -210,3 +210,4 @@ GC-UI-09,Apertura con una teselación worker Qt 6.11.3,GitHub Actions Ubuntu,Apr
 GC-UI-11,Mutación y malla en un Future cancelación post commit,GitHub Actions,Pendiente,tests/test_document_tasks.py,2026-11-24
 GC-DOC-04,Autosave Qt 4 variantes 7 tests por job,GitHub Actions,Aprobado,run 45507912200,2026-11-24
 GC-DOC-05,Crash matrix primary previous autosave,GitHub Actions,Pendiente,tests/test_disk_lock.py,2026-11-24
+GC-DOC-06,Catálogo actual anterior archivo explícito CAS lock,GitHub Actions,Pendiente,tests/test_autosave.py,2026-11-24

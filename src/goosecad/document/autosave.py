@@ -9,12 +9,16 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 import stat
+import os
+from tempfile import mkdtemp
 from uuid import uuid4
-from goosecad.document.native import NativeDocument, save
+from goosecad.document.native import NativeDocument, save, recovery_path, _sync_dir
+from goosecad.document.disk_lock import lock_path, writer_lock
 
 
 MAX_SLOTS = 128
 _NAME = re.compile(r"recovery-[0-9a-f]{32}\.gcad")
+_PREVIOUS = '.previous'
 
 
 class AutosaveError(RuntimeError):
@@ -50,6 +54,88 @@ def list_recoveries(root):
             entries.append(RecoveryEntry(path, st.st_mtime_ns, st.st_size))
     return tuple(sorted(entries, key=lambda item: (item.modified_ns,item.path.name),
                         reverse=True))
+
+
+@dataclass(frozen=True, slots=True)
+class CatalogEntry:
+    path: Path
+    primary: Path
+    previous: bool
+    locked: bool
+    size: int
+    modified_ns: int
+    identity: tuple[int, int, int, int, int]
+
+
+def _identity(st):
+    return st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns
+
+
+def recovery_catalog(root):
+    """Metadata only; do not evaluate native geometry to populate a dialog."""
+    root = Path(root).absolute()
+    _check_root(root)
+    if not root.exists():
+        return ()
+    entries = []
+    for path in root.iterdir():
+        previous = path.name.endswith(_PREVIOUS)
+        name = path.name[:-len(_PREVIOUS)] if previous else path.name
+        if not _NAME.fullmatch(name):
+            continue
+        try:
+            st = path.lstat()
+        except FileNotFoundError:
+            continue
+        if not stat.S_ISREG(st.st_mode):
+            continue
+        primary = root / name
+        # A symlink or any other lock entry also counts as locked.
+        try:
+            lock_path(primary).lstat()
+            locked = True
+        except FileNotFoundError:
+            locked = False
+        entries.append(CatalogEntry(path, primary, previous, locked, st.st_size,
+                                    st.st_mtime_ns, _identity(st)))
+    return tuple(sorted(entries, key=lambda e: (e.modified_ns,e.path.name), reverse=True))
+
+
+def archive_recovery(root, entry, *, active_path=None):
+    """Explicit move of one catalog entry to a unique local archive directory.
+
+    Never deletes file contents or clears writer locks. An idle external slot
+    may later detect a missing primary via CAS; this operation is therefore
+    only for copies the user explicitly chooses to retire. Metadata identity
+    is rechecked under the same cooperative lock as native saves.
+    """
+    root = Path(root).absolute()
+    _check_root(root)
+    if type(entry) is not CatalogEntry or entry.primary.parent != root:
+        raise AutosaveError("Invalid recovery catalog entry")
+    if not _NAME.fullmatch(entry.primary.name):
+        raise AutosaveError("Invalid recovery name")
+    expected = recovery_path(entry.primary) if entry.previous else entry.primary
+    if entry.path != expected:
+        raise AutosaveError("Invalid recovery path")
+    if active_path is not None and Path(active_path).absolute() == entry.primary:
+        raise AutosaveError("Cannot archive the active recovery slot")
+    with writer_lock(entry.primary):
+        st = entry.path.lstat()
+        if not stat.S_ISREG(st.st_mode) or _identity(st) != entry.identity:
+            raise AutosaveError("Recovery copy changed; refresh the catalog")
+        archive = root / "archive"
+        _check_root(archive)
+        archive.mkdir(mode=0o700, exist_ok=True)
+        _check_root(archive)
+        destination_dir = Path(mkdtemp(prefix="slot-", dir=archive))
+        destination = destination_dir / entry.path.name
+        # Directory created exclusively on this volume, destination absent.
+        os.replace(entry.path, destination)
+        _sync_dir(destination_dir)
+        _sync_dir(archive)
+        _sync_dir(root)
+        return destination
 
 
 class AutosaveSlot:

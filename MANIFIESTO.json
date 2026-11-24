@@ -6,8 +6,8 @@
   "build": null,
   "branch": "feature/000-clean-start",
   "remote": "https://github.com/JerryblackVe/GooseCad",
-  "remote_base_observed": "9d66efe5516c70d15949fa85130bcc10209d2864",
-  "remote_checkpoint": "9d66efe5516c70d15949fa85130bcc10209d2864",
+  "remote_base_observed": "b191930df9e066fbdf6b22089dcab3714e13a192",
+  "remote_checkpoint": "b191930df9e066fbdf6b22089dcab3714e13a192",
   "local_commit": "git log (SHA remoto verificado externamente)",
   "status": "experimental",
   "matrix_initial_count": 301,
@@ -15,7 +15,7 @@
   "tests_failed": 0,
   "benchmark_samples": 9800,
   "backup": "B0001",
-  "next_task": "GC-DOC-05",
+  "next_task": "GC-DOC-06",
   "publication": "authorized code/documentation only; no user media/private data",
   "experimental_probe_failures": 1,
   "ci_base_run": 45508104275,
@@ -78,5 +78,6 @@
   "initial_display": "candidate CPU preparation implemented; CI pending",
   "autosave": "Qt 4 jobs verified run 45507912200; kernel Linux passed",
   "combined_mutation_display": "single Future and notification; CI pending",
-  "crash_matrix": "process termination tests implemented; CI pending"
+  "crash_matrix": "process termination tests implemented; CI pending",
+  "recovery_catalog": "explicit archive and recovery dialog implemented; CI pending"
 }

@@ -54,3 +54,5 @@ GC-UI-04: se separa ejecución documental asíncrona de Qt; ThreadPoolExecutor d
 GC-UI-08: separación preparación CPU / publicación VTK con revisión de documento, identidad cache, settings y presupuestos, snapshots inmutables. Cancelación de visualización no revierte una mutación ya publicada. No se paraleliza acceso a OCCT de una sesión.
 
 GC-DOC-04: autosave independiente UUID, CAS atómico, sin vincular recuperación al original ni marcar sesión limpia. Retención conservadora sin eliminación silenciosa; límite de slots provisional, directorio local confiable; no promete recuperación de parámetros sin confirmar ni durabilidad ante corte eléctrico. Timer y configuración Qt, trabajo físico en worker exclusivo.
+
+GC-DOC-06: gestión conservadora por movimiento explícito a directorio exclusivo local, lock cooperativo y comparación de identidad de metadatos (no garantía contra directorio hostil). Sin borrado ni auto-steal; recuperación previa huérfana visible. Metadatos y rename local son síncronos en diálogo, no evaluar B-Rep allí.
