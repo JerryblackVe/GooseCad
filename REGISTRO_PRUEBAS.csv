@@ -87,3 +87,14 @@ GC-SOLVER-01-14,test_partition_residual_equivalence,Linux NumPy 2.3.5/SciPy 1.17
 GC-SOLVER-01-15,test_solution_can_be_reused,Linux NumPy 2.3.5/SciPy 1.17.0,Aprobada,results/solver-tests.log,2026-11-24
 ABI-C-01,C consumer; 10000 cycles,Linux GCC Release,Aprobada,results/abi-c-test.log,2026-11-24
 ABI-SAN-01,C ABI ASan/UBSan,Linux GCC Debug,Aprobada,results/abi-sanitizer.log,2026-11-24
+GEO-02-01,extrusion,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-02,revolve,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-03,reverse_winding,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-04,concave,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-05,invalid_profile,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-06,invalid_sweeps,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-07,broadphase_agrees,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-08,solved_profile,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-09,bad_sketch,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-10,parametric_rebuild_and_rollback,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24
+GEO-02-11,distance_drives_profile,Linux/OCP 7.9.3.1,Aprobada,results/sweep-tests.log,2026-11-24

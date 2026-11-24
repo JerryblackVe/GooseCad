@@ -1,2 +1,2 @@
-# GC-GEO-02 — Boceto poligonal, extrusión y revolución
-Integrar solver de puntos con perfiles planos cerrados y OCCT; verificar geometría, volúmenes analíticos, rechazo de perfiles inválidos, benchmarks y CI. No marcar ABI Goose/OCCT como integrada.
+# GC-SKETCH-02 — Persistencia e integración declarativa de bocetos y barridos
+P0: diseñar registros versionados para puntos, restricciones y perfil, extrusión y revolución. Mantener lectura del esquema v1; validar tipos, límites, ciclos y referencias antes de evaluar; no sobrescribir v1 sin migración explícita y recuperación. Probar guardado, carga, cambios dimensionales, undo/redo, corrupción, fallo de escritura y benchmark. Verificar CI ABI y GEO. Investigar Goose/OCCT C++ en entorno autorizado con SDK; no presentar prototipo escalar como integración real.

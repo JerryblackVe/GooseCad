@@ -16,3 +16,5 @@ GC-DOC-02: base remota 374461bc3624325cabcf6d6ad40ad2b5d7326a73 verificada; CI D
 GC-SOLVER-01: base remota 06bc3ba9f2ef6e6180e8e23312e1cdbd0f9a3416 y árbol 4cf89288bcffb4e16d54a76e78f5ca8a08c1fc3f verificados; nuevo SHA reportado tras verificación externa.
 
 GC-ABI-01 base remota 4bd459e9ec7908fe7acba984710c2e831f702ee2; publicación vía API sin force; SHA final externo; verificar CI.
+
+GC-GEO-02 base remota 67165c5ce4c5248be3b083b976b22ee7a290bb5f; publicación API sin force, SHA final externo; verificar CI.

@@ -37,6 +37,7 @@ jobs:
       - run: python benchmarks/document_bench.py ci-document-benchmarks.csv --repetitions 10
       - run: python benchmarks/native_bench.py ci-native-benchmarks.csv --repetitions 5
       - run: python benchmarks/solver_bench.py ci-solver-benchmarks.csv --repetitions 10
+      - run: python benchmarks/sweep_bench.py ci-sweep-benchmarks.csv --repetitions 5
       - uses: actions/upload-artifact@v4
         with:
           name: kernel-benchmarks-${{ matrix.os }}
@@ -46,3 +47,4 @@ jobs:
             ci-document-benchmarks.csv
             ci-native-benchmarks.csv
             ci-solver-benchmarks.csv
+            ci-sweep-benchmarks.csv
