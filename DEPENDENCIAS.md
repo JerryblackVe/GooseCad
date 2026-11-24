@@ -9,3 +9,5 @@ GC-ABI-01: prueba C/C++ escalar independiente, ABI v1, IDs monotónicos, registr
 GC-VIEW-01: VTK 9.6.2 (ya fijado en requirements-core) se utiliza directamente para visor. Qt no instalado; no nueva dependencia instalada.
 
 GC-UI-02: PySide6 6.11.3 evaluado como candidato, NO instalado ni fijado en las dependencias del programa. Existe rueda Python 3.13 Windows x64 (abi3); antes de incorporar comprobar dependencias Qt completas, compatibilidad de VTK 9.6.2, licencias y redistribución. Fuente: https://pypi.org/project/PySide6/6.11.3/
+
+Mesa Windows CI experimental: pal1000/mesa-dist-win 25.3.5 release-msvc, x64; upstream asset SHA256 066f64549ac122bfad4d68c2c4ec9b0018d025a1af7fa61654d3ccbc5e933388. CI-only (no application distribution), no system-wide deployment. Fuentes: https://github.com/pal1000/mesa-dist-win/releases/tag/25.3.5 y https://docs.vtk.org/en/latest/advanced/runtime_settings.html .

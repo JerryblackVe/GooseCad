@@ -185,3 +185,8 @@ UI-01-11,test_wrong_scene_rejected,Windows 2022 y Ubuntu 24.04 CI,Aprobada con v
 UI-01-12,test_scene_refresh_and_selection_freshness,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
 UI-01-13,test_direct_document_change_is_not_silently_clean,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
 UI-01-14,test_change_during_save_rejects_false_clean_state,Windows 2022 y Ubuntu 24.04 CI,Aprobada con verificación automática,https://github.com/JerryblackVe/GooseCad/actions/runs/45502896110,2026-11-24
+
+GC-UI-02,Qt VTK probe Ubuntu 6.9.3 y 6.11.3,GitHub Actions Ubuntu 24.04,Aprobado,run 45505510615 jobs 138839570113 y 138839569032,2026-11-24
+GC-UI-02,Qt VTK probe Windows 6.9.3 y 6.11.3,GitHub Actions Windows 2022,Fallido,run 45505510615 jobs 138839568497 y 138839568954; WGL,2026-11-24
+GC-UI-03,Qt workspace integration y benchmark,GitHub Actions Ubuntu 24.04,Pendiente,run 45506319546,2026-11-24
+GC-UI-02,Qt WGL con Mesa LLVMpipe Windows x64,GitHub Actions Windows 2022,Pendiente,workflow actualizado; no ejecutado al registrar,2026-11-24

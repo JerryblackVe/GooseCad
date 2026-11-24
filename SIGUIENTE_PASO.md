@@ -1,2 +1,4 @@
-# GC-UI-03 / GC-UI-02 — verificación y corrección
-Validar tests/test_ui_contract.py y tests/test_qt_workspace.py, consultar integración Qt Linux en CI y revisar resultado. En Windows investigar Mesa/software OpenGL con versiones, licencia y hash verificados; no confundir headless con ventana nativa. P0: ejecución asíncrona y cancelación segura, presupuestos de latencia, pruebas de apertura fallida y edición inválida. Verificar revisión 3.2 remota y resultados del nuevo CI. Base 83e57b18ba64e65d6282a58b9ebf33580613bfa3.
+# GC-UI-03 / GC-UI-02 — validar ventana y software OpenGL
+1. Consultar CI del HEAD y runs 45506319546 y 45506319615; corregir fallos reales, especialmente Windows Mesa y pruebas Qt.
+2. P0: ejecución asíncrona y cancelación segura de operaciones documentales; medir latencias de confirmación y render, no bloquear UI en cálculos largos.
+3. Validar apertura fallida, edición inválida y CAS; registrar métricas y resultados efectivos. Probar ventana nativa Windows 10/11 con GPU real cuando exista entorno.

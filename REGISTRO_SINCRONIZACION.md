@@ -44,3 +44,5 @@ GC-UI-01 revisión de seguridad sobre 03ec44e: mutaciones externas y detección 
 GC-UI-02 investigación y manifiesto: basado en cdf69c0ca2a82e0908c3142da17310b6adba3afa, sin alterar código; SHA final del commit documental se verifica externamente. CI del código GC-UI-01: 45502896110 en curso al registrar.
 
 GC-UI-01: run 45502896110, SHA cdf69c0ca2a82e0908c3142da17310b6adba3afa, concluido SUCCESS Windows 2022/Ubuntu 24.04. Checkpoint documental de evaluación Qt SHA 2e270a015814b19e5278ec3885f161e1f66cf9ec, run 45503170062 en progreso al registrar; verificar por separado. La actualización actual solo consolida documentos/registros, no altera código verificado.
+
+2026-11-24: rama feature/000-clean-start; commits verificados por referencia y comparación: df4f07de18c3b542eafd4de680550258f8119e7e (Qt UI), e4b2bd8e8c85d69befbd4ee02876f6605f54d0bd (prompt 3.2 y CI), método API GitHub árboles/commit/ref fast-forward. Prompt remoto coincide con archivo fuente. CI nuevo pendiente al registrar; SHA de este commit externo.

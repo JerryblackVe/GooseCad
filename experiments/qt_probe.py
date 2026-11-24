@@ -1,5 +1,6 @@
 """Run under a graphical session; verify actual Qt/VTK render and event loop."""
 import sys
+import os
 from time import perf_counter
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer
@@ -31,6 +32,12 @@ def main():
             start = perf_counter()
             window.Render()
             elapsed = (perf_counter() - start) * 1000
+            print(f"VTK window: {window.GetClassName()}", flush=True)
+            capabilities = window.ReportCapabilities()
+            print(capabilities, flush=True)
+            if os.environ.get("GOOSECAD_MESA_DLL_DIR"):
+                assert window.GetClassName() == "vtkWin32OpenGLRenderWindow"
+                assert "llvmpipe" in capabilities.lower(), "Expected actual Mesa LLVMpipe renderer"
             image = vtk.vtkWindowToImageFilter()
             image.SetInput(window)
             image.ReadFrontBufferOff()

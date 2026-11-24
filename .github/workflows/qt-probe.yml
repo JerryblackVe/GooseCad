@@ -2,7 +2,7 @@ name: Qt VTK compatibility probe
 on:
   push:
     branches: ['feature/**']
-    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml', 'src/goosecad/ui/**', 'src/goosecad/view/**', 'src/goosecad/document/**', 'tests/test_qt_workspace.py', 'benchmarks/qt_workspace_bench.py']
+    paths: ['experiments/qt_probe.py', '.github/workflows/qt-probe.yml', 'src/goosecad/ui/**', 'src/goosecad/view/**', 'src/goosecad/document/**', 'tests/test_qt_workspace.py', 'benchmarks/qt_workspace_bench.py', 'experiments/windows_mesa_runner.py', 'scripts/install-mesa-ci.ps1']
   workflow_dispatch:
 permissions:
   contents: read
@@ -39,8 +39,19 @@ jobs:
           QT_DEBUG_PLUGINS: '1'
           LIBGL_ALWAYS_SOFTWARE: '1'
         run: xvfb-run -a python experiments/qt_probe.py
-      - if: runner.os == 'Windows'
-        run: python experiments/qt_probe.py
+      - name: Install pinned Mesa software OpenGL for Windows CI only
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/install-mesa-ci.ps1
+      - name: Windows Qt/VTK WGL via Mesa LLVMpipe (not hardware validation)
+        if: runner.os == 'Windows'
+        run: python experiments/windows_mesa_runner.py experiments/qt_probe.py
+      - name: Windows Qt workspace integration via Mesa LLVMpipe
+        if: runner.os == 'Windows'
+        env:
+          GOOSECAD_TEST_QT: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: python experiments/windows_mesa_runner.py -m unittest discover -s tests -p test_qt_workspace.py -v
       - name: Qt workspace integration (Linux virtual display)
         if: runner.os == 'Linux'
         env:
