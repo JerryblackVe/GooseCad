@@ -36,6 +36,27 @@ class Scene:
         self.renderer=vtk.vtkRenderer();self.renderer.SetBackground(.10,.13,.18)
         self.window=vtk.vtkRenderWindow();self.window.SetOffScreenRendering(int(offscreen));self.window.SetSize(*size);self.window.SetMultiSamples(0);self.window.SetWindowName('GooseCAD Professional — experimental viewer');self.window.AddRenderer(self.renderer)
         self.picker=vtk.vtkCellPicker();self.picker.SetTolerance(.0005)
+    @property
+    def document(self):
+        return self._document
+
+    def is_current_selection(self, selection):
+        """Validate a face-local hit against the currently displayed snapshot."""
+        self._check()
+        if type(selection) is not Selection:
+            return False
+        state = self._actors.get(selection.body)
+        if state is None:
+            return False
+        snapshot = state[0]
+        offsets = snapshot.mesh.face_offsets
+        return (
+            snapshot.revision == selection.revision
+            and self.cache.is_current(snapshot)
+            and 0 <= selection.face < len(offsets) - 1
+            and offsets[selection.face] <= selection.triangle < offsets[selection.face + 1]
+        )
+
     def _check(self):
         if get_ident()!=self._thread or self._closed:raise ViewError('Scene must be open on its owning thread')
     def refresh(self,bodies):

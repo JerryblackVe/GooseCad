@@ -36,3 +36,5 @@ GC-VIEW-01: base remota e0cbc8ef5958e7538ae5b2ff86f4eeba54fb138b, árbol a65e778
 Revisión GC-MESH-01: commits 1 09d1c30114647bb742f88322c937971d33ef33b4, 2 1a097df1dacc8d0f1cd417b03cf05e85f68d9da1, 3 23e553d8a1c19883b1a0e8a2ca686330d4cbafe6, 4 39553b03a0c01c57a330f39cee02ff64fd89301d, 5 ea39d9e9d3183ffe6c7c7860ef39f2edf58211f2 verificados por API, árboles iguales y update_ref no forzado. Commit 6 SHA externo.
 
 Commit revisión 6 cd87dcd0acf20dfd0dd39d82206071f2e912d506 y árbol b92990ad67b4090d9ce2ea33fc54ef26b9c7ff7a verificados. Revalidación MESH-02 base ese SHA; sincronización API y verificación árbol; SHA final externo.
+
+GC-UI-01: commit de código y pruebas emitido desde GitHub API a partir de f862000523a92d1eb3fa466bc2ca35912816a1ae en feature/000-clean-start. SHA resultante y CI deben verificarse externamente tras actualizar la referencia; no afirmar éxito de CI anticipadamente.
